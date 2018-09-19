@@ -18,6 +18,10 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
   s.source       = { :git => "https://github.com/thefuntasty/FTAPIKit.git", :tag => s.version.to_s }
   s.source_files  = "Sources/**/*"
-  s.source_files  = "Sources/*"
   s.frameworks  = "Foundation"
+
+  s.subspec 'PromiseKit' do |ss|
+    ss.source_files = Dir['Extensions/PromiseKit/*']
+    ss.dependency 'PromiseKit', '~> 6.0'
+  end
 end
