@@ -183,10 +183,10 @@
 		8933C7811EB5B7E0000D00A4 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				E7B774182152752A006E7585 /* AnyCodable.swift */,
+				E7B774192152752A006E7585 /* APIEndpoint.swift */,
 				E7B774142152752A006E7585 /* APIAdapter.swift */,
 				E7B7741A2152752A006E7585 /* APIAdapter+Types.swift */,
-				E7B774192152752A006E7585 /* APIEndpoint.swift */,
+				E7B774182152752A006E7585 /* AnyCodable.swift */,
 				E7B774162152752A006E7585 /* Data+APIAdapter.swift */,
 				E7B774152152752A006E7585 /* URL+APIAdapter.swift */,
 				E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */,
