@@ -2,5 +2,5 @@ import XCTest
 @testable import FTAPIKitTests
 
 XCTMain([
-    testCase(FTAPIKitTests.allTests),
+    testCase(APIAdapterTests.allTests),
 ])
