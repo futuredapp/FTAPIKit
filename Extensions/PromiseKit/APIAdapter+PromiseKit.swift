@@ -9,7 +9,7 @@
 import PromiseKit
 
 extension APIAdapter {
-    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
+    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
         return Promise { resolver in
             request(response: endpoint) { result in
                 switch result {
@@ -22,7 +22,7 @@ extension APIAdapter {
         }
     }
 
-    func request(data endpoint: APIEndpoint) -> Promise<Data> {
+    public func request(data endpoint: APIEndpoint) -> Promise<Data> {
         return Promise { resolver in
             request(data: endpoint) { result in
                 switch result {
