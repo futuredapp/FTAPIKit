@@ -26,7 +26,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
     public weak var delegate: APIAdapterDelegate?
 
-    private let urlSession = URLSession.shared
+    private let urlSession: URLSession
     private let baseUrl: URL
 
     private let jsonEncoder: JSONEncoder
@@ -40,11 +40,12 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), customErrorConstructor: APIAdapterErrorConstructor? = nil) {
+    public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), customErrorConstructor: APIAdapterErrorConstructor? = nil, urlSession: URLSession = .shared) {
         self.baseUrl = baseUrl
         self.jsonDecoder = jsonDecoder
         self.jsonEncoder = jsonEncoder
         self.customErrorConstructor = customErrorConstructor
+        self.urlSession = urlSession
     }
 
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
