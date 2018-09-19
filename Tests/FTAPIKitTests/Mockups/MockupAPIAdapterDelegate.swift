@@ -10,7 +10,7 @@ import FTAPIKit
 import Foundation
 
 final class MockupAPIAdapterDelegate: APIAdapterDelegate {
-    func apiAdapter(_ apiAdapter: APIAdapter, requests endpoint: APIEndpoint, signing request: URLRequest, completion: @escaping (URLRequest) -> Void) {
+    func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void) {
         if endpoint.authorized {
             var newRequest = request
             newRequest.addValue("Bearer " + UUID().uuidString, forHTTPHeaderField: "Authorization")

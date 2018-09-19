@@ -10,7 +10,7 @@ import Foundation
 
 public protocol APIAdapterDelegate: class {
     func apiAdapter(_ apiAdapter: APIAdapter, didUpdateRunningRequestCount runningRequestCount: UInt)
-    func apiAdapter(_ apiAdapter: APIAdapter, requests endpoint: APIEndpoint, signing request: URLRequest, completion: @escaping (URLRequest) -> Void)
+    func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void)
 }
 
 public typealias APIAdapterErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
@@ -77,24 +77,24 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
 
         if let delegate = delegate {
-            delegate.apiAdapter(self, requests: endpoint, signing: request) { request in
-                self.execute(request: request, completion: completion)
+            delegate.apiAdapter(self, willRequest: request, to: endpoint) { request in
+                self.send(request: request, completion: completion)
             }
         } else {
-            execute(request: request, completion: completion)
+            send(request: request, completion: completion)
         }
     }
 
-    private func execute(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
+    private func send(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
         runningRequestCount += 1
-        dataTask(withRequest: request) { result in
+        resumeDataTask(with: request) { result in
             self.runningRequestCount -= 1
             completion(result)
         }
     }
 
-    private func dataTask(withRequest urlRequest: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
-        let task = urlSession.dataTask(with: urlRequest) { data, response, error in
+    private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
+        let task = urlSession.dataTask(with: request) { data, response, error in
             switch (data, response, error) {
             case let (_, response as HTTPURLResponse, _) where response.statusCode == 204:
                 completion(.value(Data()))
