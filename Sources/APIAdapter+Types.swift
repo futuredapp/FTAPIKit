@@ -50,5 +50,5 @@ public enum RequestData {
     case multipart(Parameters, [MultipartFile])
     case base64Upload(Parameters)
 
-    static let empty: RequestData = .jsonParams([:])
+    public static let empty: RequestData = .jsonParams([:])
 }
