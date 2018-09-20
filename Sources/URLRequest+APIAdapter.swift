@@ -23,6 +23,8 @@ extension URLRequest {
             setMultipart(parameters: parameters, files: files)
         case .base64Upload(let parameters):
             appendBase64(parameters: parameters)
+        case .urlQuery(let parameters):
+            url?.appendQuery(parameters: parameters)
         }
     }
 
