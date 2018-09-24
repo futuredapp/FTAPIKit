@@ -28,14 +28,14 @@ extension URLRequest {
         }
     }
 
-    mutating func appendBase64(parameters: Parameters) {
+    mutating func appendBase64(parameters: HTTPParameters) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
         httpBody = urlComponents.query?.data(using: String.Encoding.ascii, allowLossyConversion: true)
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    mutating func setMultipart(parameters: Parameters = [:], files: [MultipartFile] = [], boundary: String = "APIAdapter" + UUID().uuidString) {
+    mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartFile] = [], boundary: String = "APIAdapter" + UUID().uuidString) {
         setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         for parameter in parameters {
             appendForm(data: Data(parameter.value.utf8), name: parameter.key, boundary: boundary)
@@ -46,13 +46,13 @@ extension URLRequest {
         httpBody?.appendRow("--\(boundary)")
     }
 
-    mutating func setJSON(parameters: Parameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
+    mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
         setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         httpBody = body
         url?.appendQuery(parameters: parameters)
     }
 
-    mutating func setURLEncoded(parameters: Parameters) {
+    mutating func setURLEncoded(parameters: HTTPParameters) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
         httpBody = urlComponents.query?.data(using: .ascii, allowLossyConversion: true)

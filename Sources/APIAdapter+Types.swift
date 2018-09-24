@@ -34,7 +34,7 @@ public enum HTTPMethod: String, CustomStringConvertible {
 
 // MARK: - API request types
 
-public typealias Parameters = [String: String]
+public typealias HTTPParameters = [String: String]
 public typealias HTTPHeaders = [String: String]
 
 public struct MultipartFile {
@@ -43,13 +43,13 @@ public struct MultipartFile {
 }
 
 public enum RequestData {
-    case urlQuery(Parameters)
-    case urlEncoded(Parameters)
-    case jsonParams(Parameters)
+    case urlQuery(HTTPParameters)
+    case urlEncoded(HTTPParameters)
+    case jsonParams(HTTPParameters)
     case jsonBody(Encodable)
-    case json(body: Data, query: Parameters)
-    case multipart(Parameters, [MultipartFile])
-    case base64Upload(Parameters)
+    case json(body: Data, query: HTTPParameters)
+    case multipart(HTTPParameters, [MultipartFile])
+    case base64Upload(HTTPParameters)
 
     public static let empty: RequestData = .jsonParams([:])
 }
