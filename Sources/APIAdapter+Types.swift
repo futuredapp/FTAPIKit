@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - API adapter error
 
-public enum APIAdapterError: Error {
+public enum APIError: Error {
     case noResponse
     case errorCode(Int, Data?)
 }
