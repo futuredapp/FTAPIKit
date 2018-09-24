@@ -36,7 +36,10 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
     private var runningRequestCount: UInt = 0 {
         didSet {
-            delegate?.apiAdapter(self, didUpdateRunningRequestCount: runningRequestCount)
+            guard let delegate = delegate else { return }
+            DispatchQueue.main.async {
+                delegate.apiAdapter(self, didUpdateRunningRequestCount: self.runningRequestCount)
+            }
         }
     }
 
