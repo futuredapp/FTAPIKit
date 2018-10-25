@@ -8,8 +8,28 @@
 
 import Foundation
 
+/// Delegate of `APIAdapter` used for platform-specific functionality
+/// (showing/hiding network activity indicator) and signing/manipulating
+/// URL request before they are sent.
 public protocol APIAdapterDelegate: class {
+    /// Delegate method updating number of currently running requests. Should be used mainly
+    /// for logging, debugging and/or presenting network activity indicator on iOS. See example
+    /// implementation in discussion.
+    ///
+    ///     func apiAdapter(_ apiAdapter: APIAdapter, didUpdateRunningRequestCount runningRequestCount: UInt) {
+    ///         let isVisible = UIApplication.shared.isNetworkActivityIndicatorVisible
+    ///         if runningRequestCount > 0, !isVisible {
+    ///             UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    ///         } else if runningRequestCount < 1 {
+    ///             UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    ///         }
+    ///     }
     func apiAdapter(_ apiAdapter: APIAdapter, didUpdateRunningRequestCount runningRequestCount: UInt)
+
+    /// Method for updating `URLRequest` created by API adapter with app-specific headers etc.
+    /// It can be completed asynchronously so actions like refreshing access token can be executed.
+    /// Changes to URL request, which are not due to authorization requirements should be provided
+    /// in custom `URLSession` with configuration when `APIAdapter` is created.
     func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void)
 }
 

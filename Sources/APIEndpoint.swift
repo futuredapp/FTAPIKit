@@ -29,6 +29,8 @@ public extension APIEndpoint {
     }
 }
 
+/// Endpoint having decodable associated type, which is used
+/// for automatic deserialization
 public protocol APIResponseEndpoint: APIEndpoint {
     associatedtype Response: Decodable
 }
