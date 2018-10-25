@@ -50,13 +50,10 @@ public struct MultipartFile {
 }
 
 public enum RequestData {
-    case urlQuery(HTTPParameters)
-    case urlEncoded(HTTPParameters)
-    case jsonParams(HTTPParameters)
+    case urlQuery
+    case urlEncoded
+    case jsonParams
     case jsonBody(Encodable)
-    case json(body: Data, query: HTTPParameters)
-    case multipart(HTTPParameters, [MultipartFile])
-    case base64Upload(HTTPParameters)
-
-    public static let empty: RequestData = .jsonParams([:])
+    case multipart([MultipartFile])
+    case base64Upload
 }

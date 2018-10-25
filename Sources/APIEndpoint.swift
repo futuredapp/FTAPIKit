@@ -10,14 +10,19 @@ import Foundation
 
 public protocol APIEndpoint {
     var path: String { get }
+    var parameters: HTTPParameters { get }
     var method: HTTPMethod { get }
     var data: RequestData { get }
     var authorized: Bool { get }
 }
 
 public extension APIEndpoint {
+    var parameters: HTTPParameters {
+        return [:]
+    }
+
     var data: RequestData {
-        return .empty
+        return .jsonParams
     }
 
     var method: HTTPMethod {
