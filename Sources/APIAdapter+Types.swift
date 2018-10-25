@@ -40,6 +40,13 @@ public typealias HTTPHeaders = [String: String]
 public struct MultipartFile {
     let name, filename, mimeType: String
     let data: Data
+
+    public init(name: String, filename: String, mimeType: String, data: Data) {
+        self.name = name
+        self.filename = filename
+        self.mimeType = mimeType
+        self.data = data
+    }
 }
 
 public enum RequestData {
