@@ -12,7 +12,7 @@ public protocol APIEndpoint {
     var path: String { get }
     var parameters: HTTPParameters { get }
     var method: HTTPMethod { get }
-    var data: RequestData { get }
+    var type: RequestType { get }
     var authorized: Bool { get }
 }
 
@@ -21,7 +21,7 @@ public extension APIEndpoint {
         return [:]
     }
 
-    var data: RequestData {
+    var type: RequestType {
         return .jsonParams
     }
 
@@ -49,8 +49,8 @@ public extension APIRequestEndpoint {
         return .post
     }
 
-    public var data: RequestData {
-        return RequestData.jsonBody(body)
+    public var type: RequestType {
+        return RequestType.jsonBody(body)
     }
 
     public func encode(using jsonEncoder: JSONEncoder) throws -> Data {

@@ -49,7 +49,7 @@ public struct MultipartFile {
     }
 }
 
-public enum RequestData {
+public enum RequestType {
     case urlQuery
     case urlEncoded
     case jsonParams

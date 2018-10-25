@@ -121,7 +121,7 @@ final class APIAdapterTests: XCTestCase {
 
     func testURLEncodedPost() {
         struct Endpoint: APIEndpoint {
-            let data: RequestData = .urlEncoded
+            let data: RequestType = .urlEncoded
             let parameters: HTTPParameters = [
                 "someParameter": "someValue",
                 "anotherParameter": "anotherValue"

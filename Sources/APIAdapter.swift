@@ -73,7 +73,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         request.httpMethod = endpoint.method.description
 
         do {
-            try request.setRequestData(endpoint.data, parameters: endpoint.parameters, using: jsonEncoder)
+            try request.setRequestType(endpoint.type, parameters: endpoint.parameters, using: jsonEncoder)
         } catch {
             completion(.error(error))
             return
