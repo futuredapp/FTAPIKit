@@ -73,7 +73,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         request.httpMethod = endpoint.method.description
 
         do {
-            try request.setRequestData(endpoint.data, using: jsonEncoder)
+            try request.setRequestType(endpoint.type, parameters: endpoint.parameters, using: jsonEncoder)
         } catch {
             completion(.error(error))
             return
@@ -97,16 +97,16 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
-        let task = urlSession.dataTask(with: request) { data, response, error in
+        let task = urlSession.dataTask(with: request) { [customErrorConstructor, jsonDecoder] data, response, error in
+            if let constructor = customErrorConstructor, let error = constructor(data, response, error, jsonDecoder) {
+                completion(.error(error))
+                return
+            }
             switch (data, response, error) {
             case let (_, response as HTTPURLResponse, _) where response.statusCode == 204:
                 completion(.value(Data()))
             case let (data?, response as HTTPURLResponse, nil) where response.statusCode < 400:
-                if let constructor = self.customErrorConstructor, let error = constructor(data, response, error, self.jsonDecoder) {
-                    completion(.error(error))
-                } else {
-                    completion(.value(data))
-                }
+                completion(.value(data))
             case let (_, _, error?):
                 completion(.error(error))
             case let (data, response as HTTPURLResponse, nil):

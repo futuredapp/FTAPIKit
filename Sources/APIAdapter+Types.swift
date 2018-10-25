@@ -40,16 +40,20 @@ public typealias HTTPHeaders = [String: String]
 public struct MultipartFile {
     let name, filename, mimeType: String
     let data: Data
+
+    public init(name: String, filename: String, mimeType: String, data: Data) {
+        self.name = name
+        self.filename = filename
+        self.mimeType = mimeType
+        self.data = data
+    }
 }
 
-public enum RequestData {
-    case urlQuery(HTTPParameters)
-    case urlEncoded(HTTPParameters)
-    case jsonParams(HTTPParameters)
+public enum RequestType {
+    case urlQuery
+    case urlEncoded
+    case jsonParams
     case jsonBody(Encodable)
-    case json(body: Data, query: HTTPParameters)
-    case multipart(HTTPParameters, [MultipartFile])
-    case base64Upload(HTTPParameters)
-
-    public static let empty: RequestData = .jsonParams([:])
+    case multipart([MultipartFile])
+    case base64Upload
 }
