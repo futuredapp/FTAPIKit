@@ -39,16 +39,22 @@ public protocol APIResponseEndpoint: APIEndpoint {
 }
 
 public protocol APIRequestEndpoint: APIEndpoint {
-    init(data: RequestData)
+    associatedtype Request: Encodable
+    var body: Request { get }
+    func encode(using jsonEncoder: JSONEncoder) throws -> Data
 }
 
 public extension APIRequestEndpoint {
-    init(request: Encodable) {
-        self.init(data: .jsonBody(request))
+    public var method: HTTPMethod {
+        return .post
     }
 
-    var method: HTTPMethod {
-        return .post
+    public var data: RequestData {
+        return RequestData.jsonBody(body)
+    }
+
+    public func encode(using jsonEncoder: JSONEncoder) throws -> Data {
+        return try jsonEncoder.encode(body)
     }
 }
 

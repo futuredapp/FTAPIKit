@@ -121,10 +121,11 @@ final class APIAdapterTests: XCTestCase {
 
     func testURLEncodedPost() {
         struct Endpoint: APIEndpoint {
-            let data: RequestData = .urlEncoded([
+            let data: RequestData = .urlEncoded
+            let parameters: HTTPParameters = [
                 "someParameter": "someValue",
                 "anotherParameter": "anotherValue"
-            ])
+            ]
             let path = "post"
             let method: HTTPMethod = .post
         }
@@ -189,16 +190,15 @@ final class APIAdapterTests: XCTestCase {
         }
 
         struct Endpoint: APIRequestResponseEndpoint {
-            typealias Request = User
+
             typealias Response = TopLevel
 
-            let data: RequestData
-            let method: HTTPMethod = .post
+            let body: User
             let path = "anything"
         }
 
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
-        let endpoint = Endpoint(request: user)
+        let endpoint = Endpoint(body: user)
         let delegate = MockupAPIAdapterDelegate()
         var adapter = apiAdapter()
         adapter.delegate = delegate
@@ -223,16 +223,14 @@ final class APIAdapterTests: XCTestCase {
         }
 
         struct Endpoint: APIRequestResponseEndpoint {
-            typealias Request = User
             typealias Response = User
 
-            let data: RequestData
-            let method: HTTPMethod = .post
+            let body: User
             let path = "anything"
         }
 
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
-        let endpoint = Endpoint(request: user)
+        let endpoint = Endpoint(body: user)
         let delegate = MockupAPIAdapterDelegate()
         var adapter = apiAdapter()
         adapter.delegate = delegate
@@ -263,6 +261,7 @@ final class APIAdapterTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
+
         wait(for: [expectation], timeout: timeout)
     }
 
