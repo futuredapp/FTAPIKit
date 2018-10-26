@@ -275,6 +275,6 @@ final class APIAdapterTests: XCTestCase {
         ("testValidJSONResponse", testValidJSONResponse),
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
-        ("testAuthorization", testAuthorization),
+        ("testAuthorization", testAuthorization)
     ]
 }
