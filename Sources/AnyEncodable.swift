@@ -1,5 +1,5 @@
 //
-//  AnyCodable.swift
+//  AnyEncodable.swift
 //  FuntastyKit
 //
 //  Created by Patrik Potoček on 27.3.18.

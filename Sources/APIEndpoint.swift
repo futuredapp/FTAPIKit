@@ -10,14 +10,19 @@ import Foundation
 
 public protocol APIEndpoint {
     var path: String { get }
+    var parameters: HTTPParameters { get }
     var method: HTTPMethod { get }
-    var data: RequestData { get }
+    var type: RequestType { get }
     var authorized: Bool { get }
 }
 
 public extension APIEndpoint {
-    var data: RequestData {
-        return .empty
+    var parameters: HTTPParameters {
+        return [:]
+    }
+
+    var type: RequestType {
+        return .jsonParams
     }
 
     var method: HTTPMethod {
@@ -36,16 +41,22 @@ public protocol APIResponseEndpoint: APIEndpoint {
 }
 
 public protocol APIRequestEndpoint: APIEndpoint {
-    init(data: RequestData)
+    associatedtype Request: Encodable
+    var body: Request { get }
+    func encode(using jsonEncoder: JSONEncoder) throws -> Data
 }
 
 public extension APIRequestEndpoint {
-    init(request: Encodable) {
-        self.init(data: .jsonBody(request))
+    public var method: HTTPMethod {
+        return .post
     }
 
-    var method: HTTPMethod {
-        return .post
+    public var type: RequestType {
+        return RequestType.jsonBody(body)
+    }
+
+    public func encode(using jsonEncoder: JSONEncoder) throws -> Data {
+        return try jsonEncoder.encode(body)
     }
 }
 

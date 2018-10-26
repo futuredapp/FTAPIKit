@@ -9,21 +9,19 @@
 import Foundation
 
 extension URLRequest {
-    mutating func setRequestData(_ requestData: RequestData, using jsonEncoder: JSONEncoder) throws {
-        switch requestData {
+    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
+        switch requestType {
         case .jsonBody(let encodable):
-            try setJSONBody(encodable: encodable, using: jsonEncoder)
-        case .urlEncoded(let parameters):
+            try setJSONBody(encodable: encodable, parameters: parameters, using: jsonEncoder)
+        case .urlEncoded:
             setURLEncoded(parameters: parameters)
-        case .jsonParams(let parameters):
+        case .jsonParams:
             setJSON(parameters: parameters, using: jsonEncoder)
-        case let .json(body, parameters):
-            setJSON(parameters: parameters, body: body, using: jsonEncoder)
-        case let .multipart(parameters, files):
+        case let .multipart(files):
             setMultipart(parameters: parameters, files: files)
-        case .base64Upload(let parameters):
+        case .base64Upload:
             appendBase64(parameters: parameters)
-        case .urlQuery(let parameters):
+        case .urlQuery:
             url?.appendQuery(parameters: parameters)
         }
     }
@@ -59,9 +57,9 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    mutating func setJSONBody(encodable: Encodable, using jsonEncoder: JSONEncoder) throws {
+    mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
         let body = try jsonEncoder.encode(AnyEncodable(encodable))
-        setJSON(parameters: [:], body: body, using: jsonEncoder)
+        setJSON(parameters: parameters, body: body, using: jsonEncoder)
     }
 
     private mutating func appendForm(data: Data, name: String, boundary: String, mimeType: String? = nil, filename: String? = nil) {
