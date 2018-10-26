@@ -43,7 +43,6 @@ public protocol APIResponseEndpoint: APIEndpoint {
 public protocol APIRequestEndpoint: APIEndpoint {
     associatedtype Request: Encodable
     var body: Request { get }
-    func encode(using jsonEncoder: JSONEncoder) throws -> Data
 }
 
 public extension APIRequestEndpoint {
@@ -53,10 +52,6 @@ public extension APIRequestEndpoint {
 
     public var type: RequestType {
         return RequestType.jsonBody(body)
-    }
-
-    public func encode(using jsonEncoder: JSONEncoder) throws -> Data {
-        return try jsonEncoder.encode(body)
     }
 }
 
