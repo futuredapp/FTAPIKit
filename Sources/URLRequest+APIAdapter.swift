@@ -1,6 +1,6 @@
 //
 //  URLRequest+APIAdapter.swift
-//  FuntastyKit
+//  FTAPIKit
 //
 //  Created by Matěj Kašpar Jirásek on 02/09/2018.
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
