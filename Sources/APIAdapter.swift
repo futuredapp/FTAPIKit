@@ -33,8 +33,6 @@ public protocol APIAdapterDelegate: class {
     func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void)
 }
 
-public typealias APIAdapterErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
-
 public protocol APIAdapter {
     var delegate: APIAdapterDelegate? { get set }
 
@@ -44,6 +42,8 @@ public protocol APIAdapter {
 
 public final class URLSessionAPIAdapter: APIAdapter {
 
+    public typealias ErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
+
     public weak var delegate: APIAdapterDelegate?
 
     private let urlSession: URLSession
@@ -52,7 +52,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
     private let jsonEncoder: JSONEncoder
     private let jsonDecoder: JSONDecoder
 
-    private let customErrorConstructor: APIAdapterErrorConstructor?
+    private let customErrorConstructor: ErrorConstructor?
 
     private var runningRequestCount: UInt = 0 {
         didSet {
@@ -63,7 +63,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), customErrorConstructor: APIAdapterErrorConstructor? = nil, urlSession: URLSession = .shared) {
+    public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), customErrorConstructor: ErrorConstructor? = nil, urlSession: URLSession = .shared) {
         self.baseUrl = baseUrl
         self.jsonDecoder = jsonDecoder
         self.jsonEncoder = jsonEncoder
