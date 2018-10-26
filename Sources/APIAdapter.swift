@@ -30,18 +30,38 @@ public protocol APIAdapterDelegate: class {
     /// It can be completed asynchronously so actions like refreshing access token can be executed.
     /// Changes to URL request, which are not due to authorization requirements should be provided
     /// in custom `URLSession` with configuration when `APIAdapter` is created.
+    ///
+    /// The `authorization` property of `APIEndpoint` is provided for manual checking whether the
+    /// request should be signed, because signing non-authorized endpoints might pose as a security risk.
     func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void)
 }
 
+/// Protocol
 public protocol APIAdapter {
+    /// Delegate used for notificating about the currently running request count
+    /// and asynchronously signing authorized requests.
     var delegate: APIAdapterDelegate? { get set }
 
+    /// Calls API request endpoint with JSON body and after finishing it calls completion handler with either decoded JSON model or error.
+    ///
+    /// - Parameters:
+    ///   - endpoint: Response endpoint
+    ///   - completion: Completion closure receiving result with automatically decoded JSON model taken from reponse endpoint associated type.
     func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void)
+
+    /// Calls API endpoint and after finishing it calls completion handler with either data or error.
+    ///
+    /// - Parameters:
+    ///   - endpoint: Standard endpoint with no response associated type.
+    ///   - completion: Completion closure receiving result with data.
     func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void)
 }
 
+/// Standard and default implementation of `APIAdapter` protocol using `URLSession`.
 public final class URLSessionAPIAdapter: APIAdapter {
 
+    /// Custom error custructor typealias recieving values from data task execution
+    /// and JSON decoder, if it needs to decode custom error from returned JSON.
     public typealias ErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
 
     public weak var delegate: APIAdapterDelegate?
@@ -63,6 +83,16 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
+    /// Constructor for `APIAdapter` based on `URLSession`.
+    ///
+    /// - Parameters:
+    ///   - baseUrl: Base URI for the server for all API calls this API adapter will be executing.
+    ///   - jsonEncoder: Optional JSON encoder used for serialization of JSON models.
+    ///   - jsonDecoder: Optional JSON decoder used for deserialization of JSON models.
+    ///   - customErrorConstructor: Optional custom error constructor if we want the API adapter to not return
+    ///                             the standard `APIError`, but to handle the errors our own way.
+    ///   - urlSession: Optional URL session (otherwise the standard one will be used). Used mainly if we need
+    ///                 our own `URLSessionConfiguration` or another way of caching (ephemeral session).
     public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), customErrorConstructor: ErrorConstructor? = nil, urlSession: URLSession = .shared) {
         self.baseUrl = baseUrl
         self.jsonDecoder = jsonDecoder
