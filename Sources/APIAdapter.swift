@@ -36,7 +36,11 @@ public protocol APIAdapterDelegate: class {
     func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void)
 }
 
-/// Protocol
+/// Protocol describing interface communicating with API resources (most probably over internet).
+/// This interface encapsulates executing requests.
+///
+/// Standard implementation of this interface using `URLSession` is available as
+/// `URLSessionAPIAdapter`.
 public protocol APIAdapter {
     /// Delegate used for notificating about the currently running request count
     /// and asynchronously signing authorized requests.
