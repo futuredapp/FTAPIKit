@@ -6,6 +6,20 @@
 	objectVersion = 47;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		E7A4701D2183060F00287BD3 /* FTAPIKit-Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E7A470202183060F00287BD3 /* Build configuration list for PBXAggregateTarget "FTAPIKit-Documentation" */;
+			buildPhases = (
+				E7A470212183061700287BD3 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "FTAPIKit-Documentation";
+			productName = "FTAPIKit-Docs";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		52D6D9871BEFF229002C0205 /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* FTAPIKit.framework */; };
 		DD7502881C68FEDE006590AF /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* FTAPIKit.framework */; };
@@ -426,6 +440,10 @@
 						CreatedOnToolsVersion = 7.2.1;
 						LastSwiftMigration = 1000;
 					};
+					E7A4701D2183060F00287BD3 = {
+						CreatedOnToolsVersion = 10.0;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 52D6D9761BEFF229002C0205 /* Build configuration list for PBXProject "FTAPIKit" */;
@@ -447,6 +465,7 @@
 				52D6D9851BEFF229002C0205 /* FTAPIKit-iOS Tests */,
 				DD7502791C68FCFC006590AF /* FTAPIKit-macOS Tests */,
 				DD75028C1C690C7A006590AF /* FTAPIKit-tvOS Tests */,
+				E7A4701D2183060F00287BD3 /* FTAPIKit-Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -502,6 +521,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E7A470212183061700287BD3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bundle\nbundle exec jazzy\nopen docs/index.html\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		52D6D9771BEFF229002C0205 /* Sources */ = {
@@ -985,6 +1024,22 @@
 			};
 			name = Release;
 		};
+		E7A4701E2183060F00287BD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E7A4701F2183060F00287BD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1056,6 +1111,15 @@
 			buildConfigurations = (
 				DD7502961C690C7A006590AF /* Debug */,
 				DD7502971C690C7A006590AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E7A470202183060F00287BD3 /* Build configuration list for PBXAggregateTarget "FTAPIKit-Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7A4701E2183060F00287BD3 /* Debug */,
+				E7A4701F2183060F00287BD3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

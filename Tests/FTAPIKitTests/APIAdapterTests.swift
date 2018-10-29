@@ -1,6 +1,6 @@
 //
 //  APIAdapterTests.swift
-//  FuntastyKit
+//  FTAPIKit
 //
 //  Created by Matěj Kašpar Jirásek on 03/09/2018.
 //  Copyright © 2018 The Funtasty. All rights reserved.
@@ -275,6 +275,6 @@ final class APIAdapterTests: XCTestCase {
         ("testValidJSONResponse", testValidJSONResponse),
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
-        ("testAuthorization", testAuthorization),
+        ("testAuthorization", testAuthorization)
     ]
 }

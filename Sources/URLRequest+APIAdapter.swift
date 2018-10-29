@@ -1,6 +1,6 @@
 //
 //  URLRequest+APIAdapter.swift
-//  FuntastyKit
+//  FTAPIKit
 //
 //  Created by Matěj Kašpar Jirásek on 02/09/2018.
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
@@ -26,14 +26,14 @@ extension URLRequest {
         }
     }
 
-    mutating func appendBase64(parameters: HTTPParameters) {
+    private mutating func appendBase64(parameters: HTTPParameters) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
         httpBody = urlComponents.query?.data(using: String.Encoding.ascii, allowLossyConversion: true)
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartFile] = [], boundary: String = "APIAdapter" + UUID().uuidString) {
+    private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartFile] = [], boundary: String = "APIAdapter" + UUID().uuidString) {
         setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         for parameter in parameters {
             appendForm(data: Data(parameter.value.utf8), name: parameter.key, boundary: boundary)
@@ -44,20 +44,20 @@ extension URLRequest {
         httpBody?.appendRow("--\(boundary)")
     }
 
-    mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
+    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
         setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         httpBody = body
         url?.appendQuery(parameters: parameters)
     }
 
-    mutating func setURLEncoded(parameters: HTTPParameters) {
+    private mutating func setURLEncoded(parameters: HTTPParameters) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
         httpBody = urlComponents.query?.data(using: .ascii, allowLossyConversion: true)
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
+    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
         let body = try jsonEncoder.encode(AnyEncodable(encodable))
         setJSON(parameters: parameters, body: body, using: jsonEncoder)
     }
