@@ -33,7 +33,7 @@ public protocol APIAdapterDelegate: class {
     ///
     /// The `authorization` property of `APIEndpoint` is provided for manual checking whether the
     /// request should be signed, because signing non-authorized endpoints might pose as a security risk.
-    func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (URLRequest) -> Void)
+    func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (APIResult<URLRequest>) -> Void)
 }
 
 /// Protocol describing interface communicating with API resources (most probably over internet).
@@ -134,8 +134,13 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
 
         if let delegate = delegate {
-            delegate.apiAdapter(self, willRequest: request, to: endpoint) { request in
-                self.send(request: request, completion: completion)
+            delegate.apiAdapter(self, willRequest: request, to: endpoint) { result in
+                switch result {
+                case .value(let request):
+                    self.send(request: request, completion: completion)
+                case .error(let error):
+                    completion(.error(error))
+                }
             }
         } else {
             send(request: request, completion: completion)
