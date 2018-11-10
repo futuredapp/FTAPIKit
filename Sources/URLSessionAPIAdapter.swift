@@ -124,4 +124,3 @@ public final class URLSessionAPIAdapter: APIAdapter {
         task.resume()
     }
 }
-
