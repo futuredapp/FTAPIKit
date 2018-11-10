@@ -6,7 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.Data
 
 extension Data {
     mutating func append(_ string: String) {

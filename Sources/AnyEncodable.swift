@@ -6,8 +6,6 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import Foundation
-
 struct AnyEncodable: Encodable {
     private let anyEncode: (Encoder) throws -> Void
 
