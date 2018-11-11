@@ -11,7 +11,7 @@ import Foundation
 /// Standard and default implementation of `APIAdapter` protocol using `URLSession`.
 public final class URLSessionAPIAdapter: APIAdapter {
 
-    /// Custom error custructor typealias recieving values from data task execution
+    /// Custom error constructor typealias receiving values from data task execution
     /// and JSON decoder, if it needs to decode custom error from returned JSON.
     public typealias ErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
 
