@@ -6,8 +6,6 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import Foundation
-
 /// Protocol describing API endpoint. API Endpoint describes one URI with all the
 /// data and parameters which are sent to it.
 ///

@@ -6,7 +6,9 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.URL
+import struct Foundation.URLComponents
+import struct Foundation.URLQueryItem
 
 extension URL {
     mutating func appendQuery(parameters: [String: String]) {
