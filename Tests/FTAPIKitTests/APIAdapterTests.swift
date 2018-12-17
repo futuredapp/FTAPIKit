@@ -178,6 +178,48 @@ final class APIAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+    func testTaskCancel() {
+        struct TopLevel: Codable {
+            let slideshow: Slideshow
+        }
+
+        struct Slideshow: Codable {
+            let author, date: String
+            let slides: [Slide]
+            let title: String
+        }
+
+        struct Slide: Codable {
+            let title, type: String
+            let items: [String]?
+        }
+
+        struct Endpoint: APIResponseEndpoint {
+            typealias Response = TopLevel
+
+            let path = "json"
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        let trigger = adapter.request(response: Endpoint()) { result in
+            expectation.fulfill()
+            if case let .error(error) = result {
+                guard let nserror = error as? NSError, nserror.domain == NSURLErrorDomain, nserror.code == NSURLErrorCancelled else {
+                    XCTFail("Task resulted with incorrect error: \(error)")
+                    return
+                }
+            }else{
+                XCTFail("Task not cancelled")
+            }
+        }
+        trigger?()
+
+        wait(for: [expectation], timeout: timeout)
+    }
+
     func testValidJSONRequestResponse() {
         struct User: Codable, Equatable {
             let uuid: UUID
