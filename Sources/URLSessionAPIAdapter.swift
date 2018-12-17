@@ -15,8 +15,6 @@ public final class URLSessionAPIAdapter: APIAdapter {
     /// and JSON decoder, if it needs to decode custom error from returned JSON.
     public typealias ErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
 
-    public typealias CancellationTrigger = () -> ()
-
     public weak var delegate: APIAdapterDelegate?
 
     private let urlSession: URLSession
@@ -55,7 +53,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     @discardableResult
-    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) -> CancellationTrigger? {
+    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) -> APIAdapter.CancellationTrigger? {
         return request(data: endpoint) { result in
             switch result {
             case .value(let data):
@@ -72,8 +70,8 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     @discardableResult
-    public func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) -> CancellationTrigger? {
-        var cancelationTrigger: CancellationTrigger? = nil
+    public func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) -> APIAdapter.CancellationTrigger? {
+        var cancelationTrigger: APIAdapter.CancellationTrigger? = nil
         let url = baseUrl.appendingPathComponent(endpoint.path)
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.description
@@ -109,7 +107,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> CancellationTrigger {
+    private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> APIAdapter.CancellationTrigger {
         let task = urlSession.dataTask(with: request) { [customErrorConstructor, jsonDecoder] data, response, error in
             if let constructor = customErrorConstructor, let error = constructor(data, response, error, jsonDecoder) {
                 completion(.error(error))
