@@ -52,6 +52,7 @@ public protocol APIAdapter {
     /// - Parameters:
     ///   - endpoint: Response endpoint
     ///   - completion: Completion closure receiving result with automatically decoded JSON model taken from reponse endpoint associated type.
+    /// - Returns: Returned closure (if not nil) may be used, to cancel ongoing data task.
     @discardableResult
     func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) -> URLSessionAPIAdapter.CancelationTrigger?
 
@@ -60,6 +61,7 @@ public protocol APIAdapter {
     /// - Parameters:
     ///   - endpoint: Standard endpoint with no response associated type.
     ///   - completion: Completion closure receiving result with data.
+    /// - Returns: Returned closure (if not nil) may be used, to cancel ongoing data task.
     @discardableResult
     func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionAPIAdapter.CancelationTrigger?
 }
