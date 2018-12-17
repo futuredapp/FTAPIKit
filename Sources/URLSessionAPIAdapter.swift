@@ -120,6 +120,8 @@ public final class URLSessionAPIAdapter: APIAdapter {
                 completion(.value(Data()))
             case let (data?, response as HTTPURLResponse, nil) where response.statusCode < 400:
                 completion(.value(data))
+            case let (_, _, error as NSError) where error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled:
+                completion(.error(APIError.cancelled))
             case let (_, _, error?):
                 completion(.error(error))
             case let (data, response as HTTPURLResponse, nil):

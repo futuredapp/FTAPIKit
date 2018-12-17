@@ -207,9 +207,10 @@ final class APIAdapterTests: XCTestCase {
         let trigger = adapter.request(response: Endpoint()) { result in
             expectation.fulfill()
             if case let .error(error) = result {
-                guard let nserror = error as? NSError, nserror.domain == NSURLErrorDomain, nserror.code == NSURLErrorCancelled else {
+                if case APIError.cancelled = error {
+                    //nop
+                } else {
                     XCTFail("Task resulted with incorrect error: \(error)")
-                    return
                 }
             }else{
                 XCTFail("Task not cancelled")
