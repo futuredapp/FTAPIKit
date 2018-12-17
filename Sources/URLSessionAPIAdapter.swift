@@ -15,6 +15,8 @@ public final class URLSessionAPIAdapter: APIAdapter {
     /// and JSON decoder, if it needs to decode custom error from returned JSON.
     public typealias ErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
 
+    public typealias CancelationTrigger = () -> ()
+
     public weak var delegate: APIAdapterDelegate?
 
     private let urlSession: URLSession
@@ -52,8 +54,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
         self.urlSession = urlSession
     }
 
-    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
-        request(data: endpoint) { result in
+    @discardableResult
+    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) -> CancelationTrigger? {
+        return request(data: endpoint) { result in
             switch result {
             case .value(let data):
                 do {
@@ -68,7 +71,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    public func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) {
+    @discardableResult
+    public func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) -> CancelationTrigger? {
+        var cancelationTrigger: CancelationTrigger? = nil
         let url = baseUrl.appendingPathComponent(endpoint.path)
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.description
@@ -77,32 +82,34 @@ public final class URLSessionAPIAdapter: APIAdapter {
             try request.setRequestType(endpoint.type, parameters: endpoint.parameters, using: jsonEncoder)
         } catch {
             completion(.error(error))
-            return
+            return nil
         }
 
         if let delegate = delegate {
             delegate.apiAdapter(self, willRequest: request, to: endpoint) { result in
                 switch result {
                 case .value(let request):
-                    self.send(request: request, completion: completion)
+                    cancelationTrigger = self.send(request: request, completion: completion)
                 case .error(let error):
                     completion(.error(error))
                 }
             }
         } else {
-            send(request: request, completion: completion)
+            cancelationTrigger = send(request: request, completion: completion)
         }
+
+        return cancelationTrigger
     }
 
-    private func send(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
+    private func send(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> CancelationTrigger {
         runningRequestCount += 1
-        resumeDataTask(with: request) { result in
+        return resumeDataTask(with: request) { result in
             self.runningRequestCount -= 1
             completion(result)
         }
     }
 
-    private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) {
+    private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> CancelationTrigger {
         let task = urlSession.dataTask(with: request) { [customErrorConstructor, jsonDecoder] data, response, error in
             if let constructor = customErrorConstructor, let error = constructor(data, response, error, jsonDecoder) {
                 completion(.error(error))
@@ -122,5 +129,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
             }
         }
         task.resume()
+
+        return {
+            task.cancel()
+        }
     }
 }

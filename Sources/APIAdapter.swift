@@ -52,12 +52,14 @@ public protocol APIAdapter {
     /// - Parameters:
     ///   - endpoint: Response endpoint
     ///   - completion: Completion closure receiving result with automatically decoded JSON model taken from reponse endpoint associated type.
-    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void)
+    @discardableResult
+    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) -> URLSessionAPIAdapter.CancelationTrigger?
 
     /// Calls API endpoint and after finishing it calls completion handler with either data or error.
     ///
     /// - Parameters:
     ///   - endpoint: Standard endpoint with no response associated type.
     ///   - completion: Completion closure receiving result with data.
-    func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void)
+    @discardableResult
+    func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionAPIAdapter.CancelationTrigger?
 }
