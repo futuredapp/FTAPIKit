@@ -10,15 +10,15 @@ import PromiseKit
 
 extension APIAdapter {
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
-        return request(response:response).0
+        return request(response:endpoint).0
     }
 
     public func request(data endpoint: APIEndpoint) -> Promise<Data> {
-        return request(data:data).0
+        return request(data:endpoint).0
     }
 
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> (Promise<Endpoint.Response>, CancellationTrigger?) {
-        let trigger: CancellationTrigger? = nil
+        var trigger: CancellationTrigger? = nil
         let promise = Promise { resolver in
             trigger = request(response: endpoint) { result in
                 switch result {
@@ -34,7 +34,7 @@ extension APIAdapter {
     }
 
     public func request(data endpoint: APIEndpoint) -> (Promise<Data>, CancellationTrigger?) {
-        let trigger: CancellationTrigger? = nil
+        var trigger: CancellationTrigger? = nil
         let promise = return Promise { resolver in
             trigger = request(data: endpoint) { result in
                 switch result {
