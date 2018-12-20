@@ -35,7 +35,7 @@ extension APIAdapter {
 
     public func request(data endpoint: APIEndpoint) -> (Promise<Data>, CancellationTrigger?) {
         var trigger: CancellationTrigger? = nil
-        let promise = return Promise { resolver in
+        let promise = Promise { resolver in
             trigger = request(data: endpoint) { result in
                 switch result {
                 case .value(let value):
