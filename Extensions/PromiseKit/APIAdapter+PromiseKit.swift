@@ -8,18 +8,24 @@
 
 import PromiseKit
 
+public struct CancellablePromise<T> {
+    let promise: Promise<T>
+    let trigger: APIAdapter.CancellationTrigger?
+}
+
 extension APIAdapter {
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
-        return request(response:endpoint).0
+        return request(response:endpoint).promise
     }
 
     public func request(data endpoint: APIEndpoint) -> Promise<Data> {
-        return request(data:endpoint).0
+        return request(data:endpoint).promise
     }
 
-    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> (Promise<Endpoint.Response>, CancellationTrigger?) {
+    @discardableResult
+    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> CancellablePromise<Endpoint.Response> {
         var trigger: CancellationTrigger? = nil
-        let promise = Promise { resolver in
+        let promise = Promise<Endpoint.Response> { resolver in
             trigger = request(response: endpoint) { result in
                 switch result {
                 case .value(let value):
@@ -30,12 +36,13 @@ extension APIAdapter {
             }
         }
 
-        return (promise, trigger)
+        return CancellablePromise(promise: promise, trigger: trigger)
     }
 
-    public func request(data endpoint: APIEndpoint) -> (Promise<Data>, CancellationTrigger?) {
+    @discardableResult
+    public func request(data endpoint: APIEndpoint) -> CancellablePromise<Data> {
         var trigger: CancellationTrigger? = nil
-        let promise = Promise { resolver in
+        let promise = Promise<Data> { resolver in
             trigger = request(data: endpoint) { result in
                 switch result {
                 case .value(let value):
@@ -46,6 +53,6 @@ extension APIAdapter {
             }
         }
 
-        return (promise, trigger)
+        return CancellablePromise(promise: promise, trigger: trigger)
     }
 }
