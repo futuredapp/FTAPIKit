@@ -6,8 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import struct Foundation.URLRequest
-import struct Foundation.Data
+import Foundation
 
 /// Delegate of `APIAdapter` used for platform-specific functionality
 /// (showing/hiding network activity indicator) and signing/manipulating
@@ -44,8 +43,6 @@ public protocol APIAdapterDelegate: class {
 /// `URLSessionAPIAdapter`.
 public protocol APIAdapter {
 
-    typealias CancellationTrigger = () -> ()
-
     /// Delegate used for notificating about the currently running request count
     /// and asynchronously signing authorized requests.
     var delegate: APIAdapterDelegate? { get set }
@@ -55,16 +52,12 @@ public protocol APIAdapter {
     /// - Parameters:
     ///   - endpoint: Response endpoint
     ///   - completion: Completion closure receiving result with automatically decoded JSON model taken from reponse endpoint associated type.
-    /// - Returns: Returned closure (if not nil) may be used, to cancel ongoing data task.
-    @discardableResult
-    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) -> CancellationTrigger?
+    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void)
 
     /// Calls API endpoint and after finishing it calls completion handler with either data or error.
     ///
     /// - Parameters:
     ///   - endpoint: Standard endpoint with no response associated type.
     ///   - completion: Completion closure receiving result with data.
-    /// - Returns: Returned closure (if not nil) may be used, to cancel ongoing data task.
-    @discardableResult
-    func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) -> CancellationTrigger?
+    func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void)
 }
