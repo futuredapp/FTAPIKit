@@ -92,13 +92,15 @@ public final class URLSessionAPIAdapter: APIAdapter {
             delegate.apiAdapter(self, willRequest: request, to: endpoint) { result in
                 switch result {
                 case .value(let request):
-                    creation?(self.send(request: request, completion: completion))
+                    let task = self.send(request: request, completion: completion)
+                    creation?(task)
                 case .error(let error):
                     completion(.error(error))
                 }
             }
         } else {
-            creation?(send(request: request, completion: completion))
+            let task = self.send(request: request, completion: completion)
+            creation?(task)
         }
     }
 
