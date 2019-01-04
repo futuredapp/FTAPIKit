@@ -53,14 +53,14 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
-        dataTask(response: endpoint, completion: completion)
+        dataTask(response: endpoint, creation: { _ in }, completion: completion)
     }
 
     public func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) {
-        dataTask(data: endpoint, completion: completion)
+        dataTask(data: endpoint, creation: { _ in }, completion: completion)
     }
 
-    public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, creation: ((URLSessionTask) -> Void)? = nil, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
+    public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
         dataTask(data: endpoint, creation: creation) { result in
             switch result {
             case .value(let data):
@@ -76,7 +76,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    public func dataTask(data endpoint: APIEndpoint, creation: ((URLSessionTask) -> Void)? = nil, completion: @escaping (APIResult<Data>) -> Void) {
+    public func dataTask(data endpoint: APIEndpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (APIResult<Data>) -> Void) {
         let url = baseUrl.appendingPathComponent(endpoint.path)
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.description
@@ -93,14 +93,14 @@ public final class URLSessionAPIAdapter: APIAdapter {
                 switch result {
                 case .value(let request):
                     let task = self.send(request: request, completion: completion)
-                    creation?(task)
+                    creation(task)
                 case .error(let error):
                     completion(.error(error))
                 }
             }
         } else {
             let task = self.send(request: request, completion: completion)
-            creation?(task)
+            creation(task)
         }
     }
 
