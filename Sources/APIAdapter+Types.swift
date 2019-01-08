@@ -90,7 +90,7 @@ public enum RequestType {
 }
 
 /// Multipart file model for multipart request types.
-public struct MultipartFile {
+public struct MultipartFile: Hashable {
     let name, filename, mimeType: String
     let data: Data
 
