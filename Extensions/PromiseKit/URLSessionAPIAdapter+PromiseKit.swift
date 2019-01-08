@@ -9,23 +9,23 @@
 import PromiseKit
 
 public struct APIDataTask<T> {
-    public let dataTask: Promise<URLSessionTask>
+    public let sessionTask: Guarantee<URLSessionTask?>
     public let response: Promise<T>
 }
 
 extension URLSessionAPIAdapter {
     public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> APIDataTask<Endpoint.Response> {
-        var dataTaskResolver: Resolver<URLSessionTask>?
-        let dataTaskPromise = Promise<URLSessionTask> { resolver in
-            dataTaskResolver = resolver
+        var taskResolver: ((URLSessionTask?) -> Void)?
+        let taskPromise = Guarantee<URLSessionTask?> { resolver in
+            taskResolver = resolver
         }
 
         let responsePromise = Promise<Endpoint.Response> { resolver in
             dataTask(response: endpoint, creation: { dataTask in
-                dataTaskResolver?.fulfill(dataTask)
+                taskResolver?(dataTask)
             }, completion: { result in
-                if dataTaskPromise.isPending {
-                    dataTaskResolver?.reject(PMKError.cancelled)
+                if taskPromise.isPending {
+                    taskResolver?(nil)
                 }
                 switch result {
                 case .value(let value):
@@ -35,21 +35,21 @@ extension URLSessionAPIAdapter {
                 }
             })
         }
-        return APIDataTask(dataTask: dataTaskPromise, response: responsePromise)
+        return APIDataTask(sessionTask: taskPromise, response: responsePromise)
     }
 
     public func dataTask(data endpoint: APIEndpoint) -> APIDataTask<Data> {
-        var dataTaskResolver: Resolver<URLSessionTask>?
-        let dataTaskPromise = Promise<URLSessionTask> { resolver in
-            dataTaskResolver = resolver
+        var taskResolver: ((URLSessionTask?) -> Void)?
+        let taskPromise = Guarantee<URLSessionTask?> { resolver in
+            taskResolver = resolver
         }
 
         let responsePromise = Promise<Data> { resolver in
             dataTask(data: endpoint, creation: { dataTask in
-                dataTaskResolver?.fulfill(dataTask)
+                taskResolver?(dataTask)
             }, completion: { result in
-                if dataTaskPromise.isPending {
-                    dataTaskResolver?.reject(PMKError.cancelled)
+                if taskPromise.isPending {
+                    taskResolver?(nil)
                 }
                 switch result {
                 case .value(let value):
@@ -59,7 +59,7 @@ extension URLSessionAPIAdapter {
                 }
             })
         }
-        return APIDataTask(dataTask: dataTaskPromise, response: responsePromise)
+        return APIDataTask(sessionTask: taskPromise, response: responsePromise)
     }
 }
 
