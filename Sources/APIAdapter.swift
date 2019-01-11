@@ -6,8 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import struct Foundation.URLRequest
-import struct Foundation.Data
+import Foundation
 
 /// Delegate of `APIAdapter` used for platform-specific functionality
 /// (showing/hiding network activity indicator) and signing/manipulating
@@ -43,6 +42,7 @@ public protocol APIAdapterDelegate: class {
 /// Standard implementation of this interface using `URLSession` is available as
 /// `URLSessionAPIAdapter`.
 public protocol APIAdapter {
+
     /// Delegate used for notificating about the currently running request count
     /// and asynchronously signing authorized requests.
     var delegate: APIAdapterDelegate? { get set }

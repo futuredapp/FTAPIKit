@@ -1,9 +1,9 @@
 //
-//  PromiseAPIAdapter.swift
-//  Gastromapa
+//  APIAdapter+PromiseKit.swift
+//  FTAPIKit
 //
-//  Created by Adam Salih on 12/09/2018.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
+//  Created by Matěj Jirásek on 03/01/2019.
+//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
 import PromiseKit

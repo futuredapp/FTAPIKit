@@ -15,6 +15,9 @@ public enum APIError: Error {
     /// Undefined error. Return code is less than 400, but no
     /// request was received.
     case noResponse
+    /// Error raised by NSURLSession corresponding to NSURLErrorCancelled at
+    /// domain NSURLErrorDomain.
+    case cancelled
     /// Error code returned by `APIAdapter`. Thrown when request fails
     /// with return code larger or equal to 400.
     case errorCode(Int, Data?)
@@ -87,7 +90,7 @@ public enum RequestType {
 }
 
 /// Multipart file model for multipart request types.
-public struct MultipartFile {
+public struct MultipartFile: Hashable {
     let name, filename, mimeType: String
     let data: Data
 

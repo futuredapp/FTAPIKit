@@ -13,7 +13,7 @@ import FTAPIKit
 
 final class APIAdapterTests: XCTestCase {
 
-    private func apiAdapter() -> APIAdapter {
+    private func apiAdapter() -> URLSessionAPIAdapter {
         return URLSessionAPIAdapter(baseUrl: URL(string: "http://httpbin.org/")!)
     }
 
@@ -25,7 +25,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
@@ -43,7 +43,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
@@ -79,7 +79,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
@@ -131,7 +131,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
@@ -166,7 +166,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: Endpoint()) { result in
@@ -175,6 +175,43 @@ final class APIAdapterTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
+        wait(for: [expectation], timeout: timeout)
+    }
+
+    func testTaskCancellation() {
+        struct TopLevel: Codable {
+            let slideshow: Slideshow
+        }
+
+        struct Slideshow: Codable {
+            let author, date: String
+            let slides: [Slide]
+            let title: String
+        }
+
+        struct Slide: Codable {
+            let title, type: String
+            let items: [String]?
+        }
+
+        struct Endpoint: APIResponseEndpoint {
+            typealias Response = TopLevel
+
+            let path = "json"
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        let adapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.dataTask(response: Endpoint(), creation: { $0.cancel() }, completion: { result in
+            expectation.fulfill()
+            guard case .error(APIError.cancelled) = result else {
+                XCTFail("Task not cancelled")
+                return
+            }
+        })
+
         wait(for: [expectation], timeout: timeout)
     }
 
