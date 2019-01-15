@@ -2,8 +2,8 @@ import UIKit
 import Foundation
 import FTAPIKit
 
-let username = "your_user_name"
-let password = "your_password"
+let username = "github_username"
+let password = "github_password"
 let baseUrl = URL(string: "https://api.github.com")!
 
 // Data models
