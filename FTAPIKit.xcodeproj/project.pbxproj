@@ -94,7 +94,8 @@
 		52D6D9E21BEFFF6E002C0205 /* FTAPIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTAPIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9F01BEFFFBE002C0205 /* FTAPIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTAPIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6DA0F1BF000BD002C0205 /* FTAPIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTAPIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		85F0CF2D21EDFCA3001395DE /* Example.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Example.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		85F0CF2F21EF8F94001395DE /* Example.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Example.playground; path = ../../Downloads/Example.playground; sourceTree = "<group>"; };
+		85F0CF3021F205FE001395DE /* Example.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Example.playground; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* FTAPIKit.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FTAPIKit.plist; sourceTree = "<group>"; };
 		AD2FAA281CD0B6E100659CF4 /* FTAPIKitTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FTAPIKitTests.plist; sourceTree = "<group>"; };
 		DD75027A1C68FCFC006590AF /* FTAPIKit-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -170,8 +171,9 @@
 		52D6D9721BEFF229002C0205 = {
 			isa = PBXGroup;
 			children = (
+				85F0CF2F21EF8F94001395DE /* Example.playground */,
+				85F0CF3021F205FE001395DE /* Example.playground */,
 				8933C7811EB5B7E0000D00A4 /* Sources */,
-				85F0CF2C21EDFBA7001395DE /* Example */,
 				8933C7831EB5B7EB000D00A4 /* Tests */,
 				52D6D99C1BEFF38C002C0205 /* Configs */,
 				52D6D97D1BEFF229002C0205 /* Products */,
@@ -199,14 +201,6 @@
 				DD7502731C68FC20006590AF /* Tests */,
 			);
 			path = Configs;
-			sourceTree = "<group>";
-		};
-		85F0CF2C21EDFBA7001395DE /* Example */ = {
-			isa = PBXGroup;
-			children = (
-				85F0CF2D21EDFCA3001395DE /* Example.playground */,
-			);
-			path = Example;
 			sourceTree = "<group>";
 		};
 		8933C7811EB5B7E0000D00A4 /* Sources */ = {
