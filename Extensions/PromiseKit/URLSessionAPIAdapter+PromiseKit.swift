@@ -15,13 +15,10 @@ public struct APIDataTask<T> {
 
 extension URLSessionAPIAdapter {
     public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> APIDataTask<Endpoint.Response> {
-
         let task = Guarantee<URLSessionTask?>.pending()
         let response = Promise<Endpoint.Response>.pending()
 
-        dataTask(response: endpoint, creation: { dataTask in
-            task.resolve(dataTask)
-        }, completion: { result in
+        dataTask(response: endpoint, creation: task.resolve, completion: { result in
             if task.guarantee.isPending {
                 task.resolve(nil)
             }
@@ -36,13 +33,10 @@ extension URLSessionAPIAdapter {
     }
 
     public func dataTask(data endpoint: APIEndpoint) -> APIDataTask<Data> {
-
         let task = Guarantee<URLSessionTask?>.pending()
         let response = Promise<Data>.pending()
 
-        dataTask(data: endpoint, creation: { dataTask in
-            task.resolve(dataTask)
-        }, completion: { result in
+        dataTask(data: endpoint, creation: task.resolve, completion: { result in
             if task.guarantee.isPending {
                 task.resolve(nil)
             }
