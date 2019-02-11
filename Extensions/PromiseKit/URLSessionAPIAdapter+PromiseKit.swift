@@ -15,51 +15,39 @@ public struct APIDataTask<T> {
 
 extension URLSessionAPIAdapter {
     public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> APIDataTask<Endpoint.Response> {
-        var taskResolver: ((URLSessionTask?) -> Void)?
-        let taskPromise = Guarantee<URLSessionTask?> { resolver in
-            taskResolver = resolver
-        }
+        let task = Guarantee<URLSessionTask?>.pending()
+        let response = Promise<Endpoint.Response>.pending()
 
-        let responsePromise = Promise<Endpoint.Response> { resolver in
-            dataTask(response: endpoint, creation: { dataTask in
-                taskResolver?(dataTask)
-            }, completion: { result in
-                if taskPromise.isPending {
-                    taskResolver?(nil)
-                }
-                switch result {
-                case .value(let value):
-                    resolver.fulfill(value)
-                case .error(let error):
-                    resolver.reject(error)
-                }
-            })
-        }
-        return APIDataTask(sessionTask: taskPromise, response: responsePromise)
+        dataTask(response: endpoint, creation: task.resolve, completion: { result in
+            if task.guarantee.isPending {
+                task.resolve(nil)
+            }
+            switch result {
+            case .value(let value):
+                response.resolver.fulfill(value)
+            case .error(let error):
+                response.resolver.reject(error)
+            }
+        })
+        return APIDataTask(sessionTask: task.guarantee, response: response.promise)
     }
 
     public func dataTask(data endpoint: APIEndpoint) -> APIDataTask<Data> {
-        var taskResolver: ((URLSessionTask?) -> Void)?
-        let taskPromise = Guarantee<URLSessionTask?> { resolver in
-            taskResolver = resolver
-        }
+        let task = Guarantee<URLSessionTask?>.pending()
+        let response = Promise<Data>.pending()
 
-        let responsePromise = Promise<Data> { resolver in
-            dataTask(data: endpoint, creation: { dataTask in
-                taskResolver?(dataTask)
-            }, completion: { result in
-                if taskPromise.isPending {
-                    taskResolver?(nil)
-                }
-                switch result {
-                case .value(let value):
-                    resolver.fulfill(value)
-                case .error(let error):
-                    resolver.reject(error)
-                }
-            })
-        }
-        return APIDataTask(sessionTask: taskPromise, response: responsePromise)
+        dataTask(data: endpoint, creation: task.resolve, completion: { result in
+            if task.guarantee.isPending {
+                task.resolve(nil)
+            }
+            switch result {
+            case .value(let value):
+                response.resolver.fulfill(value)
+            case .error(let error):
+                response.resolver.reject(error)
+            }
+        })
+        return APIDataTask(sessionTask: task.guarantee, response: response.promise)
     }
 }
 
