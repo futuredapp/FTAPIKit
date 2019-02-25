@@ -28,6 +28,18 @@
 		E792629E219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */; };
 		E792629F219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */; };
 		E79262A0219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */; };
+		E7B74A16220DC7690055EC66 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A15220DC7690055EC66 /* APIConfiguration.swift */; };
+		E7B74A17220DC76B0055EC66 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A15220DC7690055EC66 /* APIConfiguration.swift */; };
+		E7B74A18220DC76C0055EC66 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A15220DC7690055EC66 /* APIConfiguration.swift */; };
+		E7B74A19220DC76C0055EC66 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A15220DC7690055EC66 /* APIConfiguration.swift */; };
+		E7B74A1B220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1A220DD7E60055EC66 /* APIEndpoint+URLRequest.swift */; };
+		E7B74A1C220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1A220DD7E60055EC66 /* APIEndpoint+URLRequest.swift */; };
+		E7B74A1D220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1A220DD7E60055EC66 /* APIEndpoint+URLRequest.swift */; };
+		E7B74A1E220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1A220DD7E60055EC66 /* APIEndpoint+URLRequest.swift */; };
+		E7B74A20220DDB300055EC66 /* URSession+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1F220DDB300055EC66 /* URSession+Endpoint.swift */; };
+		E7B74A21220DDB300055EC66 /* URSession+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1F220DDB300055EC66 /* URSession+Endpoint.swift */; };
+		E7B74A22220DDB300055EC66 /* URSession+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1F220DDB300055EC66 /* URSession+Endpoint.swift */; };
+		E7B74A23220DDB300055EC66 /* URSession+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B74A1F220DDB300055EC66 /* URSession+Endpoint.swift */; };
 		E7B7741B2152752A006E7585 /* APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774142152752A006E7585 /* APIAdapter.swift */; };
 		E7B7741C2152752A006E7585 /* APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774142152752A006E7585 /* APIAdapter.swift */; };
 		E7B7741D2152752A006E7585 /* APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774142152752A006E7585 /* APIAdapter.swift */; };
@@ -40,10 +52,10 @@
 		E7B774242152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
 		E7B774252152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
 		E7B774262152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
-		E7B774272152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
-		E7B774282152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
-		E7B774292152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
-		E7B7742A2152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
+		E7B774272152752A006E7585 /* URLRequest+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+Endpoint.swift */; };
+		E7B774282152752A006E7585 /* URLRequest+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+Endpoint.swift */; };
+		E7B774292152752A006E7585 /* URLRequest+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+Endpoint.swift */; };
+		E7B7742A2152752A006E7585 /* URLRequest+Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+Endpoint.swift */; };
 		E7B7742B2152752A006E7585 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774182152752A006E7585 /* AnyEncodable.swift */; };
 		E7B7742C2152752A006E7585 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774182152752A006E7585 /* AnyEncodable.swift */; };
 		E7B7742D2152752A006E7585 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774182152752A006E7585 /* AnyEncodable.swift */; };
@@ -99,10 +111,13 @@
 		DD75027A1C68FCFC006590AF /* FTAPIKit-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD75028D1C690C7A006590AF /* FTAPIKit-tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAPIAdapter.swift; sourceTree = "<group>"; };
+		E7B74A15220DC7690055EC66 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
+		E7B74A1A220DD7E60055EC66 /* APIEndpoint+URLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIEndpoint+URLRequest.swift"; sourceTree = "<group>"; };
+		E7B74A1F220DDB300055EC66 /* URSession+Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URSession+Endpoint.swift"; sourceTree = "<group>"; };
 		E7B774142152752A006E7585 /* APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIAdapter.swift; sourceTree = "<group>"; };
 		E7B774152152752A006E7585 /* URL+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+APIAdapter.swift"; sourceTree = "<group>"; };
 		E7B774162152752A006E7585 /* Data+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+APIAdapter.swift"; sourceTree = "<group>"; };
-		E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+APIAdapter.swift"; sourceTree = "<group>"; };
+		E7B774172152752A006E7585 /* URLRequest+Endpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Endpoint.swift"; sourceTree = "<group>"; };
 		E7B774182152752A006E7585 /* AnyEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
 		E7B774192152752A006E7585 /* APIEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		E7B7741A2152752A006E7585 /* APIAdapter+Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "APIAdapter+Types.swift"; sourceTree = "<group>"; };
@@ -203,13 +218,16 @@
 			isa = PBXGroup;
 			children = (
 				E7B774192152752A006E7585 /* APIEndpoint.swift */,
+				E7B74A15220DC7690055EC66 /* APIConfiguration.swift */,
 				E7B774142152752A006E7585 /* APIAdapter.swift */,
+				E7B74A1F220DDB300055EC66 /* URSession+Endpoint.swift */,
 				E7B7741A2152752A006E7585 /* APIAdapter+Types.swift */,
 				E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */,
 				E7B774182152752A006E7585 /* AnyEncodable.swift */,
 				E7B774162152752A006E7585 /* Data+APIAdapter.swift */,
 				E7B774152152752A006E7585 /* URL+APIAdapter.swift */,
-				E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */,
+				E7B774172152752A006E7585 /* URLRequest+Endpoint.swift */,
+				E7B74A1A220DD7E60055EC66 /* APIEndpoint+URLRequest.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -556,9 +574,12 @@
 				E7B7742F2152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774232152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B7741F2152752A006E7585 /* URL+APIAdapter.swift in Sources */,
-				E7B774272152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
+				E7B774272152752A006E7585 /* URLRequest+Endpoint.swift in Sources */,
+				E7B74A16220DC7690055EC66 /* APIConfiguration.swift in Sources */,
 				E7B774332152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741B2152752A006E7585 /* APIAdapter.swift in Sources */,
+				E7B74A20220DDB300055EC66 /* URSession+Endpoint.swift in Sources */,
+				E7B74A1B220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */,
 				E7B7742B2152752A006E7585 /* AnyEncodable.swift in Sources */,
 				E792629D219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
@@ -580,9 +601,12 @@
 				E7B774312152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774252152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B774212152752A006E7585 /* URL+APIAdapter.swift in Sources */,
-				E7B774292152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
+				E7B774292152752A006E7585 /* URLRequest+Endpoint.swift in Sources */,
+				E7B74A18220DC76C0055EC66 /* APIConfiguration.swift in Sources */,
 				E7B774352152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741D2152752A006E7585 /* APIAdapter.swift in Sources */,
+				E7B74A22220DDB300055EC66 /* URSession+Endpoint.swift in Sources */,
+				E7B74A1D220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */,
 				E7B7742D2152752A006E7585 /* AnyEncodable.swift in Sources */,
 				E792629F219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
@@ -595,9 +619,12 @@
 				E7B774322152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774262152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B774222152752A006E7585 /* URL+APIAdapter.swift in Sources */,
-				E7B7742A2152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
+				E7B7742A2152752A006E7585 /* URLRequest+Endpoint.swift in Sources */,
+				E7B74A19220DC76C0055EC66 /* APIConfiguration.swift in Sources */,
 				E7B774362152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741E2152752A006E7585 /* APIAdapter.swift in Sources */,
+				E7B74A23220DDB300055EC66 /* URSession+Endpoint.swift in Sources */,
+				E7B74A1E220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */,
 				E7B7742E2152752A006E7585 /* AnyEncodable.swift in Sources */,
 				E79262A0219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
@@ -610,9 +637,12 @@
 				E7B774302152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774242152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B774202152752A006E7585 /* URL+APIAdapter.swift in Sources */,
-				E7B774282152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
+				E7B774282152752A006E7585 /* URLRequest+Endpoint.swift in Sources */,
+				E7B74A17220DC76B0055EC66 /* APIConfiguration.swift in Sources */,
 				E7B774342152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741C2152752A006E7585 /* APIAdapter.swift in Sources */,
+				E7B74A21220DDB300055EC66 /* URSession+Endpoint.swift in Sources */,
+				E7B74A1C220DD7E60055EC66 /* APIEndpoint+URLRequest.swift in Sources */,
 				E7B7742C2152752A006E7585 /* AnyEncodable.swift in Sources */,
 				E792629E219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);

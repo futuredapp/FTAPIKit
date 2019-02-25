@@ -81,8 +81,12 @@ public final class URLSessionAPIAdapter: APIAdapter {
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.description
 
+        let encode: (Encodable) throws -> Data = { encodable in
+            try self.jsonEncoder.encode(AnyEncodable(encodable))
+        }
+
         do {
-            try request.setRequestType(endpoint.type, parameters: endpoint.parameters, using: jsonEncoder)
+            try request.setRequestType(endpoint.type, parameters: endpoint.parameters, using: encode)
         } catch {
             completion(.error(error))
             return

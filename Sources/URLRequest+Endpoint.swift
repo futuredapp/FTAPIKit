@@ -1,5 +1,5 @@
 //
-//  URLRequest+APIAdapter.swift
+//  URLRequest+Endpoint.swift
 //  FTAPIKit
 //
 //  Created by Matěj Kašpar Jirásek on 02/09/2018.
@@ -9,14 +9,14 @@
 import Foundation
 
 extension URLRequest {
-    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
+    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using encode: (Encodable) throws -> Data) throws {
         switch requestType {
         case .jsonBody(let encodable):
-            try setJSONBody(encodable: encodable, parameters: parameters, using: jsonEncoder)
+            try setJSONBody(encodable: encodable, parameters: parameters, using: encode)
         case .urlEncoded:
             setURLEncoded(parameters: parameters)
         case .jsonParams:
-            setJSON(parameters: parameters, using: jsonEncoder)
+            setJSON(parameters: parameters, using: encode)
         case let .multipart(files):
             setMultipart(parameters: parameters, files: files)
         case .base64Upload:
@@ -44,7 +44,7 @@ extension URLRequest {
         httpBody?.appendRow("--\(boundary)")
     }
 
-    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
+    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using encode: (Encodable) throws -> Data) {
         setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         httpBody = body
         url?.appendQuery(parameters: parameters)
@@ -57,9 +57,9 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
-        let body = try jsonEncoder.encode(AnyEncodable(encodable))
-        setJSON(parameters: parameters, body: body, using: jsonEncoder)
+    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using encode: (Encodable) throws -> Data) throws {
+        let body = try encode(encodable)
+        setJSON(parameters: parameters, body: body, using: encode)
     }
 
     private mutating func appendForm(data: Data, name: String, boundary: String, mimeType: String? = nil, filename: String? = nil) {
