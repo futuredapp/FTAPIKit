@@ -21,6 +21,8 @@ public enum APIError: Error {
     /// Error code returned by `APIAdapter`. Thrown when request fails
     /// with return code larger or equal to 400.
     case errorCode(Int, Data?)
+    /// File upload error
+    case uploadFileNotLoaded
 }
 
 /// Generic result type for API responses.
@@ -83,28 +85,52 @@ public enum RequestType {
     case jsonBody(Encodable)
     /// All the parameters will be sent as multipart
     /// and files too.
-    case multipart([MultipartFile])
+    case multipart([MultipartBodyPart])
     /// The parameters will be encoded using Base64 encoding
     /// and sent in request body.
     case base64Upload
 }
 
 /// Multipart file model for multipart request types.
-public struct MultipartFile: Hashable {
-    let name, filename, mimeType: String
-    let data: Data
+public struct MultipartBodyPart: Hashable {
+    let headers: [String: String]
+    let inputStream: InputStream
+    let contentLength: Int64
 
     /// Public initializer for multipart files.
     ///
     /// - Parameters:
-    ///   - name: Part name.
-    ///   - filename: File name with extension.
+    ///   - headers: HTTP headers specific for the part.
     ///   - mimeType: MIME type of the file.
-    ///   - data: File content.
-    public init(name: String, filename: String, mimeType: String, data: Data) {
-        self.name = name
-        self.filename = filename
-        self.mimeType = mimeType
-        self.data = data
+    ///   - inputStream: File content.
+    public init(headers: [String: String], inputStream: InputStream, contentLength: Int64) {
+        self.headers = headers
+        self.inputStream = inputStream
+        self.contentLength = contentLength
+    }
+
+    public init(name: String, value: String) {
+        let headers = [
+            "Content-Disposition": "form-data; name=\(name)"
+        ]
+        self.init(headers: headers, data: Data(value.utf8))
+    }
+
+    public init(headers: [String: String], data: Data) {
+        self.headers = headers
+        self.inputStream = InputStream(data: data)
+        self.contentLength = Int64(data.count)
+    }
+
+    public init(name: String, url: URL) throws {
+        guard let inputStream = InputStream(url: url) else {
+            throw APIError.uploadFileNotLoaded
+        }
+        self.headers = [
+            "Content-Type": url.mimeType,
+            "Content-Disposition": "form-data; name=\(name); filename=\"\(url.lastPathComponent)\""
+        ]
+        self.inputStream = inputStream
+        self.contentLength = try url.contentLength()
     }
 }

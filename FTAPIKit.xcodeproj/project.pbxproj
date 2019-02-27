@@ -24,6 +24,10 @@
 		52D6D9871BEFF229002C0205 /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* FTAPIKit.framework */; };
 		DD7502881C68FEDE006590AF /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* FTAPIKit.framework */; };
 		DD7502921C690C7A006590AF /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D9F01BEFFFBE002C0205 /* FTAPIKit.framework */; };
+		E7692824222431CE0031137D /* MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7692823222431CE0031137D /* MultipartFormData.swift */; };
+		E7692825222431CE0031137D /* MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7692823222431CE0031137D /* MultipartFormData.swift */; };
+		E7692826222431CE0031137D /* MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7692823222431CE0031137D /* MultipartFormData.swift */; };
+		E7692827222431CE0031137D /* MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7692823222431CE0031137D /* MultipartFormData.swift */; };
 		E769282922269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
 		E769282A22269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
 		E769282B22269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
@@ -98,6 +102,7 @@
 		AD2FAA281CD0B6E100659CF4 /* FTAPIKitTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FTAPIKitTests.plist; sourceTree = "<group>"; };
 		DD75027A1C68FCFC006590AF /* FTAPIKit-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD75028D1C690C7A006590AF /* FTAPIKit-tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7692823222431CE0031137D /* MultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormData.swift; sourceTree = "<group>"; };
 		E769282822269D4C0031137D /* OutputStream+Write.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutputStream+Write.swift"; sourceTree = "<group>"; };
 		E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAPIAdapter.swift; sourceTree = "<group>"; };
 		E7B774142152752A006E7585 /* APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIAdapter.swift; sourceTree = "<group>"; };
@@ -209,6 +214,7 @@
 				E7B774182152752A006E7585 /* AnyEncodable.swift */,
 				E7B774152152752A006E7585 /* URL+APIAdapter.swift */,
 				E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */,
+				E7692823222431CE0031137D /* MultipartFormData.swift */,
 				E769282822269D4C0031137D /* OutputStream+Write.swift */,
 			);
 			path = Sources;
@@ -560,6 +566,7 @@
 				E7B774332152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741B2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742B2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				E7692824222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629D219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -584,6 +591,7 @@
 				E7B774352152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741D2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742D2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				E7692826222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629F219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -599,6 +607,7 @@
 				E7B774362152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741E2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742E2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				E7692827222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E79262A0219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -614,6 +623,7 @@
 				E7B774342152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741C2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742C2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				E7692825222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629E219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -781,7 +791,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Configs/FTAPIKit.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.FTAPIKit.FTAPIKit-iOS";
@@ -804,7 +814,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Configs/FTAPIKit.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.FTAPIKit.FTAPIKit-iOS";
 				PRODUCT_NAME = FTAPIKit;
