@@ -24,6 +24,10 @@
 		52D6D9871BEFF229002C0205 /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* FTAPIKit.framework */; };
 		DD7502881C68FEDE006590AF /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* FTAPIKit.framework */; };
 		DD7502921C690C7A006590AF /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D9F01BEFFFBE002C0205 /* FTAPIKit.framework */; };
+		E769282922269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
+		E769282A22269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
+		E769282B22269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
+		E769282C22269D4C0031137D /* OutputStream+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E769282822269D4C0031137D /* OutputStream+Write.swift */; };
 		E792629D219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */; };
 		E792629E219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */; };
 		E792629F219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */; };
@@ -94,6 +98,7 @@
 		AD2FAA281CD0B6E100659CF4 /* FTAPIKitTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FTAPIKitTests.plist; sourceTree = "<group>"; };
 		DD75027A1C68FCFC006590AF /* FTAPIKit-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD75028D1C690C7A006590AF /* FTAPIKit-tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E769282822269D4C0031137D /* OutputStream+Write.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutputStream+Write.swift"; sourceTree = "<group>"; };
 		E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAPIAdapter.swift; sourceTree = "<group>"; };
 		E7B774142152752A006E7585 /* APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIAdapter.swift; sourceTree = "<group>"; };
 		E7B774152152752A006E7585 /* URL+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+APIAdapter.swift"; sourceTree = "<group>"; };
@@ -204,6 +209,7 @@
 				E7B774182152752A006E7585 /* AnyEncodable.swift */,
 				E7B774152152752A006E7585 /* URL+APIAdapter.swift */,
 				E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */,
+				E769282822269D4C0031137D /* OutputStream+Write.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -547,6 +553,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E769282922269D4C0031137D /* OutputStream+Write.swift in Sources */,
 				E7B7742F2152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B7741F2152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B774272152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
@@ -570,6 +577,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E769282B22269D4C0031137D /* OutputStream+Write.swift in Sources */,
 				E7B774312152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774212152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B774292152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
@@ -584,6 +592,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E769282C22269D4C0031137D /* OutputStream+Write.swift in Sources */,
 				E7B774322152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774222152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B7742A2152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
@@ -598,6 +607,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E769282A22269D4C0031137D /* OutputStream+Write.swift in Sources */,
 				E7B774302152752A006E7585 /* APIEndpoint.swift in Sources */,
 				E7B774202152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B774282152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
