@@ -36,10 +36,6 @@
 		E7B774202152752A006E7585 /* URL+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774152152752A006E7585 /* URL+APIAdapter.swift */; };
 		E7B774212152752A006E7585 /* URL+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774152152752A006E7585 /* URL+APIAdapter.swift */; };
 		E7B774222152752A006E7585 /* URL+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774152152752A006E7585 /* URL+APIAdapter.swift */; };
-		E7B774232152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
-		E7B774242152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
-		E7B774252152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
-		E7B774262152752A006E7585 /* Data+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774162152752A006E7585 /* Data+APIAdapter.swift */; };
 		E7B774272152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
 		E7B774282152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
 		E7B774292152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */; };
@@ -101,7 +97,6 @@
 		E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAPIAdapter.swift; sourceTree = "<group>"; };
 		E7B774142152752A006E7585 /* APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIAdapter.swift; sourceTree = "<group>"; };
 		E7B774152152752A006E7585 /* URL+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+APIAdapter.swift"; sourceTree = "<group>"; };
-		E7B774162152752A006E7585 /* Data+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+APIAdapter.swift"; sourceTree = "<group>"; };
 		E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+APIAdapter.swift"; sourceTree = "<group>"; };
 		E7B774182152752A006E7585 /* AnyEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
 		E7B774192152752A006E7585 /* APIEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
@@ -207,7 +202,6 @@
 				E7B7741A2152752A006E7585 /* APIAdapter+Types.swift */,
 				E792629C219710A700CDBB7E /* URLSessionAPIAdapter.swift */,
 				E7B774182152752A006E7585 /* AnyEncodable.swift */,
-				E7B774162152752A006E7585 /* Data+APIAdapter.swift */,
 				E7B774152152752A006E7585 /* URL+APIAdapter.swift */,
 				E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */,
 			);
@@ -554,7 +548,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7B7742F2152752A006E7585 /* APIEndpoint.swift in Sources */,
-				E7B774232152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B7741F2152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B774272152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
 				E7B774332152752A006E7585 /* APIAdapter+Types.swift in Sources */,
@@ -578,7 +571,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7B774312152752A006E7585 /* APIEndpoint.swift in Sources */,
-				E7B774252152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B774212152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B774292152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
 				E7B774352152752A006E7585 /* APIAdapter+Types.swift in Sources */,
@@ -593,7 +585,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7B774322152752A006E7585 /* APIEndpoint.swift in Sources */,
-				E7B774262152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B774222152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B7742A2152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
 				E7B774362152752A006E7585 /* APIAdapter+Types.swift in Sources */,
@@ -608,7 +599,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7B774302152752A006E7585 /* APIEndpoint.swift in Sources */,
-				E7B774242152752A006E7585 /* Data+APIAdapter.swift in Sources */,
 				E7B774202152752A006E7585 /* URL+APIAdapter.swift in Sources */,
 				E7B774282152752A006E7585 /* URLRequest+APIAdapter.swift in Sources */,
 				E7B774342152752A006E7585 /* APIAdapter+Types.swift in Sources */,
