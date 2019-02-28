@@ -33,11 +33,11 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartBodyPart] = [], boundary: String = "--FTAPIKit-" + UUID().uuidString) throws {
+    private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartBodyPart] = [], boundary: String = "FTAPIKit-" + UUID().uuidString) throws {
         setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
         let parameterParts = parameters.map(MultipartBodyPart.init)
-        let multipartData = MultipartFormData(parts: parameterParts + files, boundary: boundary)
+        let multipartData = MultipartFormData(parts: parameterParts + files, boundary: "--" + boundary)
         httpBodyStream = try multipartData.inputStream()
     }
 
