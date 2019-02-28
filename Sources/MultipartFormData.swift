@@ -12,12 +12,10 @@ struct MultipartFormData {
 
     private let parts: [MultipartBodyPart]
     private let boundaryData: Data
-    private let outputStream: OutputStream?
     private let temporaryUrl: URL = makeTemporaryUrl()
 
     init(parts: [MultipartBodyPart], boundary: String) {
         self.parts = parts
-        self.outputStream = OutputStream(url: temporaryUrl, append: true)
         self.boundaryData = Data(boundary.utf8)
     }
 
@@ -31,13 +29,16 @@ struct MultipartFormData {
         guard let inputStream = InputStream(url: temporaryUrl) else {
             throw APIError.uploadFileNotLoaded
         }
-        try compose()
         return inputStream
     }
 
-    private func compose() throws {
-        guard let outputStream = outputStream else {
-            return
+    private func outputStream() throws {
+        guard let outputStream = OutputStream(url: temporaryUrl, append: false) else {
+            throw APIError.uploadFileNotLoaded
+        }
+        outputStream.open()
+        defer {
+            outputStream.close()
         }
         for part in parts {
             try outputStream.write(data: boundaryData)
