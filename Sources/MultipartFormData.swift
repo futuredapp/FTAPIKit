@@ -26,6 +26,7 @@ struct MultipartFormData {
     }
 
     func inputStream() throws -> InputStream {
+        try outputStream()
         guard let inputStream = InputStream(url: temporaryUrl) else {
             throw APIError.uploadFileNotLoaded
         }
