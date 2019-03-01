@@ -28,10 +28,6 @@ struct MultipartFormData {
         let urls = FileManager.default.urls(for: .itemReplacementDirectory, in: .userDomainMask)
         let directory = urls.first ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
 
-        if FileManager.default.fileExists(atPath: directory.path) {
-            try! FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
-        }
-
         return directory
             .appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("body")
