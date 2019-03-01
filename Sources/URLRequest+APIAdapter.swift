@@ -34,10 +34,13 @@ extension URLRequest {
     }
 
     private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartBodyPart] = [], boundary: String = "FTAPIKit-" + UUID().uuidString) throws {
-        setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
         let parameterParts = parameters.map(MultipartBodyPart.init)
         let multipartData = MultipartFormData(parts: parameterParts + files, boundary: "--" + boundary)
+
+        setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        setValue(multipartData.estimatedContentLength.description, forHTTPHeaderField: "Content-Length")
+
         httpBodyStream = try multipartData.inputStream()
     }
 
