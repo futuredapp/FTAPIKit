@@ -23,9 +23,9 @@ extension URLSessionAPIAdapter {
                 task.resolve(nil)
             }
             switch result {
-            case .value(let value):
+            case .success(let value):
                 response.resolver.fulfill(value)
-            case .error(let error):
+            case .failure(let error):
                 response.resolver.reject(error)
             }
         })
@@ -41,9 +41,9 @@ extension URLSessionAPIAdapter {
                 task.resolve(nil)
             }
             switch result {
-            case .value(let value):
+            case .success(let value):
                 response.resolver.fulfill(value)
-            case .error(let error):
+            case .failure(let error):
                 response.resolver.reject(error)
             }
         })
