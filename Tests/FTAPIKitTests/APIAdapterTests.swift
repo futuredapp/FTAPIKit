@@ -237,7 +237,7 @@ final class APIAdapterTests: XCTestCase {
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
         let endpoint = Endpoint(body: user)
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
@@ -269,7 +269,7 @@ final class APIAdapterTests: XCTestCase {
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
         let endpoint = Endpoint(body: user)
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
@@ -288,7 +288,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
 
         let expectation = self.expectation(description: "Result")
