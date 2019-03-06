@@ -62,17 +62,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
     public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (Result<Endpoint.Response, Error>) -> Void) {
         dataTask(data: endpoint, creation: creation) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    let model = try self.jsonDecoder.decode(Endpoint.Response.self, from: data)
-                    completion(.success(model))
-                } catch {
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
+            completion(result.flatMap { data in
+                Result(catching: { try self.jsonDecoder.decode(Endpoint.Response.self, from: data) })
+            })
         }
     }
 
