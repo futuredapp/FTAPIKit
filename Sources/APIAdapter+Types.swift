@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Standard API error returned in `APIResult` when no custom error
+/// Standard API error returned in `Result` when no custom error
 /// was parsed in the `APIAdapter` first and the response from server
 /// was invalid.
 public enum APIError: Error {
@@ -21,19 +21,6 @@ public enum APIError: Error {
     /// Error code returned by `APIAdapter`. Thrown when request fails
     /// with return code larger or equal to 400.
     case errorCode(Int, Data?)
-}
-
-/// Generic result type for API responses.
-/// No operations are defined for this type,
-/// it should be used manually or not at all
-/// when some extension like PromiseKit is
-/// used.
-public enum APIResult<T> {
-    /// Successfully decoded response (or pure `Data` when decoding was not required).
-    case value(T)
-    /// Error returned by `APIAdapter`. The error will be of `APIError` type if
-    /// custom error constuctor was not used.
-    case error(Error)
 }
 
 /// HTTP method enum with all commonly used verbs.
