@@ -23,6 +23,6 @@ Pod::Spec.new do |spec|
 
   spec.subspec 'PromiseKit' do |subspec|
     subspec.source_files = Dir['Extensions/PromiseKit/*']
-    subspec.dependency 'PromiseKit', '~> 6.0'
+    subspec.dependency 'PromiseKit', '~> 7.0'
   end
 end

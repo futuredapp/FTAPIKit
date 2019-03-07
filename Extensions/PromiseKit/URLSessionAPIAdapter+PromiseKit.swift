@@ -22,7 +22,7 @@ extension URLSessionAPIAdapter {
             if task.guarantee.isPending {
                 task.resolve(nil)
             }
-            response.resolver.resolve(result: result)
+            response.resolver.resolve(result)
         })
         return APIDataTask(sessionTask: task.guarantee, response: response.promise)
     }
@@ -35,8 +35,7 @@ extension URLSessionAPIAdapter {
             if task.guarantee.isPending {
                 task.resolve(nil)
             }
-
-            response.resolver.resolve(result: result)
+            response.resolver.resolve(result)
         })
         return APIDataTask(sessionTask: task.guarantee, response: response.promise)
     }
