@@ -53,6 +53,7 @@ struct MultipartFormData {
             try outputStream.writeLine()
         }
         try outputStream.write(data: boundaryData)
+        try outputStream.writeLine(string: "--")
     }
 
     private func write(headers: [String: String], to outputStream: OutputStream) throws {
