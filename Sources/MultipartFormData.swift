@@ -19,6 +19,10 @@ struct MultipartFormData {
         self.boundaryData = Data(boundary.utf8)
     }
 
+    var contentLength: Int64? {
+        return try? temporaryUrl.contentLength()
+    }
+
     private static func makeTemporaryUrl() -> URL {
         let urls = FileManager.default.urls(for: .itemReplacementDirectory, in: .userDomainMask)
         let directory = urls.first ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)

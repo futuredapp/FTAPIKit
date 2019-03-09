@@ -38,9 +38,12 @@ extension URLRequest {
         let parameterParts = parameters.map(MultipartBodyPart.init)
         let multipartData = MultipartFormData(parts: parameterParts + files, boundary: "--" + boundary)
 
-        setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-
         httpBodyStream = try multipartData.inputStream()
+
+        setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        if let contentLength = multipartData.contentLength {
+            setValue(contentLength.description, forHTTPHeaderField: "Content-Length")
+        }
     }
 
     private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
