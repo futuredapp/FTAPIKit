@@ -302,6 +302,32 @@ final class APIAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+    func testMultipartData() {
+        struct Endpoint: APIEndpoint {
+            let type: RequestType = .multipart([
+                MultipartBodyPart(name: "testpart", value: "valueForTestPart")
+            ])
+            let parameters: HTTPParameters = [
+                "someParameter": "someValue",
+                "anotherParameter": "anotherValue"
+            ]
+            let path = "post"
+            let method: HTTPMethod = .post
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.request(data: Endpoint()) { result in
+            expectation.fulfill()
+            if case let .error(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
     static var allTests = [
         ("testGet", testGet),
         ("testGetFail", testGetFail),
@@ -312,6 +338,7 @@ final class APIAdapterTests: XCTestCase {
         ("testValidJSONResponse", testValidJSONResponse),
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
-        ("testAuthorization", testAuthorization)
+        ("testAuthorization", testAuthorization),
+        ("testMultipartData", testMultipartData)
     ]
 }
