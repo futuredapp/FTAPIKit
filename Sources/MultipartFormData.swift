@@ -7,6 +7,11 @@
 //
 
 import Foundation
+#if os(iOS) || os(watchOS) || os(tvOS)
+import MobileCoreServices
+#elseif os(macOS)
+import CoreServices
+#endif
 
 struct MultipartFormData {
 
@@ -20,7 +25,7 @@ struct MultipartFormData {
     }
 
     var contentLength: Int64? {
-        return try? temporaryUrl.contentLength()
+        return (try? FileManager.default.attributesOfItem(atPath: temporaryUrl.path)[.size] as? Int64)?.flatMap { $0 }
     }
 
     private static func makeTemporaryUrl() -> URL {

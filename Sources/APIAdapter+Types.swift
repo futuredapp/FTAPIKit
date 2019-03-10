@@ -95,7 +95,6 @@ public enum RequestType {
 public struct MultipartBodyPart: Hashable {
     let headers: [String: String]
     let inputStream: InputStream
-    let contentLength: Int64
 
     /// Public initializer for multipart files.
     ///
@@ -103,10 +102,9 @@ public struct MultipartBodyPart: Hashable {
     ///   - headers: HTTP headers specific for the part.
     ///   - mimeType: MIME type of the file.
     ///   - inputStream: File content.
-    public init(headers: [String: String], inputStream: InputStream, contentLength: Int64) {
+    public init(headers: [String: String], inputStream: InputStream) {
         self.headers = headers
         self.inputStream = inputStream
-        self.contentLength = contentLength
     }
 
     public init(name: String, value: String) {
@@ -119,7 +117,6 @@ public struct MultipartBodyPart: Hashable {
     public init(headers: [String: String], data: Data) {
         self.headers = headers
         self.inputStream = InputStream(data: data)
-        self.contentLength = Int64(data.count)
     }
 
     public init(name: String, url: URL) throws {
@@ -131,6 +128,5 @@ public struct MultipartBodyPart: Hashable {
             "Content-Disposition": "form-data; name=\(name); filename=\"\(url.lastPathComponent)\""
         ]
         self.inputStream = inputStream
-        self.contentLength = try url.contentLength()
     }
 }
