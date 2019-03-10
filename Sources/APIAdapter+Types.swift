@@ -6,7 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.Data
 
 /// Standard API error returned in `APIResult` when no custom error
 /// was parsed in the `APIAdapter` first and the response from server
@@ -21,8 +21,9 @@ public enum APIError: Error {
     /// Error code returned by `APIAdapter`. Thrown when request fails
     /// with return code larger or equal to 400.
     case errorCode(Int, Data?)
-    /// File upload error
-    case uploadFileNotLoaded
+    /// Multipart body part error, when the stream for the part
+    /// or the temporary request body stream cannot be opened.
+    case multipartStreamCannotBeOpened
 }
 
 /// Generic result type for API responses.
@@ -89,44 +90,4 @@ public enum RequestType {
     /// The parameters will be encoded using Base64 encoding
     /// and sent in request body.
     case base64Upload
-}
-
-/// Multipart file model for multipart request types.
-public struct MultipartBodyPart: Hashable {
-    let headers: [String: String]
-    let inputStream: InputStream
-
-    /// Public initializer for multipart files.
-    ///
-    /// - Parameters:
-    ///   - headers: HTTP headers specific for the part.
-    ///   - mimeType: MIME type of the file.
-    ///   - inputStream: File content.
-    public init(headers: [String: String], inputStream: InputStream) {
-        self.headers = headers
-        self.inputStream = inputStream
-    }
-
-    public init(name: String, value: String) {
-        let headers = [
-            "Content-Disposition": "form-data; name=\(name)"
-        ]
-        self.init(headers: headers, data: Data(value.utf8))
-    }
-
-    public init(headers: [String: String], data: Data) {
-        self.headers = headers
-        self.inputStream = InputStream(data: data)
-    }
-
-    public init(name: String, url: URL) throws {
-        guard let inputStream = InputStream(url: url) else {
-            throw APIError.uploadFileNotLoaded
-        }
-        self.headers = [
-            "Content-Type": url.mimeType,
-            "Content-Disposition": "form-data; name=\(name); filename=\"\(url.lastPathComponent)\""
-        ]
-        self.inputStream = inputStream
-    }
 }
