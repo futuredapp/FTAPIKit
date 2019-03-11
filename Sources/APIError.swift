@@ -6,7 +6,11 @@
 //  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import struct Foundation.Data
+import Foundation
+
+public protocol APIError: Error {
+    init?(data: Data?, response: URLResponse?, error: Error?, decoder: JSONDecoder)
+}
 
 /// Standard API error returned in `APIResult` when no custom error
 /// was parsed in the `APIAdapter` first and the response from server
@@ -24,4 +28,22 @@ public enum StandardAPIError: APIError {
     /// Multipart body part error, when the stream for the part
     /// or the temporary request body stream cannot be opened.
     case multipartStreamCannotBeOpened
+    case underlyingError(Error)
+
+    public init?(data: Data?, response: URLResponse?, error: Error?, decoder: JSONDecoder) {
+        switch (data, response, error) {
+        case let (_, response as HTTPURLResponse, _) where response.statusCode == 204:
+            return nil
+        case let (.some, response as HTTPURLResponse, nil) where response.statusCode < 400:
+            return nil
+        case let (_, _, error as NSError) where error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled:
+            self = .cancelled
+        case let (_, _, error?):
+            self = .underlyingError(error)
+        case let (data, response as HTTPURLResponse, nil):
+            self = .statusCode(response.statusCode, data)
+        default:
+            self = .noResponse
+        }
+    }
 }

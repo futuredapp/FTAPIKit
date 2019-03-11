@@ -96,7 +96,7 @@ final class APIAdapterTests: XCTestCase {
             let path = "get"
         }
 
-        struct CustomError: Error {
+        struct CustomError: APIError {
             private init() {}
 
             init?(data: Data?, response: URLResponse?, error: Error?, decoder: JSONDecoder) {
@@ -105,7 +105,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter: APIAdapter = URLSessionAPIAdapter(baseUrl: URL(string: "http://httpbin.org/")!, customErrorConstructor: CustomError.init)
+        var adapter: APIAdapter = URLSessionAPIAdapter(baseUrl: URL(string: "http://httpbin.org/")!, errorType: CustomError.self)
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in

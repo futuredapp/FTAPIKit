@@ -10,11 +10,6 @@ import Foundation
 
 /// Standard and default implementation of `APIAdapter` protocol using `URLSession`.
 public final class URLSessionAPIAdapter: APIAdapter {
-
-    /// Custom error constructor typealias receiving values from data task execution
-    /// and JSON decoder, if it needs to decode custom error from returned JSON.
-    public typealias ErrorConstructor = (Data?, URLResponse?, Error?, JSONDecoder) -> Error?
-
     public weak var delegate: APIAdapterDelegate?
 
     private let urlSession: URLSession
@@ -23,7 +18,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
     private let jsonEncoder: JSONEncoder
     private let jsonDecoder: JSONDecoder
 
-    private let customErrorConstructor: ErrorConstructor?
+    private let errorType: APIError.Type
 
     private var runningRequestCount: UInt = 0 {
         didSet {
@@ -44,11 +39,11 @@ public final class URLSessionAPIAdapter: APIAdapter {
     ///                             the standard `APIError`, but to handle the errors our own way.
     ///   - urlSession: Optional URL session (otherwise the standard one will be used). Used mainly if we need
     ///                 our own `URLSessionConfiguration` or another way of caching (ephemeral session).
-    public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), customErrorConstructor: ErrorConstructor? = nil, urlSession: URLSession = .shared) {
+    public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), errorType: APIError.Type = StandardAPIError.self, urlSession: URLSession = .shared) {
         self.baseUrl = baseUrl
         self.jsonDecoder = jsonDecoder
         self.jsonEncoder = jsonEncoder
-        self.customErrorConstructor = customErrorConstructor
+        self.errorType = errorType
         self.urlSession = urlSession
     }
 
@@ -113,24 +108,11 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionTask {
-        let task = urlSession.dataTask(with: request) { [customErrorConstructor, jsonDecoder] data, response, error in
-            if let constructor = customErrorConstructor, let error = constructor(data, response, error, jsonDecoder) {
+        let task = urlSession.dataTask(with: request) { [jsonDecoder, errorType] data, response, error in
+            if let error = errorType.init(data: data, response: response, error: error, decoder: jsonDecoder) {
                 completion(.error(error))
-                return
-            }
-            switch (data, response, error) {
-            case let (_, response as HTTPURLResponse, _) where response.statusCode == 204:
-                completion(.value(Data()))
-            case let (data?, response as HTTPURLResponse, nil) where response.statusCode < 400:
-                completion(.value(data))
-            case let (_, _, error as NSError) where error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled:
-                completion(.error(APIError.cancelled))
-            case let (_, _, error?):
-                completion(.error(error))
-            case let (data, response as HTTPURLResponse, nil):
-                completion(.error(APIError.statusCode(response.statusCode, data)))
-            default:
-                completion(.error(APIError.noResponse))
+            } else {
+                completion(.value(data ?? Data()))
             }
         }
         task.resume()
