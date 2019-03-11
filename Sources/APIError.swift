@@ -11,7 +11,7 @@ import struct Foundation.Data
 /// Standard API error returned in `APIResult` when no custom error
 /// was parsed in the `APIAdapter` first and the response from server
 /// was invalid.
-public enum APIError: Error {
+public enum StandardAPIError: APIError {
     /// Undefined error. Return code is less than 400, but no
     /// request was received.
     case noResponse

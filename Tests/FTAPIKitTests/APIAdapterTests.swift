@@ -206,7 +206,7 @@ final class APIAdapterTests: XCTestCase {
         let expectation = self.expectation(description: "Result")
         adapter.dataTask(response: Endpoint(), creation: { $0.cancel() }, completion: { result in
             expectation.fulfill()
-            guard case .error(APIError.cancelled) = result else {
+            guard case .error(StandardAPIError.cancelled) = result else {
                 XCTFail("Task not cancelled")
                 return
             }
