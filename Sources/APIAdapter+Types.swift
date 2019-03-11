@@ -6,7 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.Data
 
 /// Standard API error returned in `APIResult` when no custom error
 /// was parsed in the `APIAdapter` first and the response from server
@@ -21,6 +21,9 @@ public enum APIError: Error {
     /// Error code returned by `APIAdapter`. Thrown when request fails
     /// with return code larger or equal to 400.
     case errorCode(Int, Data?)
+    /// Multipart body part error, when the stream for the part
+    /// or the temporary request body stream cannot be opened.
+    case multipartStreamCannotBeOpened
 }
 
 /// Generic result type for API responses.
@@ -83,28 +86,8 @@ public enum RequestType {
     case jsonBody(Encodable)
     /// All the parameters will be sent as multipart
     /// and files too.
-    case multipart([MultipartFile])
+    case multipart([MultipartBodyPart])
     /// The parameters will be encoded using Base64 encoding
     /// and sent in request body.
     case base64Upload
-}
-
-/// Multipart file model for multipart request types.
-public struct MultipartFile: Hashable {
-    let name, filename, mimeType: String
-    let data: Data
-
-    /// Public initializer for multipart files.
-    ///
-    /// - Parameters:
-    ///   - name: Part name.
-    ///   - filename: File name with extension.
-    ///   - mimeType: MIME type of the file.
-    ///   - data: File content.
-    public init(name: String, filename: String, mimeType: String, data: Data) {
-        self.name = name
-        self.filename = filename
-        self.mimeType = mimeType
-        self.data = data
-    }
 }

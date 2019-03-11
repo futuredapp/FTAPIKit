@@ -6,9 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import struct Foundation.URL
-import struct Foundation.URLComponents
-import struct Foundation.URLQueryItem
+import Foundation
 
 extension URL {
     mutating func appendQuery(parameters: [String: String]) {
@@ -23,5 +21,12 @@ extension URL {
         let oldItems = components?.queryItems ?? []
         components?.queryItems = oldItems + parameters.map(URLQueryItem.init)
         return components?.url ?? self
+    }
+
+    var mimeType: String {
+        if let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(), let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() {
+            return contentType as String
+        }
+        return "application/octet-stream"
     }
 }

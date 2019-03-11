@@ -237,7 +237,7 @@ final class APIAdapterTests: XCTestCase {
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
         let endpoint = Endpoint(body: user)
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
@@ -269,7 +269,7 @@ final class APIAdapterTests: XCTestCase {
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
         let endpoint = Endpoint(body: user)
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
@@ -288,7 +288,7 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter = apiAdapter()
+        var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
 
         let expectation = self.expectation(description: "Result")
@@ -302,6 +302,41 @@ final class APIAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+    func testMultipartData() {
+        struct MockupUrl {
+            let url: URL = Bundle(for: APIAdapterTests.self).url(forResource: "MockupBodyPart", withExtension: "jpg")!
+            let headers: [String: String] = [
+                "Content-Disposition": "form-data; name=jpegFile",
+                "Content-Type": "image/jpeg"
+            ]
+        }
+        struct Endpoint: APIEndpoint {
+            let type: RequestType = .multipart([
+                MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
+                try! MultipartBodyPart(name: "urlImage", url: MockupUrl().url),
+                MultipartBodyPart(headers: MockupUrl().headers, data: try! Data(contentsOf: MockupUrl().url)),
+                MultipartBodyPart(headers: MockupUrl().headers, inputStream: InputStream(url: MockupUrl().url)!)
+            ])
+            let parameters: HTTPParameters = [
+                "someParameter": "someValue"
+            ]
+            let path = "post"
+            let method: HTTPMethod = .post
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.request(data: Endpoint()) { result in
+            expectation.fulfill()
+            if case let .error(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
     static var allTests = [
         ("testGet", testGet),
         ("testGetFail", testGetFail),
@@ -312,6 +347,7 @@ final class APIAdapterTests: XCTestCase {
         ("testValidJSONResponse", testValidJSONResponse),
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
-        ("testAuthorization", testAuthorization)
+        ("testAuthorization", testAuthorization),
+        ("testMultipartData", testMultipartData)
     ]
 }
