@@ -20,7 +20,7 @@ public enum APIError: Error {
     case cancelled
     /// Error code returned by `APIAdapter`. Thrown when request fails
     /// with return code larger or equal to 400.
-    case errorCode(Int, Data?)
+    case statusCode(Int, Data?)
     /// Multipart body part error, when the stream for the part
     /// or the temporary request body stream cannot be opened.
     case multipartStreamCannotBeOpened

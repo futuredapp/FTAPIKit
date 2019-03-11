@@ -128,7 +128,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
             case let (_, _, error?):
                 completion(.error(error))
             case let (data, response as HTTPURLResponse, nil):
-                completion(.error(APIError.errorCode(response.statusCode, data)))
+                completion(.error(APIError.statusCode(response.statusCode, data)))
             default:
                 completion(.error(APIError.noResponse))
             }
