@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if os(iOS) || os(watchOS) || os(tvOS)
+import MobileCoreServices
+#endif
 
 extension URL {
     mutating func appendQuery(parameters: [String: String]) {
