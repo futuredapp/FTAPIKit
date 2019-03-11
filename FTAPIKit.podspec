@@ -21,6 +21,7 @@ Pod::Spec.new do |s|
   s.framework  = "Foundation"
   s.ios.framework = "MobileCoreServices"
   s.tvos.framework = "MobileCoreServices"
+  s.watchos.framework = "MobileCoreServices"
 
   s.subspec 'PromiseKit' do |ss|
     ss.source_files = Dir['Extensions/PromiseKit/*']
