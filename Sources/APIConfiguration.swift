@@ -23,15 +23,15 @@ public protocol APIJSONConfiguration: APIConfiguration {
 }
 
 public extension APIJSONConfiguration {
-    public func encode(_ value: Encodable) throws -> Data {
+    func encode(_ value: Encodable) throws -> Data {
         return try jsonEncoder.encode(AnyEncodable(value))
     }
 
-    public func decode<T: Decodable>(from data: Data) throws -> T {
+    func decode<T: Decodable>(from data: Data) throws -> T {
         return try jsonDecoder.decode(T.self, from: data)
     }
 
-    public func error(from data: Data?, response: URLResponse?, error: Error?) -> Error? {
+    func error(from data: Data?, response: URLResponse?, error: Error?) -> Error? {
         return error
     }
 }
