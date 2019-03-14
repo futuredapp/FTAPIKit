@@ -10,28 +10,28 @@ import PromiseKit
 
 extension APIAdapter {
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
-        return Promise { resolver in
-            request(response: endpoint) { result in
-                switch result {
-                case .value(let value):
-                    resolver.fulfill(value)
-                case .error(let error):
-                    resolver.reject(error)
-                }
+        let (promise, seal) = Promise<Endpoint.Response>.pending()
+        request(response: endpoint) { result in
+            switch result {
+            case .value(let value):
+                seal.fulfill(value)
+            case .error(let error):
+                seal.reject(error)
             }
         }
+        return promise
     }
 
     public func request(data endpoint: APIEndpoint) -> Promise<Data> {
-        return Promise { resolver in
-            request(data: endpoint) { result in
-                switch result {
-                case .value(let value):
-                    resolver.fulfill(value)
-                case .error(let error):
-                    resolver.reject(error)
-                }
+        let (promise, seal) = Promise<Data>.pending()
+        request(data: endpoint) { result in
+            switch result {
+            case .value(let value):
+                seal.fulfill(value)
+            case .error(let error):
+                seal.reject(error)
             }
         }
+        return promise
     }
 }

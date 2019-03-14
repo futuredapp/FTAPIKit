@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "FTAPIKit"
-  s.version      = "0.1"
+  s.version      = "0.4.0"
   s.summary      = "Declarative, generic REST API framework using URLSession and Codable"
   s.description  = <<-DESC
     Protocol-oriented REST API library for communication with REST APIs.
@@ -18,7 +18,10 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
   s.source       = { :git => "https://github.com/thefuntasty/FTAPIKit.git", :tag => s.version.to_s }
   s.source_files  = "Sources/**/*"
-  s.frameworks  = "Foundation"
+  s.framework  = "Foundation"
+  s.ios.framework = "MobileCoreServices"
+  s.tvos.framework = "MobileCoreServices"
+  s.watchos.framework = "MobileCoreServices"
 
   s.subspec 'PromiseKit' do |ss|
     ss.source_files = Dir['Extensions/PromiseKit/*']
