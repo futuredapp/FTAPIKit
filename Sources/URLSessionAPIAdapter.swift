@@ -35,8 +35,8 @@ public final class URLSessionAPIAdapter: APIAdapter {
     ///   - baseUrl: Base URI for the server for all API calls this API adapter will be executing.
     ///   - jsonEncoder: Optional JSON encoder used for serialization of JSON models.
     ///   - jsonDecoder: Optional JSON decoder used for deserialization of JSON models.
-    ///   - customErrorConstructor: Optional custom error constructor if we want the API adapter to not return
-    ///                             the standard `APIError`, but to handle the errors our own way.
+    ///   - errorType: If we want custom method for error handling instead of returning `StandardAPIError`
+    ///                This type needs to implement `APIError` protocol and its optional init requirement.
     ///   - urlSession: Optional URL session (otherwise the standard one will be used). Used mainly if we need
     ///                 our own `URLSessionConfiguration` or another way of caching (ephemeral session).
     public init(baseUrl: URL, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder(), errorType: APIError.Type = StandardAPIError.self, urlSession: URLSession = .shared) {
