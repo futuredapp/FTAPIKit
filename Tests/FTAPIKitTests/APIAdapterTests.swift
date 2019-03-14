@@ -29,10 +29,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -65,10 +65,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case .value = result {
                 XCTFail("Non-existing domain must fail")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -83,10 +83,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -109,12 +109,12 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTAssertTrue(error is CustomError)
             } else {
                 XCTFail("Custom error must be returned")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -135,10 +135,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -170,10 +170,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -205,13 +205,12 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.dataTask(response: Endpoint(), creation: { $0.cancel() }, completion: { result in
-            expectation.fulfill()
             guard case .error(StandardAPIError.cancelled) = result else {
                 XCTFail("Task not cancelled")
                 return
             }
+            expectation.fulfill()
         })
-
         wait(for: [expectation], timeout: timeout)
     }
 
@@ -241,13 +240,13 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
-            expectation.fulfill()
             switch result {
             case .value(let response):
                 XCTAssertEqual(user, response.json)
             case .error(let error):
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -273,10 +272,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
-            expectation.fulfill()
             if case .value = result {
                 XCTFail("Received valid value, decoding must fail")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -293,12 +292,11 @@ final class APIAdapterTests: XCTestCase {
 
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
-
         wait(for: [expectation], timeout: timeout)
     }
 
@@ -329,10 +327,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
