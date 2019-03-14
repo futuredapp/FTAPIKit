@@ -14,7 +14,7 @@ extension APIEndpoint {
         var request = URLRequest(url: url)
         request.httpMethod = method.description
 
-        try request.setRequestType(type, parameters: parameters, using: configuration.encode)
+        try request.setRequestType(type, parameters: parameters, using: configuration.encoder)
         return request
     }
 }

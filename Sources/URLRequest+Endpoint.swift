@@ -9,14 +9,14 @@
 import Foundation
 
 extension URLRequest {
-    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using encode: (Encodable) throws -> Data) throws {
+    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using encoder: APIEncoder) throws {
         switch requestType {
         case .jsonBody(let encodable):
-            try setJSONBody(encodable: encodable, parameters: parameters, using: encode)
+            try setJSONBody(encodable: encodable, parameters: parameters, using: encoder)
         case .urlEncoded:
             setURLEncoded(parameters: parameters)
         case .jsonParams:
-            setJSON(parameters: parameters, using: encode)
+            setJSON(parameters: parameters, using: encoder)
         case let .multipart(files):
             try setMultipart(parameters: parameters, files: files)
         case .base64Upload:
@@ -46,7 +46,7 @@ extension URLRequest {
         }
     }
 
-    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using encode: (Encodable) throws -> Data) {
+    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using encoder: APIEncoder) {
         setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         httpBody = body
         url?.appendQuery(parameters: parameters)
@@ -59,8 +59,8 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using encode: (Encodable) throws -> Data) throws {
-        let body = try encode(encodable)
-        setJSON(parameters: parameters, body: body, using: encode)
+    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using encoder: APIEncoder) throws {
+        let body = try encoder.encode(AnyEncodable(encodable))
+        setJSON(parameters: parameters, body: body, using: encoder)
     }
 }
