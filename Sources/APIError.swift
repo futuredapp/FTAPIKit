@@ -16,23 +16,20 @@ public protocol APIError: Error {
 /// was parsed in the `APIAdapter` first and the response from server
 /// was invalid.
 public enum StandardAPIError: APIError {
-    /// Undefined error. Return code is less than 400, but no
-    /// request was received.
-    case noResponse
     /// Error raised by NSURLSession corresponding to NSURLErrorCancelled at
     /// domain NSURLErrorDomain.
     case cancelled
-    /// Error code returned by `APIAdapter`. Thrown when request fails
-    /// with return code larger or equal to 400.
-    case client(Int, Data?)
-    /// Error code returned by `APIAdapter`. Thrown when request fails
-    /// with return code larger or equal to 400.
+    /// Connection error when no response and data was received.
+    case connection(Error)
+    /// Status code error when the response status code
+    /// is larger or equal to 500 and less than 600.
     case server(Int, Data?)
+    /// Status code error when the response status code
+    /// is larger or equal to 400 and less than 500.
+    case client(Int, Data?)
     /// Multipart body part error, when the stream for the part
     /// or the temporary request body stream cannot be opened.
     case multipartStreamCannotBeOpened
-    /// Connection error when no response and data was recieved.
-    case connection(Error)
 
     public init?(data: Data?, response: URLResponse?, error: Error?, decoder: JSONDecoder) {
         switch (data, response as? HTTPURLResponse, error) {
