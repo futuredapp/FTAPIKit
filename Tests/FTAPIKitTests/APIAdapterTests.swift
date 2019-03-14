@@ -37,7 +37,7 @@ final class APIAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
-    func testGetFail() {
+    func testClientError() {
         struct Endpoint: APIEndpoint {
             let path = "status/404"
         }
@@ -47,15 +47,43 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
-            if case .value = result {
-                XCTFail("404 endpoint must fail")
+            switch result {
+            case .value:
+                XCTFail("404 endpoint must return error")
+            case .error(StandardAPIError.client):
+                XCTAssert(true)
+            case .error:
+                XCTFail("404 endpoint must return client error")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
 
-    func testInvalidDomain() {
+    func testServerError() {
+        struct Endpoint: APIEndpoint {
+            let path = "status/500"
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.request(data: Endpoint()) { result in
+            switch result {
+            case .value:
+                XCTFail("500 endpoint must return error")
+            case .error(StandardAPIError.server):
+                XCTAssert(true)
+            case .error:
+                XCTFail("500 endpoint must return server error")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
+    func testConnectionError() {
         struct Endpoint: APIEndpoint {
             let path = "some-failing-path"
         }
@@ -65,8 +93,13 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            if case .value = result {
+            switch result {
+            case .value:
                 XCTFail("Non-existing domain must fail")
+            case .error(StandardAPIError.connection):
+                XCTAssert(true)
+            case .error:
+                XCTFail("Non-existing domain must throw connection error")
             }
             expectation.fulfill()
         }
@@ -205,9 +238,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.dataTask(response: Endpoint(), creation: { $0.cancel() }, completion: { result in
-            guard case .error(StandardAPIError.cancelled) = result else {
+            if case .error(StandardAPIError.cancelled) = result {
+                XCTAssert(true)
+            } else {
                 XCTFail("Task not cancelled")
-                return
             }
             expectation.fulfill()
         })
@@ -337,8 +371,9 @@ final class APIAdapterTests: XCTestCase {
 
     static var allTests = [
         ("testGet", testGet),
-        ("testGetFail", testGetFail),
-        ("testInvalidDomain", testInvalidDomain),
+        ("testClientError", testClientError),
+        ("testServerError", testServerError),
+        ("testConnectionError", testConnectionError),
         ("testEmptyResult", testEmptyResult),
         ("testCustomError", testCustomError),
         ("testURLEncodedPost", testURLEncodedPost),
