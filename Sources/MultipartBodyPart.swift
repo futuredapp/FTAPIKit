@@ -59,7 +59,7 @@ public struct MultipartBodyPart: Hashable {
     /// - Throws: `APIError.multipartStreamCannotBeOpened` if stream was not created from the file.
     public init(name: String, url: URL) throws {
         guard let inputStream = InputStream(url: url) else {
-            throw APIError.multipartStreamCannotBeOpened
+            throw StandardAPIError.multipartStreamCannotBeOpened
         }
         self.headers = [
             "Content-Type": url.mimeType,

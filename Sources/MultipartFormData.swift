@@ -35,14 +35,14 @@ struct MultipartFormData {
     func inputStream() throws -> InputStream {
         try outputStream()
         guard let inputStream = InputStream(url: temporaryUrl) else {
-            throw APIError.multipartStreamCannotBeOpened
+            throw StandardAPIError.multipartStreamCannotBeOpened
         }
         return inputStream
     }
 
     private func outputStream() throws {
         guard let outputStream = OutputStream(url: temporaryUrl, append: false) else {
-            throw APIError.multipartStreamCannotBeOpened
+            throw StandardAPIError.multipartStreamCannotBeOpened
         }
         outputStream.open()
         defer {
