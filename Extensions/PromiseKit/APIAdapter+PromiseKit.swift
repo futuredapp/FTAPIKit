@@ -7,6 +7,7 @@
 //
 
 import PromiseKit
+import FTAPIKit
 
 extension APIAdapter {
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
