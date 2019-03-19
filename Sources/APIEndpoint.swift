@@ -79,11 +79,11 @@ public protocol APIRequestEndpoint: APIEndpoint {
 }
 
 public extension APIRequestEndpoint {
-    public var method: HTTPMethod {
+    var method: HTTPMethod {
         return .post
     }
 
-    public var type: RequestType {
+    var type: RequestType {
         return RequestType.jsonBody(body)
     }
 }
