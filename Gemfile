@@ -2,4 +2,4 @@
 
 source "https://rubygems.org"
 
-gem "jazzy", "~> 0.9.3"
+gem "jazzy", "~> 0.9"

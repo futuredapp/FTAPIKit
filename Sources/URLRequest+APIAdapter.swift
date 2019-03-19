@@ -18,7 +18,7 @@ extension URLRequest {
         case .jsonParams:
             setJSON(parameters: parameters, using: jsonEncoder)
         case let .multipart(files):
-            setMultipart(parameters: parameters, files: files)
+            try setMultipart(parameters: parameters, files: files)
         case .base64Upload:
             appendBase64(parameters: parameters)
         case .urlQuery:
@@ -33,15 +33,17 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartFile] = [], boundary: String = "APIAdapter" + UUID().uuidString) {
+    private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartBodyPart] = [], boundary: String = "FTAPIKit-" + UUID().uuidString) throws {
+
+        let parameterParts = parameters.map(MultipartBodyPart.init)
+        let multipartData = MultipartFormData(parts: parameterParts + files, boundary: "--" + boundary)
+
+        httpBodyStream = try multipartData.inputStream()
+
         setValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        for parameter in parameters {
-            appendForm(data: Data(parameter.value.utf8), name: parameter.key, boundary: boundary)
+        if let contentLength = multipartData.contentLength {
+            setValue(contentLength.description, forHTTPHeaderField: "Content-Length")
         }
-        for file in files {
-            appendForm(data: file.data, name: file.name, boundary: boundary, mimeType: file.mimeType, filename: file.filename)
-        }
-        httpBody?.appendRow("--\(boundary)")
     }
 
     private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
@@ -60,25 +62,5 @@ extension URLRequest {
     private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
         let body = try jsonEncoder.encode(AnyEncodable(encodable))
         setJSON(parameters: parameters, body: body, using: jsonEncoder)
-    }
-
-    private mutating func appendForm(data: Data, name: String, boundary: String, mimeType: String? = nil, filename: String? = nil) {
-        if httpBody == nil {
-            httpBody = Data(capacity: data.count)
-        }
-        httpBody?.appendRow("--\(boundary)")
-
-        httpBody?.append("Content-Disposition: form-data; name=\(name)")
-        if let filename = filename {
-            httpBody?.append("; filename=\"\(filename)\"")
-        }
-        httpBody?.appendRow()
-        if let mimeType = mimeType {
-            httpBody?.appendRow("Content-Type: \(mimeType)")
-        }
-        httpBody?.appendRow()
-
-        httpBody?.append(data)
-        httpBody?.appendRow()
     }
 }

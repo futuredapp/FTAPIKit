@@ -29,15 +29,15 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
 
-    func testGetFail() {
+    func testClientError() {
         struct Endpoint: APIEndpoint {
             let path = "status/404"
         }
@@ -47,15 +47,43 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
-            if case .success = result {
-                XCTFail("404 endpoint must fail")
+            switch result {
+            case .success:
+                XCTFail("404 endpoint must return error")
+            case .failure(StandardAPIError.client):
+                XCTAssert(true)
+            case .failure:
+                XCTFail("404 endpoint must return client error")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
 
-    func testInvalidDomain() {
+    func testServerError() {
+        struct Endpoint: APIEndpoint {
+            let path = "status/500"
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.request(data: Endpoint()) { result in
+            switch result {
+            case .success:
+                XCTFail("500 endpoint must return error")
+            case .failure(StandardAPIError.server):
+                XCTAssert(true)
+            case .failure:
+                XCTFail("500 endpoint must return server error")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
+    func testConnectionError() {
         struct Endpoint: APIEndpoint {
             let path = "some-failing-path"
         }
@@ -65,10 +93,15 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
-            if case .success = result {
+            switch result {
+            case .success:
                 XCTFail("Non-existing domain must fail")
+            case .failure(StandardAPIError.connection):
+                XCTAssert(true)
+            case .failure:
+                XCTFail("Non-existing domain must throw connection error")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -83,10 +116,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -96,7 +129,7 @@ final class APIAdapterTests: XCTestCase {
             let path = "get"
         }
 
-        struct CustomError: Error {
+        struct CustomError: APIError {
             private init() {}
 
             init?(data: Data?, response: URLResponse?, error: Error?, decoder: JSONDecoder) {
@@ -105,16 +138,16 @@ final class APIAdapterTests: XCTestCase {
         }
 
         let delegate = MockupAPIAdapterDelegate()
-        var adapter: APIAdapter = URLSessionAPIAdapter(baseUrl: URL(string: "http://httpbin.org/")!, customErrorConstructor: CustomError.init)
+        var adapter: APIAdapter = URLSessionAPIAdapter(baseUrl: URL(string: "http://httpbin.org/")!, errorType: CustomError.self)
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .failure(error) = result {
                 XCTAssertTrue(error is CustomError)
             } else {
                 XCTFail("Custom error must be returned")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -135,10 +168,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -170,10 +203,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: Endpoint()) { result in
-            expectation.fulfill()
             if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -205,13 +238,13 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.dataTask(response: Endpoint(), creation: { $0.cancel() }, completion: { result in
-            expectation.fulfill()
-            guard case .failure(APIError.cancelled) = result else {
+            if case .failure(StandardAPIError.cancelled) = result {
+                XCTAssert(true)
+            } else {
                 XCTFail("Task not cancelled")
-                return
             }
+            expectation.fulfill()
         })
-
         wait(for: [expectation], timeout: timeout)
     }
 
@@ -241,13 +274,13 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
-            expectation.fulfill()
             switch result {
             case .success(let response):
                 XCTAssertEqual(user, response.json)
             case .failure(let error):
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -273,10 +306,10 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
-            expectation.fulfill()
             if case .success = result {
                 XCTFail("Received valid value, decoding must fail")
             }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
     }
@@ -293,25 +326,61 @@ final class APIAdapterTests: XCTestCase {
 
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            expectation.fulfill()
             if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
+    func testMultipartData() {
+        struct MockupUrl {
+            let url: URL = Bundle(for: APIAdapterTests.self).url(forResource: "MockupBodyPart", withExtension: "jpg")!
+            let headers: [String: String] = [
+                "Content-Disposition": "form-data; name=jpegFile",
+                "Content-Type": "image/jpeg"
+            ]
+        }
+        struct Endpoint: APIEndpoint {
+            let type: RequestType = .multipart([
+                MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
+                try! MultipartBodyPart(name: "urlImage", url: MockupUrl().url),
+                MultipartBodyPart(headers: MockupUrl().headers, data: try! Data(contentsOf: MockupUrl().url)),
+                MultipartBodyPart(headers: MockupUrl().headers, inputStream: InputStream(url: MockupUrl().url)!)
+            ])
+            let parameters: HTTPParameters = [
+                "someParameter": "someValue"
+            ]
+            let path = "post"
+            let method: HTTPMethod = .post
         }
 
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.request(data: Endpoint()) { result in
+            if case let .failure(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+            expectation.fulfill()
+        }
         wait(for: [expectation], timeout: timeout)
     }
 
     static var allTests = [
         ("testGet", testGet),
-        ("testGetFail", testGetFail),
-        ("testInvalidDomain", testInvalidDomain),
+        ("testClientError", testClientError),
+        ("testServerError", testServerError),
+        ("testConnectionError", testConnectionError),
         ("testEmptyResult", testEmptyResult),
         ("testCustomError", testCustomError),
         ("testURLEncodedPost", testURLEncodedPost),
         ("testValidJSONResponse", testValidJSONResponse),
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
-        ("testAuthorization", testAuthorization)
+        ("testAuthorization", testAuthorization),
+        ("testMultipartData", testMultipartData)
     ]
 }
