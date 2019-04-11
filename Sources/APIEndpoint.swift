@@ -24,7 +24,7 @@ public protocol APIEndpoint {
     /// URL parameters is string dictionary sent either as URL query, multipart,
     /// JSON parameters or URL/Base64 encoded body. The `type` parameter of `APIEndpoint`
     /// protocol describes the way how to send the parameters.
-    var parameters: HTTPParameters { get }
+    var parameters: [String: String] { get }
 
     /// HTTP method/verb describing the action.
     var method: HTTPMethod { get }
@@ -42,7 +42,7 @@ public protocol APIEndpoint {
 }
 
 public extension APIEndpoint {
-    var parameters: HTTPParameters {
+    var parameters: [String: String] {
         return [:]
     }
 

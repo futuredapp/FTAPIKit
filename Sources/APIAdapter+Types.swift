@@ -48,11 +48,6 @@ public enum HTTPMethod: String, CustomStringConvertible {
     }
 }
 
-/// Alias for URL query or URL encoded parameter dictionary.
-public typealias HTTPParameters = [String: String]
-/// Alias for HTTP header dictionary.CustomStringConvertible
-public typealias HTTPHeaders = [String: String]
-
 /// Type of the API request. JSON body and multipart requests
 /// have associated values which are used as a body. The other
 /// types only describe how the `HTTPParameters` are encoded.

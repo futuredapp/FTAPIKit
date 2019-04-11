@@ -155,7 +155,7 @@ final class APIAdapterTests: XCTestCase {
     func testURLEncodedPost() {
         struct Endpoint: APIEndpoint {
             let data: RequestType = .urlEncoded
-            let parameters: HTTPParameters = [
+            let parameters = [
                 "someParameter": "someValue",
                 "anotherParameter": "anotherValue"
             ]
@@ -337,7 +337,7 @@ final class APIAdapterTests: XCTestCase {
     func testMultipartData() {
         struct MockupUrl {
             let url: URL = Bundle(for: APIAdapterTests.self).url(forResource: "MockupBodyPart", withExtension: "jpg")!
-            let headers: [String: String] = [
+            let headers = [
                 "Content-Disposition": "form-data; name=jpegFile",
                 "Content-Type": "image/jpeg"
             ]
@@ -349,7 +349,7 @@ final class APIAdapterTests: XCTestCase {
                 MultipartBodyPart(headers: MockupUrl().headers, data: try! Data(contentsOf: MockupUrl().url)),
                 MultipartBodyPart(headers: MockupUrl().headers, inputStream: InputStream(url: MockupUrl().url)!)
             ])
-            let parameters: HTTPParameters = [
+            let parameters = [
                 "someParameter": "someValue"
             ]
             let path = "post"

@@ -9,7 +9,7 @@
 import Foundation
 
 extension URLRequest {
-    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
+    mutating func setRequestType(_ requestType: RequestType, parameters: [String: String], using jsonEncoder: JSONEncoder) throws {
         switch requestType {
         case .jsonBody(let encodable):
             try setJSONBody(encodable: encodable, parameters: parameters, using: jsonEncoder)
@@ -17,7 +17,7 @@ extension URLRequest {
             setURLEncoded(parameters: parameters)
         case .jsonParams:
             setJSON(parameters: parameters, using: jsonEncoder)
-        case let .multipart(files):
+        case .multipart(let files):
             try setMultipart(parameters: parameters, files: files)
         case .base64Upload:
             appendBase64(parameters: parameters)
@@ -28,7 +28,7 @@ extension URLRequest {
         }
     }
 
-    private mutating func appendBase64(parameters: HTTPParameters) {
+    private mutating func appendBase64(parameters: [String: String]) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
         httpBody = urlComponents.query?.data(using: String.Encoding.ascii, allowLossyConversion: true)
@@ -53,20 +53,20 @@ extension URLRequest {
         }
     }
 
-    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using jsonEncoder: JSONEncoder) {
+    private mutating func setJSON(parameters: [String: String], body: Data? = nil, using jsonEncoder: JSONEncoder) {
         setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         httpBody = body
         url?.appendQuery(parameters: parameters)
     }
 
-    private mutating func setURLEncoded(parameters: HTTPParameters) {
+    private mutating func setURLEncoded(parameters: [String: String]) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
         httpBody = urlComponents.query?.data(using: .ascii, allowLossyConversion: true)
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
+    private mutating func setJSONBody(encodable: Encodable, parameters: [String: String], using jsonEncoder: JSONEncoder) throws {
         let body = try jsonEncoder.encode(AnyEncodable(encodable))
         setJSON(parameters: parameters, body: body, using: jsonEncoder)
     }
