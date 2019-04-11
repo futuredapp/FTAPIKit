@@ -21,6 +21,8 @@ extension URLRequest {
             try setMultipart(parameters: parameters, files: files)
         case .base64Upload:
             appendBase64(parameters: parameters)
+        case let .upload(stream, mimeType):
+            setUpload(stream: stream, mimeType: mimeType, parameters: parameters)
         case .urlQuery:
             url?.appendQuery(parameters: parameters)
         }
@@ -33,8 +35,13 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setMultipart(parameters: HTTPParameters = [:], files: [MultipartBodyPart] = [], boundary: String = "FTAPIKit-" + UUID().uuidString) throws {
+    private mutating func setUpload(stream: InputStream, mimeType: String, parameters: [String: String]) {
+        setValue(mimeType, forHTTPHeaderField: "Content-Type")
+        url?.appendQuery(parameters: parameters)
+        httpBodyStream = stream
+    }
 
+    private mutating func setMultipart(parameters: [String: String] = [:], files: [MultipartBodyPart] = [], boundary: String = "FTAPIKit-" + UUID().uuidString) throws {
         let parameterParts = parameters.map(MultipartBodyPart.init)
         let multipartData = MultipartFormData(parts: parameterParts + files, boundary: "--" + boundary)
 

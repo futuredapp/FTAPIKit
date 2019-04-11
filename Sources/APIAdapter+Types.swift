@@ -6,6 +6,8 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
+import Foundation
+
 /// Generic result type for API responses.
 /// No operations are defined for this type,
 /// it should be used manually or not at all
@@ -70,4 +72,15 @@ public enum RequestType {
     /// The parameters will be encoded using Base64 encoding
     /// and sent in request body.
     case base64Upload
+    /// For sending raw body input streams, uploading files etc.
+    case upload(body: InputStream, mimeType: String)
+}
+
+public extension RequestType {
+    static func upload(url: URL) throws -> RequestType {
+        guard let inputStream = InputStream(url: url) else {
+            throw StandardAPIError.multipartStreamCannotBeOpened
+        }
+        return .upload(body: inputStream, mimeType: url.mimeType)
+    }
 }
