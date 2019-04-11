@@ -369,6 +369,29 @@ final class APIAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+    func testUpload() {
+        struct Endpoint: APIEndpoint {
+            let type: RequestType = try! .upload(url: Bundle(for: APIAdapterTests.self).url(forResource: "MockupBodyPart", withExtension: "jpg")!)
+            let parameters = [
+                "someParameter": "someValue"
+            ]
+            let path = "anything"
+            let method: HTTPMethod = .put
+        }
+
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        adapter.request(data: Endpoint()) { result in
+            if case let .error(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
     static var allTests = [
         ("testGet", testGet),
         ("testClientError", testClientError),
@@ -381,6 +404,7 @@ final class APIAdapterTests: XCTestCase {
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
         ("testAuthorization", testAuthorization),
-        ("testMultipartData", testMultipartData)
+        ("testMultipartData", testMultipartData),
+        ("testUpload", testUpload)
     ]
 }
