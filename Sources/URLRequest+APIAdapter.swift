@@ -55,7 +55,8 @@ extension URLRequest {
     private mutating func setURLEncoded(parameters: HTTPParameters) {
         var urlComponents = URLComponents()
         urlComponents.queryItems = parameters.map(URLQueryItem.init)
-        httpBody = urlComponents.query?.data(using: .ascii, allowLossyConversion: true)
+        let allowedCharacters = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
+        httpBody = urlComponents.query?.addingPercentEncoding(withAllowedCharacters: allowedCharacters)?.data(using: .ascii)
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
