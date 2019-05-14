@@ -55,7 +55,7 @@ extension URLRequest {
     private mutating func setURLEncoded(parameters: HTTPParameters) {
         let allowedCharacters = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
         var queryItems = [URLQueryItem]()
-        params.forEach { (key, value) in
+        parameters.forEach { (key, value) in
             guard let encodedKey = key.addingPercentEncoding(withAllowedCharacters: allowedCharacters),
                 let encodedValue = value.addingPercentEncoding(withAllowedCharacters: allowedCharacters) else {
                     return
