@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/thefuntasty/FTAPIKit.git", :tag => s.version.to_s }
 
   s.subspec 'Core' do |ss|
-    ss.source_files  = "Sources/**/*"
+    ss.source_files  = "Sources/FTAPIKit/*"
     ss.framework  = "Foundation"
     ss.ios.framework = "MobileCoreServices"
     ss.tvos.framework = "MobileCoreServices"
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'PromiseKit' do |ss|
-    ss.source_files = Dir['Extensions/PromiseKit/*']
+    ss.source_files = Dir['Sources/FTAPIKitPromises/*']
     ss.dependency 'PromiseKit', '~> 6.0'
     ss.dependency 'FTAPIKit/Core'
   end
