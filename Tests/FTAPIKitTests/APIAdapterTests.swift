@@ -18,12 +18,13 @@ final class APIAdapterTests: XCTestCase {
     }
 
     private let timeout: TimeInterval = 30.0
-
+    private let extendedTimeout: TimeInterval = 120.0
+    
     func testGet() {
         struct Endpoint: APIEndpoint {
             let path = "get"
         }
-
+        
         let delegate = MockupAPIAdapterDelegate()
         var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
@@ -35,6 +36,51 @@ final class APIAdapterTests: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
+    }
+    
+    func testStressMultipleRequestsViaGet() {
+        struct Endpoint: APIEndpoint {
+            let path = "get"
+        }
+        
+        let delegate = MockupAPIAdapterDelegate()
+        var adapter: APIAdapter = apiAdapter()
+        adapter.delegate = delegate
+        let expectation = self.expectation(description: "Result")
+        
+        for _ in 0...10 {
+            DispatchQueue.global(qos: .background).async {
+                adapter.request(data: Endpoint()) { result in
+                    if case let .error(error) = result {
+                        XCTFail(error.localizedDescription)
+                    }
+                }
+            }
+            DispatchQueue.global(qos: .userInitiated).async {
+                adapter.request(data: Endpoint()) { result in
+                    if case let .error(error) = result {
+                        XCTFail(error.localizedDescription)
+                    }
+                }
+            }
+            DispatchQueue.global(qos: .userInteractive).async {
+                adapter.request(data: Endpoint()) { result in
+                    if case let .error(error) = result {
+                        XCTFail(error.localizedDescription)
+                    }
+                }
+            }
+            DispatchQueue.global(qos: .utility).async {
+                adapter.request(data: Endpoint()) { result in
+                    if case let .error(error) = result {
+                        XCTFail(error.localizedDescription)
+                    }
+                }
+            }
+        }
+        
+        
+        wait(for: [expectation], timeout: extendedTimeout)
     }
 
     func testClientError() {
@@ -371,6 +417,7 @@ final class APIAdapterTests: XCTestCase {
 
     static var allTests = [
         ("testGet", testGet),
+        ("testStressMultipleRequestsViaGet", testStressMultipleRequestsViaGet),
         ("testClientError", testClientError),
         ("testServerError", testServerError),
         ("testConnectionError", testConnectionError),
