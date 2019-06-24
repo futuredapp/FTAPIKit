@@ -22,7 +22,7 @@ internal final class Serialized<Value> {
     }
 
     // Did set observer for stored property. Notice, that didSet event is called on the synchronization queue. You should free this thread asap with async call, since complex operations would slow down sync access to the property.
-    internal var didSetEvent: ((_ oldValue: Value, _ newValue: Value)->Void)?
+   var didSetEvent: ((_ oldValue: Value, _ newValue: Value)->Void)?
 
     // Inserting initial value to the property. Notice, that this operation is NOT DONE on the synchronization queue.
     internal init(initialValue: Value) {
