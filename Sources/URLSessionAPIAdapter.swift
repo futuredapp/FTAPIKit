@@ -14,7 +14,7 @@ internal final class Serialized<Value> {
     // Synchronization queue for the property. Read or write to the property must be perforimed on this queue
     private let queue = DispatchQueue(label: "com.thefuntasty.ftapikit.serialization")
 
-    // The value itsef with did-set observing.
+    // The value itself with did-set observing.
     private var _value: Value {
         didSet {
             didSetEvent?(oldValue, _value)
