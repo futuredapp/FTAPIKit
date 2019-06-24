@@ -8,6 +8,51 @@
 
 import Foundation
 
+// This class provides user with easy way to serialize access to a property in multiplatform environment. This class is written with future PropertyWrapper feature of swift in mind.
+internal final class Serialized<Value> {
+
+    // Synchronization queue for the property. Read or write to the property must be perforimed on this queue
+    private let queue = DispatchQueue(label: "org.funtasty.devs.ftapikit.serialization", qos: .unspecified, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+
+    // The value itsef with did-set observing.
+    private var _value: Value {
+        didSet {
+            didSetEvent?(oldValue, _value)
+        }
+    }
+
+    // Did set observer for stored property. Notice, that didSet event is called on the synchronization queue. You should free this thread asap with async call, since complex operations would slow down sync access to the property.
+    internal var didSetEvent: ((_ oldValue: Value, _ newValue: Value)->Void)?
+
+    // Inserting initial value to the property. Notice, that this operation is NOT DONE on the synchronization queue.
+    internal init(initialValue: Value) {
+        _value = initialValue
+    }
+
+    // MARK: Property access
+
+    // Synchronized access wrapper around stored property. Calls to the synchronization queue are sync, so evaluating this getter and setter migth take considerable amount of time.
+    internal var wrappedValue: Value {
+        get {
+            return queue.sync {
+                return _value
+            }
+        }
+        set {
+            queue.sync {
+                _value = newValue
+            }
+        }
+    }
+
+    // It is enouraged to use this method to make more complex operations with the stored property, like read-and-write. Do not perform any time-demading operations in this block since it will stop other uses of the stored property.
+    internal func asyncAccess(_ block: @escaping (inout Value)->Void) {
+        queue.async {
+            block(&self._value)
+        }
+    }
+}
+
 /// Standard and default implementation of `APIAdapter` protocol using `URLSession`.
 public final class URLSessionAPIAdapter: APIAdapter {
     public weak var delegate: APIAdapterDelegate?
@@ -20,14 +65,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
     private let errorType: APIError.Type
 
-    private var runningRequestCount: UInt = 0 {
-        didSet {
-            guard let delegate = delegate else { return }
-            DispatchQueue.main.async {
-                delegate.apiAdapter(self, didUpdateRunningRequestCount: self.runningRequestCount)
-            }
-        }
-    }
+    private var runningRequestCount: Serialized<UInt>
 
     /// Constructor for `APIAdapter` based on `URLSession`.
     ///
@@ -45,6 +83,14 @@ public final class URLSessionAPIAdapter: APIAdapter {
         self.jsonEncoder = jsonEncoder
         self.errorType = errorType
         self.urlSession = urlSession
+        self.runningRequestCount = Serialized(initialValue: 0)
+
+        runningRequestCount.didSetEvent = { [weak self] _, newValue in
+            DispatchQueue.main.async {
+                guard let strongTemporarySelf = self else { return }
+                strongTemporarySelf.delegate?.apiAdapter(strongTemporarySelf, didUpdateRunningRequestCount: newValue)
+            }
+        }
     }
 
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
@@ -100,9 +146,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     private func send(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionTask {
-        runningRequestCount += 1
+        runningRequestCount.asyncAccess { $0 += 1 }
         return resumeDataTask(with: request) { result in
-            self.runningRequestCount -= 1
+            self.runningRequestCount.asyncAccess { $0 -= 1 }
             completion(result)
         }
     }

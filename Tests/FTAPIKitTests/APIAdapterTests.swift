@@ -9,7 +9,7 @@
 // swiftlint:disable nesting
 
 import XCTest
-import FTAPIKit
+@testable import FTAPIKit
 
 final class APIAdapterTests: XCTestCase {
 
@@ -47,13 +47,31 @@ final class APIAdapterTests: XCTestCase {
         var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
-        
-        for _ in 0...10 {
+
+        let testingRange = 0...9
+        let testingRequests = testingRange.count * 4
+
+        let counter: Serialized<UInt> = Serialized(initialValue: 0)
+        counter.didSetEvent = { _, newValue in
+            if testingRequests > newValue {
+                //nop
+            } else if testingRequests == newValue {
+                expectation.fulfill()
+            } else if testingRequests < newValue {
+                print(testingRequests)
+                print(newValue)
+                XCTFail("Number of responses exceeded number of requests")
+            }
+        }
+
+
+        for _ in testingRange {
             DispatchQueue.global(qos: .background).async {
                 adapter.request(data: Endpoint()) { result in
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
+                    counter.asyncAccess { $0 += 1 }
                 }
             }
             DispatchQueue.global(qos: .userInitiated).async {
@@ -61,6 +79,7 @@ final class APIAdapterTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
+                    counter.asyncAccess { $0 += 1 }
                 }
             }
             DispatchQueue.global(qos: .userInteractive).async {
@@ -68,6 +87,7 @@ final class APIAdapterTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
+                    counter.asyncAccess { $0 += 1 }
                 }
             }
             DispatchQueue.global(qos: .utility).async {
@@ -75,6 +95,7 @@ final class APIAdapterTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
+                    counter.asyncAccess { $0 += 1 }
                 }
             }
         }
