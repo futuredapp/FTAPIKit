@@ -32,7 +32,7 @@ internal final class Serialized<Value> {
     // MARK: Property access
 
     // Synchronized access wrapper around stored property. Calls to the synchronization queue are sync, so evaluating this getter and setter migth take considerable amount of time.
-    internal var wrappedValue: Value {
+   var wrappedValue: Value {
         get {
             return queue.sync {
                 return _value
