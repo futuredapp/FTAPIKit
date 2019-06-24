@@ -87,7 +87,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
         runningRequestCount.didSetEvent = { [weak self] _, newValue in
             DispatchQueue.main.async {
-                guard let strongTemporarySelf = self else { return }
+                guard let self = self else { return }
                 strongTemporarySelf.delegate?.apiAdapter(strongTemporarySelf, didUpdateRunningRequestCount: newValue)
             }
         }
