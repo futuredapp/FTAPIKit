@@ -12,9 +12,9 @@ import Foundation
 internal final class Serialized<Value> {
 
     // Synchronization queue for the property. Read or write to the property must be perforimed on this queue
-    private let queue = DispatchQueue(label: "org.funtasty.devs.ftapikit.serialization", qos: .unspecified, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+    private let queue = DispatchQueue(label: "com.thefuntasty.ftapikit.serialization")
 
-    // The value itsef with did-set observing.
+    // The value itself with did-set observing.
     private var _value: Value {
         didSet {
             didSetEvent?(oldValue, _value)
@@ -22,7 +22,7 @@ internal final class Serialized<Value> {
     }
 
     // Did set observer for stored property. Notice, that didSet event is called on the synchronization queue. You should free this thread asap with async call, since complex operations would slow down sync access to the property.
-    internal var didSetEvent: ((_ oldValue: Value, _ newValue: Value)->Void)?
+   var didSetEvent: ((_ oldValue: Value, _ newValue: Value)->Void)?
 
     // Inserting initial value to the property. Notice, that this operation is NOT DONE on the synchronization queue.
     internal init(initialValue: Value) {
@@ -32,7 +32,7 @@ internal final class Serialized<Value> {
     // MARK: Property access
 
     // Synchronized access wrapper around stored property. Calls to the synchronization queue are sync, so evaluating this getter and setter migth take considerable amount of time.
-    internal var wrappedValue: Value {
+   var wrappedValue: Value {
         get {
             return queue.sync {
                 return _value
@@ -87,7 +87,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
         runningRequestCount.didSetEvent = { [weak self] _, newValue in
             DispatchQueue.main.async {
-                guard let strongTemporarySelf = self else { return }
+                guard let self = self else { return }
                 strongTemporarySelf.delegate?.apiAdapter(strongTemporarySelf, didUpdateRunningRequestCount: newValue)
             }
         }
