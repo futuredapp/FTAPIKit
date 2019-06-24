@@ -18,7 +18,6 @@ final class APIAdapterTests: XCTestCase {
     }
 
     private let timeout: TimeInterval = 30.0
-    private let extendedTimeout: TimeInterval = 120.0
     
     func testGet() {
         struct Endpoint: APIEndpoint {
@@ -38,72 +37,6 @@ final class APIAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
     
-    func testStressMultipleRequestsViaGet() {
-        struct Endpoint: APIEndpoint {
-            let path = "get"
-        }
-        
-        let delegate = MockupAPIAdapterDelegate()
-        var adapter: APIAdapter = apiAdapter()
-        adapter.delegate = delegate
-        let expectation = self.expectation(description: "Result")
-
-        let testingRange = 0...9
-        let testingRequests = testingRange.count * 4
-
-        let counter: Serialized<UInt> = Serialized(initialValue: 0)
-        counter.didSetEvent = { _, newValue in
-            if testingRequests > newValue {
-                //nop
-            } else if testingRequests == newValue {
-                expectation.fulfill()
-            } else if testingRequests < newValue {
-                print(testingRequests)
-                print(newValue)
-                XCTFail("Number of responses exceeded number of requests")
-            }
-        }
-
-
-        for _ in testingRange {
-            DispatchQueue.global(qos: .background).async {
-                adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
-                        XCTFail(error.localizedDescription)
-                    }
-                    counter.asyncAccess { $0 += 1 }
-                }
-            }
-            DispatchQueue.global(qos: .userInitiated).async {
-                adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
-                        XCTFail(error.localizedDescription)
-                    }
-                    counter.asyncAccess { $0 += 1 }
-                }
-            }
-            DispatchQueue.global(qos: .userInteractive).async {
-                adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
-                        XCTFail(error.localizedDescription)
-                    }
-                    counter.asyncAccess { $0 += 1 }
-                }
-            }
-            DispatchQueue.global(qos: .utility).async {
-                adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
-                        XCTFail(error.localizedDescription)
-                    }
-                    counter.asyncAccess { $0 += 1 }
-                }
-            }
-        }
-        
-        
-        wait(for: [expectation], timeout: extendedTimeout)
-    }
-
     func testClientError() {
         struct Endpoint: APIEndpoint {
             let path = "status/404"
@@ -438,7 +371,6 @@ final class APIAdapterTests: XCTestCase {
 
     static var allTests = [
         ("testGet", testGet),
-        ("testStressMultipleRequestsViaGet", testStressMultipleRequestsViaGet),
         ("testClientError", testClientError),
         ("testServerError", testServerError),
         ("testConnectionError", testConnectionError),
