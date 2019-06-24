@@ -12,7 +12,7 @@ import Foundation
 internal final class Serialized<Value> {
 
     // Synchronization queue for the property. Read or write to the property must be perforimed on this queue
-    private let queue = DispatchQueue(label: "org.funtasty.devs.ftapikit.serialization", qos: .unspecified, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+    private let queue = DispatchQueue(label: "com.thefuntasty.ftapikit.serialization")
 
     // The value itsef with did-set observing.
     private var _value: Value {
