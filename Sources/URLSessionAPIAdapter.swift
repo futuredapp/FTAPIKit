@@ -9,46 +9,30 @@
 import Foundation
 
 // This class provides user with easy way to serialize access to a property in multiplatform environment. This class is written with future PropertyWrapper feature of swift in mind.
-internal final class Serialized<Value> {
+final class Serialized<Value> {
 
     // Synchronization queue for the property. Read or write to the property must be perforimed on this queue
     private let queue = DispatchQueue(label: "com.thefuntasty.ftapikit.serialization")
 
     // The value itself with did-set observing.
-    private var _value: Value {
+    private var value: Value {
         didSet {
-            didSetEvent?(oldValue, _value)
+            didSetEvent?(oldValue, value)
         }
     }
 
     // Did set observer for stored property. Notice, that didSet event is called on the synchronization queue. You should free this thread asap with async call, since complex operations would slow down sync access to the property.
-   var didSetEvent: ((_ oldValue: Value, _ newValue: Value)->Void)?
+    var didSetEvent: ((_ oldValue: Value, _ newValue: Value) -> Void)?
 
     // Inserting initial value to the property. Notice, that this operation is NOT DONE on the synchronization queue.
-    internal init(initialValue: Value) {
-        _value = initialValue
-    }
-
-    // MARK: Property access
-
-    // Synchronized access wrapper around stored property. Calls to the synchronization queue are sync, so evaluating this getter and setter migth take considerable amount of time.
-   var wrappedValue: Value {
-        get {
-            return queue.sync {
-                return _value
-            }
-        }
-        set {
-            queue.sync {
-                _value = newValue
-            }
-        }
+    init(initialValue: Value) {
+        value = initialValue
     }
 
     // It is enouraged to use this method to make more complex operations with the stored property, like read-and-write. Do not perform any time-demading operations in this block since it will stop other uses of the stored property.
-    internal func asyncAccess(_ block: @escaping (inout Value)->Void) {
+    internal func asyncAccess(transform: @escaping (Value) -> Value) {
         queue.async {
-            block(&self._value)
+            self.value = transform(self.value)
         }
     }
 }
@@ -146,9 +130,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     private func send(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionTask {
-        runningRequestCount.asyncAccess { $0 += 1 }
+        runningRequestCount.asyncAccess { $0 + 1 }
         return resumeDataTask(with: request) { result in
-            self.runningRequestCount.asyncAccess { $0 -= 1 }
+            self.runningRequestCount.asyncAccess { $0 - 1 }
             completion(result)
         }
     }

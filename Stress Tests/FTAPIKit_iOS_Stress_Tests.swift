@@ -48,7 +48,7 @@ class APIStressTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
-                    counter.asyncAccess { $0 += 1 }
+                    counter.asyncAccess { $0 + 1 }
                 }
             }
             DispatchQueue.global(qos: .userInitiated).async {
@@ -56,7 +56,7 @@ class APIStressTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
-                    counter.asyncAccess { $0 += 1 }
+                    counter.asyncAccess { $0 + 1 }
                 }
             }
             DispatchQueue.global(qos: .userInteractive).async {
@@ -64,7 +64,7 @@ class APIStressTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
-                    counter.asyncAccess { $0 += 1 }
+                    counter.asyncAccess { $0 + 1 }
                 }
             }
             DispatchQueue.global(qos: .utility).async {
@@ -72,7 +72,7 @@ class APIStressTests: XCTestCase {
                     if case let .error(error) = result {
                         XCTFail(error.localizedDescription)
                     }
-                    counter.asyncAccess { $0 += 1 }
+                    counter.asyncAccess { $0 + 1 }
                 }
             }
         }
