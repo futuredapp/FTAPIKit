@@ -22,6 +22,10 @@
 
 /* Begin PBXBuildFile section */
 		52D6D9871BEFF229002C0205 /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* FTAPIKit.framework */; };
+		A74B18FD22C4B28900EE524A /* Serialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74B18FC22C4B28900EE524A /* Serialized.swift */; };
+		A74B191122C4CD3000EE524A /* Serialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74B18FC22C4B28900EE524A /* Serialized.swift */; };
+		A74B191222C4CD3100EE524A /* Serialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74B18FC22C4B28900EE524A /* Serialized.swift */; };
+		A74B191322C4CD3100EE524A /* Serialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74B18FC22C4B28900EE524A /* Serialized.swift */; };
 		BE235E8522C0BA4200A09114 /* FTAPIKit_iOS_Stress_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE235E8422C0BA4200A09114 /* FTAPIKit_iOS_Stress_Tests.swift */; };
 		BE235E8722C0BA4200A09114 /* FTAPIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* FTAPIKit.framework */; };
 		BE235E8D22C0C23C00A09114 /* APIAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B774372152776A006E7585 /* APIAdapterTests.swift */; };
@@ -122,6 +126,7 @@
 		52D6D9E21BEFFF6E002C0205 /* FTAPIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTAPIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9F01BEFFFBE002C0205 /* FTAPIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTAPIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6DA0F1BF000BD002C0205 /* FTAPIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTAPIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A74B18FC22C4B28900EE524A /* Serialized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Serialized.swift; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* FTAPIKit.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FTAPIKit.plist; sourceTree = "<group>"; };
 		AD2FAA281CD0B6E100659CF4 /* FTAPIKitTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FTAPIKitTests.plist; sourceTree = "<group>"; };
 		BE235E8222C0BA4100A09114 /* FTAPIKit-iOS Stress Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FTAPIKit-iOS Stress Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -258,6 +263,7 @@
 				E7692823222431CE0031137D /* MultipartFormData.swift */,
 				E769282822269D4C0031137D /* OutputStream+Write.swift */,
 				E7197F76223510FF0059A54A /* MultipartBodyPart.swift */,
+				A74B18FC22C4B28900EE524A /* Serialized.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -652,6 +658,7 @@
 				E7B774332152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741B2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742B2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				A74B18FD22C4B28900EE524A /* Serialized.swift in Sources */,
 				E7197F77223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692824222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629D219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
@@ -680,6 +687,7 @@
 				E7B774352152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741D2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742D2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				A74B191222C4CD3100EE524A /* Serialized.swift in Sources */,
 				E7197F79223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692826222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629F219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
@@ -698,6 +706,7 @@
 				E7B774362152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741E2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742E2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				A74B191322C4CD3100EE524A /* Serialized.swift in Sources */,
 				E7197F7A223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692827222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E79262A0219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
@@ -716,6 +725,7 @@
 				E7B774342152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741C2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742C2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				A74B191122C4CD3000EE524A /* Serialized.swift in Sources */,
 				E7197F78223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692825222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629E219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
