@@ -335,20 +335,26 @@ final class APIAdapterTests: XCTestCase {
     }
 
     func testMultipartData() {
-        struct MockupUrl {
-            let url: URL = Bundle(for: APIAdapterTests.self).url(forResource: "MockupBodyPart", withExtension: "jpg")!
+        struct MockupFile {
+            let url: URL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(UUID()).txt")
+            let data = Data(repeating: UInt8(ascii: "a"), count: 1024 * 1024)
             let headers: [String: String] = [
                 "Content-Disposition": "form-data; name=jpegFile",
                 "Content-Type": "image/jpeg"
             ]
         }
+
         struct Endpoint: APIEndpoint {
-            let type: RequestType = .multipart([
-                MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
-                try! MultipartBodyPart(name: "urlImage", url: MockupUrl().url),
-                MultipartBodyPart(headers: MockupUrl().headers, data: try! Data(contentsOf: MockupUrl().url)),
-                MultipartBodyPart(headers: MockupUrl().headers, inputStream: InputStream(url: MockupUrl().url)!)
-            ])
+            let file: MockupFile
+
+            var type: RequestType {
+                return .multipart([
+                    MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
+                    try! MultipartBodyPart(name: "urlImage", url: file.url),
+                    MultipartBodyPart(headers: file.headers, data: file.data),
+                    MultipartBodyPart(headers: file.headers, inputStream: InputStream(url: file.url)!)
+                ])
+            }
             let parameters: HTTPParameters = [
                 "someParameter": "someValue"
             ]
@@ -356,11 +362,14 @@ final class APIAdapterTests: XCTestCase {
             let method: HTTPMethod = .post
         }
 
+        let file = MockupFile()
+        try! file.data.write(to: file.url)
+
         let delegate = MockupAPIAdapterDelegate()
         var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
-        adapter.request(data: Endpoint()) { result in
+        adapter.request(data: Endpoint(file: file)) { result in
             if case let .error(error) = result {
                 XCTFail(error.localizedDescription)
             }
