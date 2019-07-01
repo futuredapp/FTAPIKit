@@ -38,6 +38,7 @@ playground.xcworkspace
 # Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
 # Packages/
 # Package.pins
+.swiftpm
 .build/
 # We do not need the project, because it can be generated or the Package.swift can be open in Xcode 11
 FTAPIKit.xcodeproj
