@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
   s.name         = "FTAPIKit"
-  s.version      = "0.4.1"
+  s.version      = "0.5.0"
   s.summary      = "Declarative, generic REST API framework using URLSession and Codable"
   s.description  = <<-DESC
-    Protocol-oriented REST API library for communication with REST APIs.
+    Protocol-oriented REST API library for communication with REST API.
     APIEndpoint protocols allow description of the API access points
     and the requests/responses codable types. APIAdapter handles execution
     of calls to this endpoints.
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author             = { "Matěj Kašpar Jirásek" => "matej.jirasek@thefuntasty.com" }
   s.social_media_url   = "https://twitter.com/thefuntasty"
   s.default_subspec = 'Core'
-  s.swift_version = "4.2"
+  s.swift_version = "5.0"
   s.ios.deployment_target = "8.0"
   s.osx.deployment_target = "10.10"
   s.watchos.deployment_target = "2.0"
