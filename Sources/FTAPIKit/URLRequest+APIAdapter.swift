@@ -53,9 +53,16 @@ extension URLRequest {
     }
 
     private mutating func setURLEncoded(parameters: HTTPParameters) {
+        let queryItems: [URLQueryItem] = parameters.compactMap { (key, value) in
+            guard let encodedKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowed),
+                let encodedValue = value.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowed) else {
+                    return nil
+            }
+            return URLQueryItem(name: encodedKey, value: encodedValue)
+        }
         var urlComponents = URLComponents()
-        urlComponents.queryItems = parameters.map(URLQueryItem.init)
-        httpBody = urlComponents.query?.data(using: .ascii, allowLossyConversion: true)
+        urlComponents.queryItems = queryItems
+        httpBody = urlComponents.query?.data(using: .ascii)
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
