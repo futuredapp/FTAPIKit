@@ -20,14 +20,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
 
     private let errorType: APIError.Type
 
-    private var runningRequestCount: UInt = 0 {
-        didSet {
-            guard let delegate = delegate else { return }
-            DispatchQueue.main.async {
-                delegate.apiAdapter(self, didUpdateRunningRequestCount: self.runningRequestCount)
-            }
-        }
-    }
+    private var runningRequestCount: Serialized<UInt>
 
     /// Constructor for `APIAdapter` based on `URLSession`.
     ///
@@ -45,6 +38,14 @@ public final class URLSessionAPIAdapter: APIAdapter {
         self.jsonEncoder = jsonEncoder
         self.errorType = errorType
         self.urlSession = urlSession
+        self.runningRequestCount = Serialized(initialValue: 0)
+
+        runningRequestCount.didSetEvent = { [weak self] _, newValue in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.delegate?.apiAdapter(self, didUpdateRunningRequestCount: newValue)
+            }
+        }
     }
 
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (Result<Endpoint.Response, Error>) -> Void) {
@@ -92,9 +93,9 @@ public final class URLSessionAPIAdapter: APIAdapter {
     }
 
     private func send(request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
-        runningRequestCount += 1
+        runningRequestCount.asyncAccess { $0 + 1 }
         return resumeDataTask(with: request) { result in
-            self.runningRequestCount -= 1
+            self.runningRequestCount.asyncAccess { $0 - 1 }
             completion(result)
         }
     }

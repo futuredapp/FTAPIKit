@@ -38,6 +38,11 @@
                BlueprintName = "FTAPIKit-tvOS Tests"
                ReferencedContainer = "container:FTAPIKit.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "StressTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
