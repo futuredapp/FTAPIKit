@@ -48,31 +48,23 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
+    public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (Result<Endpoint.Response, Error>) -> Void) {
         dataTask(response: endpoint, creation: { _ in }, completion: completion)
     }
 
-    public func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void) {
+    public func request(data endpoint: APIEndpoint, completion: @escaping (Result<Data, Error>) -> Void) {
         dataTask(data: endpoint, creation: { _ in }, completion: completion)
     }
 
-    public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (APIResult<Endpoint.Response>) -> Void) {
+    public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (Result<Endpoint.Response, Error>) -> Void) {
         dataTask(data: endpoint, creation: creation) { result in
-            switch result {
-            case .value(let data):
-                do {
-                    let model = try self.jsonDecoder.decode(Endpoint.Response.self, from: data)
-                    completion(.value(model))
-                } catch {
-                    completion(.error(error))
-                }
-            case .error(let error):
-                completion(.error(error))
-            }
+            completion(result.flatMap { data in
+                Result(catching: { try self.jsonDecoder.decode(Endpoint.Response.self, from: data) })
+            })
         }
     }
 
-    public func dataTask(data endpoint: APIEndpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (APIResult<Data>) -> Void) {
+    public func dataTask(data endpoint: APIEndpoint, creation: @escaping (URLSessionTask) -> Void, completion: @escaping (Result<Data, Error>) -> Void) {
         let url = baseUrl.appendingPathComponent(endpoint.path)
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.description
@@ -80,18 +72,18 @@ public final class URLSessionAPIAdapter: APIAdapter {
         do {
             try request.setRequestType(endpoint.type, parameters: endpoint.parameters, using: jsonEncoder)
         } catch {
-            completion(.error(error))
+            completion(.failure(error))
             return
         }
 
         if let delegate = delegate {
             delegate.apiAdapter(self, willRequest: request, to: endpoint) { result in
                 switch result {
-                case .value(let request):
+                case .success(let request):
                     let task = self.send(request: request, completion: completion)
                     creation(task)
-                case .error(let error):
-                    completion(.error(error))
+                case .failure(let error):
+                    completion(.failure(error))
                 }
             }
         } else {
@@ -100,7 +92,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    private func send(request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionTask {
+    private func send(request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
         runningRequestCount.asyncAccess { $0 + 1 }
         return resumeDataTask(with: request) { result in
             self.runningRequestCount.asyncAccess { $0 - 1 }
@@ -108,12 +100,12 @@ public final class URLSessionAPIAdapter: APIAdapter {
         }
     }
 
-    private func resumeDataTask(with request: URLRequest, completion: @escaping (APIResult<Data>) -> Void) -> URLSessionTask {
+    private func resumeDataTask(with request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
         let task = urlSession.dataTask(with: request) { [jsonDecoder, errorType] data, response, error in
             if let error = errorType.init(data: data, response: response, error: error, decoder: jsonDecoder) {
-                completion(.error(error))
+                completion(.failure(error))
             } else {
-                completion(.value(data ?? Data()))
+                completion(.success(data ?? Data()))
             }
         }
         task.resume()
