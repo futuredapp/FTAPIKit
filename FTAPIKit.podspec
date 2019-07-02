@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = "2.0"
   s.tvos.deployment_target = "9.0"
   s.source       = { :git => "https://github.com/thefuntasty/FTAPIKit.git", :tag => s.version.to_s }
-  s.compiler_flags = '-DCOCOAPODS=1'
+  s.compiler_flags = '-DNOIMPORT=1'
 
   s.subspec 'Core' do |ss|
     ss.source_files  = "Sources/FTAPIKit/*"

@@ -7,7 +7,7 @@
 //
 
 import PromiseKit
-#if COCOAPODS
+#if NOIMPORT
 import FTAPIKit
 #endif
 
