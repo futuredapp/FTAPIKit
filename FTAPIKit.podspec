@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'PromiseKit' do |ss|
-    ss.source_files = Dir['Sources/FTAPIKitPromises/*']
+    ss.source_files = Dir['Sources/FTAPIKitPromiseKit/*']
     ss.dependency 'PromiseKit', '~> 6.0'
     ss.dependency 'FTAPIKit/Core'
   end
