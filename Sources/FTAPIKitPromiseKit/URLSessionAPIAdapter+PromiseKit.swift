@@ -7,8 +7,9 @@
 //
 
 import PromiseKit
+#if COCOAPODS
 import FTAPIKit
-import Foundation
+#endif
 
 public struct APIDataTask<T> {
     public let sessionTask: Guarantee<URLSessionTask?>

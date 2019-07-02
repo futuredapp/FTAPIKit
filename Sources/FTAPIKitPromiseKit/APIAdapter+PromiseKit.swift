@@ -7,8 +7,9 @@
 //
 
 import PromiseKit
+#if COCOAPODS
 import FTAPIKit
-import Foundation
+#endif
 
 extension APIAdapter {
     public func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> Promise<Endpoint.Response> {
