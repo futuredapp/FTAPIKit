@@ -77,6 +77,10 @@
 		E7B7743C21527883006E7585 /* MockupAPIAdapterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B7743B21527883006E7585 /* MockupAPIAdapterDelegate.swift */; };
 		E7B7743D21527883006E7585 /* MockupAPIAdapterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B7743B21527883006E7585 /* MockupAPIAdapterDelegate.swift */; };
 		E7B7743E21527883006E7585 /* MockupAPIAdapterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B7743B21527883006E7585 /* MockupAPIAdapterDelegate.swift */; };
+		F317B5F7229805B50050217F /* CharacterSet+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F317B5F6229805B50050217F /* CharacterSet+APIAdapter.swift */; };
+		F317B5F822980E2C0050217F /* CharacterSet+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F317B5F6229805B50050217F /* CharacterSet+APIAdapter.swift */; };
+		F317B5F922980E2C0050217F /* CharacterSet+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F317B5F6229805B50050217F /* CharacterSet+APIAdapter.swift */; };
+		F317B5FA22980E2D0050217F /* CharacterSet+APIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F317B5F6229805B50050217F /* CharacterSet+APIAdapter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +131,7 @@
 		E7B7741A2152752A006E7585 /* APIAdapter+Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "APIAdapter+Types.swift"; sourceTree = "<group>"; };
 		E7B774372152776A006E7585 /* APIAdapterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIAdapterTests.swift; sourceTree = "<group>"; };
 		E7B7743B21527883006E7585 /* MockupAPIAdapterDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupAPIAdapterDelegate.swift; sourceTree = "<group>"; };
+		F317B5F6229805B50050217F /* CharacterSet+APIAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+APIAdapter.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +234,7 @@
 				E7B774182152752A006E7585 /* AnyEncodable.swift */,
 				E7B774152152752A006E7585 /* URL+APIAdapter.swift */,
 				E7B774172152752A006E7585 /* URLRequest+APIAdapter.swift */,
+				F317B5F6229805B50050217F /* CharacterSet+APIAdapter.swift */,
 				E7692823222431CE0031137D /* MultipartFormData.swift */,
 				E769282822269D4C0031137D /* OutputStream+Write.swift */,
 				E7197F76223510FF0059A54A /* MultipartBodyPart.swift */,
@@ -587,6 +593,7 @@
 				E7B774332152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741B2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742B2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				F317B5F7229805B50050217F /* CharacterSet+APIAdapter.swift in Sources */,
 				E7197F77223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692824222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629D219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
@@ -614,6 +621,7 @@
 				E7B774352152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741D2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742D2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				F317B5F922980E2C0050217F /* CharacterSet+APIAdapter.swift in Sources */,
 				E7197F79223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692826222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629F219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
@@ -632,6 +640,7 @@
 				E7B774362152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741E2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742E2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				F317B5FA22980E2D0050217F /* CharacterSet+APIAdapter.swift in Sources */,
 				E7197F7A223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692827222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E79262A0219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
@@ -650,6 +659,7 @@
 				E7B774342152752A006E7585 /* APIAdapter+Types.swift in Sources */,
 				E7B7741C2152752A006E7585 /* APIAdapter.swift in Sources */,
 				E7B7742C2152752A006E7585 /* AnyEncodable.swift in Sources */,
+				F317B5F822980E2C0050217F /* CharacterSet+APIAdapter.swift in Sources */,
 				E7197F78223510FF0059A54A /* MultipartBodyPart.swift in Sources */,
 				E7692825222431CE0031137D /* MultipartFormData.swift in Sources */,
 				E792629E219710A700CDBB7E /* URLSessionAPIAdapter.swift in Sources */,
