@@ -7,6 +7,8 @@
 //
 
 import PromiseKit
+import FTAPIKit
+import Foundation
 
 public struct APIDataTask<T> {
     public let sessionTask: Guarantee<URLSessionTask?>
