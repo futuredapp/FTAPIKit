@@ -40,7 +40,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "APIStressTests">
+                  Identifier = "StressTests">
                </Test>
             </SkippedTests>
          </TestableReference>

@@ -9,7 +9,7 @@
 import XCTest
 @testable import FTAPIKit
 
-class APIStressTests: XCTestCase {
+final class StressTests: XCTestCase {
 
     private func apiAdapter() -> URLSessionAPIAdapter {
         return URLSessionAPIAdapter(baseUrl: URL(string: "http://httpbin.org/")!)
