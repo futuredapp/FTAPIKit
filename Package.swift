@@ -10,8 +10,8 @@ let package = Package(
             name: "FTAPIKit",
             targets: ["FTAPIKit"]),
         .library(
-            name: "FTAPIKitPromises",
-            targets: ["FTAPIKitPromises"])
+            name: "FTAPIKitPromiseKit",
+            targets: ["FTAPIKitPromiseKit"])
     ],
     dependencies: [
         .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.8.4"),
@@ -21,7 +21,7 @@ let package = Package(
             name: "FTAPIKit",
             dependencies: []),
         .target(
-            name: "FTAPIKitPromises",
+            name: "FTAPIKitPromiseKit",
             dependencies: ["FTAPIKit", "PromiseKit"]),
         .testTarget(
             name: "FTAPIKitTests",
