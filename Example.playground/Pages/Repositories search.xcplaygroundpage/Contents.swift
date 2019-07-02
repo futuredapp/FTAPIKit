@@ -25,7 +25,7 @@ let username = "your_github_username"
 let password = "your_github_password"
 
 /*:
- Authorization method for Github is described in the link below. FTAPIKit doesn't solve authorization challenges on its own and relies on external support from either networking framework provided to FTAPIKit or custom user implementation using FTAPIKit's callbacks and delegates. However, FTAPIKit does not handle any authorization challenges on its own, FTAPIKit's APIEndpoint protocol contains property _authorized_ which indicates, whether authorization challenges do apply for the endpoint.
+ Authorization method for Github is described in the link below. FTAPIKit doesn't solve authorization challenges on its own and relies on external support from either networking framework provided to FTAPIKit or custom user implementation using FTAPIKit's callbacks and delegates. FTAPIKit's APIEndpoint protocol contains property _authorized_ which indicates, whether authorization challenges do apply for the endpoint.
 
  Github authorization: https://developer.github.com/v3/auth/#basic-authentication
  */
