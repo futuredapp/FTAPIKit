@@ -45,7 +45,7 @@ final class StressTests: XCTestCase {
         for _ in testingRange {
             DispatchQueue.global(qos: .background).async {
                 adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
+                    if case let .failure(error) = result {
                         XCTFail(error.localizedDescription)
                     }
                     counter.asyncAccess { $0 + 1 }
@@ -53,7 +53,7 @@ final class StressTests: XCTestCase {
             }
             DispatchQueue.global(qos: .userInitiated).async {
                 adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
+                    if case let .failure(error) = result {
                         XCTFail(error.localizedDescription)
                     }
                     counter.asyncAccess { $0 + 1 }
@@ -61,7 +61,7 @@ final class StressTests: XCTestCase {
             }
             DispatchQueue.global(qos: .userInteractive).async {
                 adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
+                    if case let .failure(error) = result {
                         XCTFail(error.localizedDescription)
                     }
                     counter.asyncAccess { $0 + 1 }
@@ -69,7 +69,7 @@ final class StressTests: XCTestCase {
             }
             DispatchQueue.global(qos: .utility).async {
                 adapter.request(data: Endpoint()) { result in
-                    if case let .error(error) = result {
+                    if case let .failure(error) = result {
                         XCTFail(error.localizedDescription)
                     }
                     counter.asyncAccess { $0 + 1 }
