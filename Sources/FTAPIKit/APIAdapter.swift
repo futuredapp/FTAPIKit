@@ -33,7 +33,7 @@ public protocol APIAdapterDelegate: class {
     ///
     /// The `authorization` property of `APIEndpoint` is provided for manual checking whether the
     /// request should be signed, because signing non-authorized endpoints might pose as a security risk.
-    func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (APIResult<URLRequest>) -> Void)
+    func apiAdapter(_ apiAdapter: APIAdapter, willRequest request: URLRequest, to endpoint: APIEndpoint, completion: @escaping (Result<URLRequest, Error>) -> Void)
 }
 
 /// Protocol describing interface communicating with API resources (most probably over internet).
@@ -52,12 +52,12 @@ public protocol APIAdapter {
     /// - Parameters:
     ///   - endpoint: Response endpoint
     ///   - completion: Completion closure receiving result with automatically decoded JSON model taken from reponse endpoint associated type.
-    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (APIResult<Endpoint.Response>) -> Void)
+    func request<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint, completion: @escaping (Result<Endpoint.Response, Error>) -> Void)
 
     /// Calls API endpoint and after finishing it calls completion handler with either data or error.
     ///
     /// - Parameters:
     ///   - endpoint: Standard endpoint with no response associated type.
     ///   - completion: Completion closure receiving result with data.
-    func request(data endpoint: APIEndpoint, completion: @escaping (APIResult<Data>) -> Void)
+    func request(data endpoint: APIEndpoint, completion: @escaping (Result<Data, Error>) -> Void)
 }
