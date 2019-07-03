@@ -9,7 +9,7 @@
 import Foundation
 
 extension URLRequest {
-    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
+    public mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using jsonEncoder: JSONEncoder) throws {
         switch requestType {
         case .jsonBody(let encodable):
             try setJSONBody(encodable: encodable, parameters: parameters, using: jsonEncoder)
