@@ -18,12 +18,12 @@ final class APIAdapterTests: XCTestCase {
     }
 
     private let timeout: TimeInterval = 30.0
-    
+
     func testGet() {
         struct Endpoint: APIEndpoint {
             let path = "get"
         }
-        
+
         let delegate = MockupAPIAdapterDelegate()
         var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
@@ -36,7 +36,7 @@ final class APIAdapterTests: XCTestCase {
         }
         wait(for: [expectation], timeout: timeout)
     }
-    
+
     func testClientError() {
         struct Endpoint: APIEndpoint {
             let path = "status/404"

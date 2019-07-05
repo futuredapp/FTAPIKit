@@ -1,5 +1,4 @@
 // swift-tools-version:5.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
@@ -14,7 +13,7 @@ let package = Package(
             targets: ["FTAPIKitPromiseKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.8.4"),
+        .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.8.4")
     ],
     targets: [
         .target(
