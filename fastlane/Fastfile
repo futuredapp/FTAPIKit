@@ -1,0 +1,10 @@
+
+fastlane_require "fastlane-plugin-brew"
+
+desc "Lint and test the library"
+lane :test do
+  brew(command: "install swiftlint")
+  swiftlint
+  pod_lib_lint
+  spm(command: "test")
+end

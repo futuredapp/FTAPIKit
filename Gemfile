@@ -2,4 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "jazzy", "~> 0.9"
+gem "fastlane", "~> 2.126"
+gem "fastlane-plugin-brew", "~> 0.1.1"
+gem "cocoapods", "~> 1.7"
