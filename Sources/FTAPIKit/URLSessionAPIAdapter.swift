@@ -40,10 +40,12 @@ public final class URLSessionAPIAdapter: APIAdapter {
         self.urlSession = urlSession
         self.runningRequestCount = Serialized(initialValue: 0)
 
-        runningRequestCount.didSetEvent = { [weak self] _, newValue in
+        runningRequestCount.didSet = { [weak self] count in
             DispatchQueue.main.async {
-                guard let self = self else { return }
-                self.delegate?.apiAdapter(self, didUpdateRunningRequestCount: newValue)
+                guard let self = self else {
+                    return
+                }
+                self.delegate?.apiAdapter(self, didUpdateRunningRequestCount: count)
             }
         }
     }

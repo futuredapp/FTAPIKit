@@ -29,18 +29,17 @@ final class StressTests: XCTestCase {
         let testingRequests = testingRange.count * 4
 
         let counter: Serialized<UInt> = Serialized(initialValue: 0)
-        counter.didSetEvent = { _, newValue in
-            if testingRequests > newValue {
+        counter.didSet = { count in
+            if testingRequests > count {
                 //nop
-            } else if testingRequests == newValue {
+            } else if testingRequests == count {
                 expectation.fulfill()
-            } else if testingRequests < newValue {
+            } else if testingRequests < count {
                 print(testingRequests)
-                print(newValue)
+                print(count)
                 XCTFail("Number of responses exceeded number of requests")
             }
         }
-
 
         for _ in testingRange {
             DispatchQueue.global(qos: .background).async {
@@ -76,7 +75,6 @@ final class StressTests: XCTestCase {
                 }
             }
         }
-
 
         wait(for: [expectation], timeout: extendedTimeout)
     }
