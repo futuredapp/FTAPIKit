@@ -52,7 +52,7 @@ public final class URLSessionAPIAdapter: APIAdapter {
         dataTask(response: endpoint, creation: { _ in }, completion: completion)
     }
 
-    public func request(data endpoint: APIEndpoint, completion: @escaping (Result<Data, Error>) -> Void) {
+    public func request<Endpoint: APIEndpoint>(data endpoint: Endpoint, completion: @escaping (Result<Data, Error>) -> Void) {
         dataTask(data: endpoint, creation: { _ in }, completion: completion)
     }
 

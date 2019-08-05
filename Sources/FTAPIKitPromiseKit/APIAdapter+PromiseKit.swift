@@ -19,7 +19,7 @@ extension APIAdapter {
         return promise
     }
 
-    public func request(data endpoint: APIEndpoint) -> Promise<Data> {
+    public func request<Endpoint: APIEndpoint>(data endpoint: Endpoint) -> Promise<Data> {
         let (promise, seal) = Promise<Data>.pending()
         request(data: endpoint, completion: seal.resolve)
         return promise

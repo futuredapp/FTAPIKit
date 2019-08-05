@@ -59,5 +59,5 @@ public protocol APIAdapter {
     /// - Parameters:
     ///   - endpoint: Standard endpoint with no response associated type.
     ///   - completion: Completion closure receiving result with data.
-    func request(data endpoint: APIEndpoint, completion: @escaping (Result<Data, Error>) -> Void)
+    func request<Endpoint: APIEndpoint>(data endpoint: Endpoint, completion: @escaping (Result<Data, Error>) -> Void)
 }
