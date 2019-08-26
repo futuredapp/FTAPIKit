@@ -8,3 +8,16 @@ lane :test do
   pod_lib_lint
   spm(command: "test")
 end
+
+desc "Generate documentation"
+lane :doc do
+  version = version_get_podspec
+  brew(command: "install sourcekitten")
+  sh "cd ..; sourcekitten doc --spm-module FTAPIKit > source.json"
+  sh "git add ../source.json"
+  sh "git stash"
+  sh "git checkout gh_pages"
+  sh "git stash pop"
+  jazzy
+  sh "mv docs/* ."
+end
