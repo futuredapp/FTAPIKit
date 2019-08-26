@@ -1,0 +1,40 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/kaspar/Repositories/FTAPIKit/Sources/FTAPIKit/APIError.swift",
+      "line": 11,
+      "symbol": "APIError",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/kaspar/Repositories/FTAPIKit/Sources/FTAPIKit/APIError.swift",
+      "line": 12,
+      "symbol": "APIError.init(data:response:error:decoder:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/kaspar/Repositories/FTAPIKit/Sources/FTAPIKit/APIError.swift",
+      "line": 34,
+      "symbol": "StandardAPIError.init(data:response:error:decoder:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/kaspar/Repositories/FTAPIKit/Sources/FTAPIKit/URLSessionAPIAdapter.swift",
+      "line": 61,
+      "symbol": "URLSessionAPIAdapter.dataTask(response:creation:completion:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/kaspar/Repositories/FTAPIKit/Sources/FTAPIKit/URLSessionAPIAdapter.swift",
+      "line": 69,
+      "symbol": "URLSessionAPIAdapter.dataTask(data:creation:completion:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/kaspar/Repositories/FTAPIKit"
+}

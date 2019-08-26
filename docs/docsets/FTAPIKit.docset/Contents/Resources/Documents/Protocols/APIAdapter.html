@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>APIAdapter Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Protocol/APIAdapter" class="dashAnchor"></a>
+    <a title="APIAdapter Protocol Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">FTAPIKit Docs</a> (92% documented)</p>
+        <p class="header-right"><a href="https://github.com/thefuntasty/FTAPIKit"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">FTAPIKit Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        APIAdapter Protocol Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/URLSessionAPIAdapter.html">URLSessionAPIAdapter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/HTTPMethod.html">HTTPMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RequestType.html">RequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/StandardAPIError.html">StandardAPIError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/APIAdapter.html">APIAdapter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIAdapterDelegate.html">APIAdapterDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIEndpoint.html">APIEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIError.html">APIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIRequestEndpoint.html">APIRequestEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIResponseEndpoint.html">APIResponseEndpoint</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/MultipartBodyPart.html">MultipartBodyPart</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit26APIRequestResponseEndpointa">APIRequestResponseEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit11HTTPHeadersa">HTTPHeaders</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit14HTTPParametersa">HTTPParameters</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>APIAdapter</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">APIAdapter</span></code></pre>
+
+                </div>
+              </div>
+            <p>Protocol describing interface communicating with API resources (most probably over internet).
+This interface encapsulates executing requests.</p>
+
+<p>Standard implementation of this interface using <code>URLSession</code> is available as
+<code><a href="../Classes/URLSessionAPIAdapter.html">URLSessionAPIAdapter</a></code>.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit10APIAdapterP8delegateAA0B8Delegate_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit10APIAdapterP8delegateAA0B8Delegate_pSgvp">delegate</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Delegate used for notificating about the currently running request count
+and asynchronously signing authorized requests.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/APIAdapterDelegate.html">APIAdapterDelegate</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit10APIAdapterP7request8response10completionyqd___ys6ResultOy8ResponseQyd__s5Error_pGctAA19APIResponseEndpointRd__lF"></a>
+                    <a name="//apple_ref/swift/Method/request(response:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit10APIAdapterP7request8response10completionyqd___ys6ResultOy8ResponseQyd__s5Error_pGctAA19APIResponseEndpointRd__lF">request(response:completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Calls API request endpoint with JSON body and after finishing it calls completion handler with either decoded JSON model or error.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">request</span><span class="o">&lt;</span><span class="kt">Endpoint</span><span class="p">:</span> <span class="kt"><a href="../Protocols/APIResponseEndpoint.html">APIResponseEndpoint</a></span><span class="o">&gt;</span><span class="p">(</span><span class="n">response</span> <span class="nv">endpoint</span><span class="p">:</span> <span class="kt">Endpoint</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Endpoint</span><span class="o">.</span><span class="kt">Response</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>endpoint</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Response endpoint</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Completion closure receiving result with automatically decoded JSON model taken from reponse endpoint associated type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit10APIAdapterP7request4data10completionyAA11APIEndpoint_p_ys6ResultOy10Foundation4DataVs5Error_pGctF"></a>
+                    <a name="//apple_ref/swift/Method/request(data:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit10APIAdapterP7request4data10completionyAA11APIEndpoint_p_ys6ResultOy10Foundation4DataVs5Error_pGctF">request(data:completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Calls API endpoint and after finishing it calls completion handler with either data or error.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">request</span><span class="p">(</span><span class="n">data</span> <span class="nv">endpoint</span><span class="p">:</span> <span class="kt"><a href="../Protocols/APIEndpoint.html">APIEndpoint</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Data</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>endpoint</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Standard endpoint with no response associated type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Completion closure receiving result with data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright (c) 2019 FUNTASTY Digital s.r.o.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.10.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

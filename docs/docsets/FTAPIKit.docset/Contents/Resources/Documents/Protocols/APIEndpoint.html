@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>APIEndpoint Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Protocol/APIEndpoint" class="dashAnchor"></a>
+    <a title="APIEndpoint Protocol Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">FTAPIKit Docs</a> (92% documented)</p>
+        <p class="header-right"><a href="https://github.com/thefuntasty/FTAPIKit"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">FTAPIKit Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        APIEndpoint Protocol Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/URLSessionAPIAdapter.html">URLSessionAPIAdapter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/HTTPMethod.html">HTTPMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RequestType.html">RequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/StandardAPIError.html">StandardAPIError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/APIAdapter.html">APIAdapter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIAdapterDelegate.html">APIAdapterDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIEndpoint.html">APIEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIError.html">APIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIRequestEndpoint.html">APIRequestEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIResponseEndpoint.html">APIResponseEndpoint</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/MultipartBodyPart.html">MultipartBodyPart</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit26APIRequestResponseEndpointa">APIRequestResponseEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit11HTTPHeadersa">HTTPHeaders</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit14HTTPParametersa">HTTPParameters</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>APIEndpoint</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">APIEndpoint</span></code></pre>
+
+                </div>
+              </div>
+            <p>Protocol describing API endpoint. API Endpoint describes one URI with all the
+data and parameters which are sent to it.</p>
+
+<p>Recommended conformance of this protocol is implemented using <code>struct</code>. It is
+of course possible using <code>enum</code> or <code>class</code>. Endpoints are are not designed
+to be referenced and used instantly after creation, so no memory usage is required.
+The case for not using enums is long-term sustainability. Enums tend to have many
+cases and information about one endpoint is spreaded all over the files. Also,
+structs offer us generated initializers, which is very helpful</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11APIEndpointP4pathSSvp"></a>
+                    <a name="//apple_ref/swift/Property/path" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11APIEndpointP4pathSSvp">path</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>URL path component without base URI.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11APIEndpointP10parametersSDyS2SGvp"></a>
+                    <a name="//apple_ref/swift/Property/parameters" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11APIEndpointP10parametersSDyS2SGvp">parameters</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>URL parameters is string dictionary sent either as URL query, multipart,
+JSON parameters or URL/Base64 encoded body. The <code><a href="../Protocols/APIEndpoint.html#/s:8FTAPIKit11APIEndpointP4typeAA11RequestTypeOvp">type</a></code> parameter of <code>APIEndpoint</code>
+protocol describes the way how to send the parameters.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">parameters</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:8FTAPIKit14HTTPParametersa">HTTPParameters</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11APIEndpointP6methodAA10HTTPMethodOvp"></a>
+                    <a name="//apple_ref/swift/Property/method" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11APIEndpointP6methodAA10HTTPMethodOvp">method</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>HTTP method/verb describing the action.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">method</span><span class="p">:</span> <span class="kt"><a href="../Enums/HTTPMethod.html">HTTPMethod</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11APIEndpointP4typeAA11RequestTypeOvp"></a>
+                    <a name="//apple_ref/swift/Property/type" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11APIEndpointP4typeAA11RequestTypeOvp">type</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type of the request describing how the parameters and data should be encoded and
+sent to the server. If additional data (not only parameters) are sent, then they
+are returned as an associated value of the type.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Enums/RequestType.html">RequestType</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11APIEndpointP10authorizedSbvp"></a>
+                    <a name="//apple_ref/swift/Property/authorized" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11APIEndpointP10authorizedSbvp">authorized</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Boolean marking whether the endpoint should be signed and authorization is required.</p>
+
+<p>This value is not used inside the framework. This value should be checked and handled
+accordingly when signing using the <code><a href="../Protocols/APIAdapterDelegate.html">APIAdapterDelegate</a></code>.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">authorized</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright (c) 2019 FUNTASTY Digital s.r.o.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.10.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

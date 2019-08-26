@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>RequestType Enumeration Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Enum/RequestType" class="dashAnchor"></a>
+    <a title="RequestType Enumeration Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">FTAPIKit Docs</a> (92% documented)</p>
+        <p class="header-right"><a href="https://github.com/thefuntasty/FTAPIKit"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">FTAPIKit Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        RequestType Enumeration Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/URLSessionAPIAdapter.html">URLSessionAPIAdapter</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/HTTPMethod.html">HTTPMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RequestType.html">RequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/StandardAPIError.html">StandardAPIError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/APIAdapter.html">APIAdapter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIAdapterDelegate.html">APIAdapterDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIEndpoint.html">APIEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIError.html">APIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIRequestEndpoint.html">APIRequestEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIResponseEndpoint.html">APIResponseEndpoint</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/MultipartBodyPart.html">MultipartBodyPart</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit26APIRequestResponseEndpointa">APIRequestResponseEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit11HTTPHeadersa">HTTPHeaders</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:8FTAPIKit14HTTPParametersa">HTTPParameters</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>RequestType</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestType</span></code></pre>
+
+                </div>
+              </div>
+            <p>Type of the API request. JSON body and multipart requests
+have associated values which are used as a body. The other
+types only describe how the <code><a href="../Typealiases.html#/s:8FTAPIKit14HTTPParametersa">HTTPParameters</a></code> are encoded.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11RequestTypeO8urlQueryyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/urlQuery" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11RequestTypeO8urlQueryyA2CmF">urlQuery</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The HTTP parameters will be added to URL as query.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">urlQuery</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11RequestTypeO10urlEncodedyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/urlEncoded" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11RequestTypeO10urlEncodedyA2CmF">urlEncoded</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>HTTP parameters will be sent as a URL encoded body.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">urlEncoded</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11RequestTypeO10jsonParamsyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/jsonParams" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11RequestTypeO10jsonParamsyA2CmF">jsonParams</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The parameters will be sent as JSON body.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">jsonParams</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11RequestTypeO8jsonBodyyACSE_pcACmF"></a>
+                    <a name="//apple_ref/swift/Element/jsonBody(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11RequestTypeO8jsonBodyyACSE_pcACmF">jsonBody(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The encodable model will be serialized and sent as JSON,
+parameters will be added as URL query.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">jsonBody</span><span class="p">(</span><span class="kt">Encodable</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11RequestTypeO9multipartyACSayAA17MultipartBodyPartVGcACmF"></a>
+                    <a name="//apple_ref/swift/Element/multipart(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11RequestTypeO9multipartyACSayAA17MultipartBodyPartVGcACmF">multipart(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All the parameters will be sent as multipart
+and files too.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">multipart</span><span class="p">([</span><span class="kt"><a href="../Structs/MultipartBodyPart.html">MultipartBodyPart</a></span><span class="p">])</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:8FTAPIKit11RequestTypeO12base64UploadyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/base64Upload" class="dashAnchor"></a>
+                    <a class="token" href="#/s:8FTAPIKit11RequestTypeO12base64UploadyA2CmF">base64Upload</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The parameters will be encoded using Base64 encoding
+and sent in request body.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">base64Upload</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright (c) 2019 FUNTASTY Digital s.r.o.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.10.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
