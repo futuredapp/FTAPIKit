@@ -1,0 +1,6 @@
+sourcekitten_sourcefile: "source.json",
+github_url: "https://github.com/thefuntasty/FTAPIKit",
+author_url: "https://www.thefuntasty.com",
+copyright: "Copyright (c) 2019 FUNTASTY Digital s.r.o.",
+module: "FTAPIKit",
+author: "FUNTASTY Digital s.r.o."
