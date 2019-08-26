@@ -16,7 +16,7 @@ lane :doc do
   sh "cd ..; sourcekitten doc --spm-module FTAPIKit > source.json"
   sh "git add ../source.json"
   sh "git stash"
-  sh "git checkout gh_pages"
+  sh "git checkout gh-pages"
   sh "git stash pop"
   jazzy
   sh "mv docs/* ."
