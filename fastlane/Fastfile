@@ -17,7 +17,9 @@ lane :doc do
   sh "git add ../source.json"
   sh "git stash"
   sh "git checkout gh-pages"
+  # Remove all documentation folders
+  sh "cd ..; rm -rf Classes Enums Protocols Structs css docsets img js"
   sh "git stash pop"
   jazzy
-  sh "mv docs/* ."
+  sh "mv ../docs/* .."
 end
