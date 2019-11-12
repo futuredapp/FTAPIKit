@@ -3,6 +3,7 @@ disabled_rules:
 excluded:
   - Pods
   - .build
+  - Templates
 opt_in_rules:
   - vertical_whitespace
   - empty_count
