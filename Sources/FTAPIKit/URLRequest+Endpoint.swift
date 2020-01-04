@@ -9,14 +9,14 @@
 import Foundation
 
 extension URLRequest {
-    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using encoder: APIEncoder) throws {
+    mutating func setRequestType(_ requestType: RequestType, parameters: HTTPParameters, using encoding: Encoding) throws {
         switch requestType {
         case .jsonBody(let encodable):
-            try setJSONBody(encodable: encodable, parameters: parameters, using: encoder)
+            try setJSONBody(encodable: encodable, parameters: parameters, using: encoding)
         case .urlEncoded:
             setURLEncoded(parameters: parameters)
         case .jsonParams:
-            setJSON(parameters: parameters, using: encoder)
+            setJSON(parameters: parameters, using: encoding)
         case let .multipart(files):
             try setMultipart(parameters: parameters, files: files)
         case .base64Upload:
@@ -46,7 +46,7 @@ extension URLRequest {
         }
     }
 
-    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using encoder: APIEncoder) {
+    private mutating func setJSON(parameters: HTTPParameters, body: Data? = nil, using encoding: Encoding) {
         setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         httpBody = body
         url?.appendQuery(parameters: parameters)
@@ -59,8 +59,8 @@ extension URLRequest {
         setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     }
 
-    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using encoder: APIEncoder) throws {
-        let body = try encoder.encode(AnyEncodable(encodable))
-        setJSON(parameters: parameters, body: body, using: encoder)
+    private mutating func setJSONBody(encodable: Encodable, parameters: HTTPParameters, using encoding: Encoding) throws {
+        let body = try encoding.encode(AnyEncodable(encodable))
+        setJSON(parameters: parameters, body: body, using: encoding)
     }
 }

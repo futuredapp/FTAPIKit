@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol APIError: Error {
-    init?(data: Data?, response: URLResponse?, error: Error?, decoder: APIDecoder)
+    init?(data: Data?, response: URLResponse?, error: Error?, decoding: Decoding)
 }
 
 /// Standard API error returned in `APIResult` when no custom error
@@ -31,7 +31,7 @@ public enum StandardAPIError: APIError {
     /// or the temporary request body stream cannot be opened.
     case multipartStreamCannotBeOpened
 
-    public init?(data: Data?, response: URLResponse?, error: Error?, decoder: APIDecoder) {
+    public init?(data: Data?, response: URLResponse?, error: Error?, decoding: Decoding) {
         switch (data, response as? HTTPURLResponse, error) {
         case let (_, _, error as NSError) where error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled:
             self = .cancelled
