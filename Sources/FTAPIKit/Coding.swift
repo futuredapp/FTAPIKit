@@ -9,7 +9,7 @@ public protocol Decoding {
 }
 
 public struct JSONEncoding: Encoding {
-    let encoder: JSONEncoder
+    private let encoder: JSONEncoder
 
     public init(encoder: JSONEncoder = .init()) {
         self.encoder = encoder
@@ -28,7 +28,7 @@ public struct JSONEncoding: Encoding {
 
 
 public struct JSONDecoding: Decoding {
-    let decoder: JSONDecoder
+    private let decoder: JSONDecoder
 
     public init(decoder: JSONDecoder = .init()) {
         self.decoder = decoder
