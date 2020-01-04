@@ -1,11 +1,3 @@
-//
-//  APIEndpoint.swift
-//  FTAPIKit-iOS
-//
-//  Created by Matěj Kašpar Jirásek on 04/09/2018.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 /// Protocol describing API endpoint. API Endpoint describes one URI with all the
 /// data and parameters which are sent to it.
 ///
@@ -16,7 +8,7 @@
 /// cases and information about one endpoint is spreaded all over the files. Also,
 /// structs offer us generated initializers, which is very helpful
 ///
-public protocol APIEndpoint {
+public protocol Endpoint {
 
     /// URL path component without base URI.
     var path: String { get }
@@ -41,7 +33,7 @@ public protocol APIEndpoint {
     var authorized: Bool { get }
 }
 
-public extension APIEndpoint {
+public extension Endpoint {
     var parameters: HTTPParameters {
         return [:]
     }
@@ -59,17 +51,17 @@ public extension APIEndpoint {
     }
 }
 
-/// Endpoint protocol extending `APIEndpoint` having decodable associated type, which is used
+/// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
 /// for automatic deserialization.
-public protocol APIResponseEndpoint: APIEndpoint {
+public protocol ResponseEndpoint: Endpoint {
     /// Associated type describing the return type conforming to `Decodable`
     /// protocol. This is only a phantom-type used by `APIAdapter`
     /// for automatic decoding/deserialization of API results.
     associatedtype Response: Decodable
 }
 
-/// Endpoint protocol extending `APIEndpoint` encapsulating and improving sending JSON models to API.
-public protocol APIRequestEndpoint: APIEndpoint {
+/// Endpoint protocol extending `Endpoint` encapsulating and improving sending JSON models to API.
+public protocol RequestEndpoint: Endpoint {
     /// Associated type describing the encodable request model for
     /// JSON serialization. The associated type is derived from
     /// the body property.
@@ -78,7 +70,7 @@ public protocol APIRequestEndpoint: APIEndpoint {
     var body: Request { get }
 }
 
-public extension APIRequestEndpoint {
+public extension RequestEndpoint {
     var method: HTTPMethod {
         return .post
     }
@@ -90,4 +82,4 @@ public extension APIRequestEndpoint {
 
 /// Typealias combining request and response API endpoint. For describing JSON
 /// request which both sends and expects JSON model from the server.
-public typealias APIRequestResponseEndpoint = APIRequestEndpoint & APIResponseEndpoint
+public typealias RequestResponseEndpoint = RequestEndpoint & ResponseEndpoint

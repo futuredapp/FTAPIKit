@@ -18,7 +18,7 @@ final class StressTests: XCTestCase {
     private let extendedTimeout: TimeInterval = 120.0
 
     func testStressMultipleRequestsViaGet() {
-        struct Endpoint: APIEndpoint {
+        struct Endpoint: Endpoint {
             let path = "get"
         }
 

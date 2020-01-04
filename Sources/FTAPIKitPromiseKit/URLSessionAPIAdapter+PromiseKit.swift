@@ -18,7 +18,7 @@ public struct APIDataTask<T> {
 }
 
 extension URLSessionAPIAdapter {
-    public func dataTask<Endpoint: APIResponseEndpoint>(response endpoint: Endpoint) -> APIDataTask<Endpoint.Response> {
+    public func dataTask<Endpoint: ResponseEndpoint>(response endpoint: Endpoint) -> APIDataTask<Endpoint.Response> {
         let task = Guarantee<URLSessionTask?>.pending()
         let response = Promise<Endpoint.Response>.pending()
 
@@ -31,7 +31,7 @@ extension URLSessionAPIAdapter {
         return APIDataTask(sessionTask: task.guarantee, response: response.promise)
     }
 
-    public func dataTask(data endpoint: APIEndpoint) -> APIDataTask<Data> {
+    public func dataTask(data endpoint: Endpoint) -> APIDataTask<Data> {
         let task = Guarantee<URLSessionTask?>.pending()
         let response = Promise<Data>.pending()
 
