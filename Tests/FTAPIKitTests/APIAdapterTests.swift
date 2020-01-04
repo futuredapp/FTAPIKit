@@ -9,7 +9,7 @@
 // swiftlint:disable nesting
 
 import XCTest
-import FTAPIKit
+@testable import FTAPIKit
 
 final class APIAdapterTests: XCTestCase {
 
@@ -29,7 +29,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            if case let .error(error) = result {
+            if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
@@ -48,11 +48,11 @@ final class APIAdapterTests: XCTestCase {
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
             switch result {
-            case .value:
+            case .success:
                 XCTFail("404 endpoint must return error")
-            case .error(StandardAPIError.client):
+            case .failure(StandardAPIError.client):
                 XCTAssert(true)
-            case .error:
+            case .failure:
                 XCTFail("404 endpoint must return client error")
             }
             expectation.fulfill()
@@ -71,11 +71,11 @@ final class APIAdapterTests: XCTestCase {
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
             switch result {
-            case .value:
+            case .success:
                 XCTFail("500 endpoint must return error")
-            case .error(StandardAPIError.server):
+            case .failure(StandardAPIError.server):
                 XCTAssert(true)
-            case .error:
+            case .failure:
                 XCTFail("500 endpoint must return server error")
             }
             expectation.fulfill()
@@ -94,11 +94,11 @@ final class APIAdapterTests: XCTestCase {
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
             switch result {
-            case .value:
+            case .success:
                 XCTFail("Non-existing domain must fail")
-            case .error(StandardAPIError.connection):
+            case .failure(StandardAPIError.connection):
                 XCTAssert(true)
-            case .error:
+            case .failure:
                 XCTFail("Non-existing domain must throw connection error")
             }
             expectation.fulfill()
@@ -116,7 +116,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            if case let .error(error) = result {
+            if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
@@ -142,7 +142,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            if case let .error(error) = result {
+            if case let .failure(error) = result {
                 XCTAssertTrue(error is CustomError)
             } else {
                 XCTFail("Custom error must be returned")
@@ -168,7 +168,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            if case let .error(error) = result {
+            if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
@@ -203,7 +203,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: Endpoint()) { result in
-            if case let .error(error) = result {
+            if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
@@ -238,7 +238,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.dataTask(response: Endpoint(), creation: { $0.cancel() }, completion: { result in
-            if case .error(StandardAPIError.cancelled) = result {
+            if case .failure(StandardAPIError.cancelled) = result {
                 XCTAssert(true)
             } else {
                 XCTFail("Task not cancelled")
@@ -275,9 +275,9 @@ final class APIAdapterTests: XCTestCase {
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
             switch result {
-            case .value(let response):
+            case .success(let response):
                 XCTAssertEqual(user, response.json)
-            case .error(let error):
+            case .failure(let error):
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
@@ -306,7 +306,7 @@ final class APIAdapterTests: XCTestCase {
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
         adapter.request(response: endpoint) { result in
-            if case .value = result {
+            if case .success = result {
                 XCTFail("Received valid value, decoding must fail")
             }
             expectation.fulfill()
@@ -326,7 +326,7 @@ final class APIAdapterTests: XCTestCase {
 
         let expectation = self.expectation(description: "Result")
         adapter.request(data: Endpoint()) { result in
-            if case let .error(error) = result {
+            if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
@@ -335,20 +335,26 @@ final class APIAdapterTests: XCTestCase {
     }
 
     func testMultipartData() {
-        struct MockupUrl {
-            let url: URL = Bundle(for: APIAdapterTests.self).url(forResource: "MockupBodyPart", withExtension: "jpg")!
+        struct MockupFile {
+            let url: URL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(UUID()).txt")
+            let data = Data(repeating: UInt8(ascii: "a"), count: 1024 * 1024)
             let headers: [String: String] = [
                 "Content-Disposition": "form-data; name=jpegFile",
                 "Content-Type": "image/jpeg"
             ]
         }
+
         struct Endpoint: APIEndpoint {
-            let type: RequestType = .multipart([
-                MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
-                try! MultipartBodyPart(name: "urlImage", url: MockupUrl().url),
-                MultipartBodyPart(headers: MockupUrl().headers, data: try! Data(contentsOf: MockupUrl().url)),
-                MultipartBodyPart(headers: MockupUrl().headers, inputStream: InputStream(url: MockupUrl().url)!)
-            ])
+            let file: MockupFile
+
+            var type: RequestType {
+                return .multipart([
+                    MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
+                    try! MultipartBodyPart(name: "urlImage", url: file.url),
+                    MultipartBodyPart(headers: file.headers, data: file.data),
+                    MultipartBodyPart(headers: file.headers, inputStream: InputStream(url: file.url)!)
+                ])
+            }
             let parameters: HTTPParameters = [
                 "someParameter": "someValue"
             ]
@@ -356,12 +362,15 @@ final class APIAdapterTests: XCTestCase {
             let method: HTTPMethod = .post
         }
 
+        let file = MockupFile()
+        try! file.data.write(to: file.url)
+
         let delegate = MockupAPIAdapterDelegate()
         var adapter: APIAdapter = apiAdapter()
         adapter.delegate = delegate
         let expectation = self.expectation(description: "Result")
-        adapter.request(data: Endpoint()) { result in
-            if case let .error(error) = result {
+        adapter.request(data: Endpoint(file: file)) { result in
+            if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()

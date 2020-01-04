@@ -6,18 +6,7 @@
 //  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-/// Generic result type for API responses.
-/// No operations are defined for this type,
-/// it should be used manually or not at all
-/// when some extension like PromiseKit is
-/// used.
-public enum APIResult<T> {
-    /// Successfully decoded response (or pure `Data` when decoding was not required).
-    case value(T)
-    /// Error returned by `APIAdapter`. The error will be of `APIError` type if
-    /// custom error constuctor was not used.
-    case error(Error)
-}
+import Foundation
 
 /// HTTP method enum with all commonly used verbs.
 public enum HTTPMethod: String, CustomStringConvertible {
