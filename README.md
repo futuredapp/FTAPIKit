@@ -1,4 +1,5 @@
 # FTAPIKit
+
 Declarative, generic REST API framework using URLSession and Codable
 
 ## FTAPIKit templates installation

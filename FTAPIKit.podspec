@@ -8,17 +8,17 @@ Pod::Spec.new do |s|
     and the requests/responses codable types. APIAdapter handles execution
     of calls to this endpoints.
   DESC
-  s.homepage     = "https://github.com/thefuntasty/FTAPIKit"
+  s.homepage     = "https://github.com/futuredapp/FTAPIKit"
   s.license      = { :type => "MIT", :file => "LICENSE" }
-  s.author             = { "Matěj Kašpar Jirásek" => "matej.jirasek@thefuntasty.com" }
-  s.social_media_url   = "https://twitter.com/thefuntasty"
+  s.author             = { "Matěj Kašpar Jirásek" => "matej.jirasek@futured.app" }
+  s.social_media_url   = "https://twitter.com/Futuredapps"
   s.default_subspec = 'Core'
   s.swift_version = "5.0"
   s.ios.deployment_target = "8.0"
   s.osx.deployment_target = "10.10"
   s.watchos.deployment_target = "2.0"
   s.tvos.deployment_target = "9.0"
-  s.source       = { :git => "https://github.com/thefuntasty/FTAPIKit.git", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/futuredapp/FTAPIKit.git", :tag => s.version.to_s }
 
   s.subspec 'Core' do |ss|
     ss.source_files  = "Sources/FTAPIKit/*"
