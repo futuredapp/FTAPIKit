@@ -1,11 +1,3 @@
-//
-//  Data+APIAdapter.swift
-//  FTAPIKit-iOS
-//
-//  Created by Matěj Kašpar Jirásek on 03/09/2018.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import Foundation
 #if os(iOS) || os(watchOS) || os(tvOS)
 import MobileCoreServices

@@ -1,11 +1,3 @@
-//
-//  URLSessionAPIAdapter.swift
-//  FTAPIKit
-//
-//  Created by Matěj Kašpar Jirásek on 10/11/2018.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import Foundation
 
 /// Standard and default implementation of `APIAdapter` protocol using `URLSession`.

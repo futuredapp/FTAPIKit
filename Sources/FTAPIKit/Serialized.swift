@@ -1,11 +1,3 @@
-//
-//  Serialized.swift
-//  FTAPIKit-iOS
-//
-//  Created by Patrik Potoček on 27/06/2019.
-//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import Foundation
 
 /// This class provides user with easy way to serialize access to a property in multiplatform environment. This class is written with future PropertyWrapper feature of swift in mind.

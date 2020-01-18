@@ -1,11 +1,3 @@
-//
-//  Resolver+Result.swift
-//  FTAPIKit
-//
-//  Created by Matěj Jirásek on 06/03/2019.
-//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import PromiseKit
 
 extension Resolver {

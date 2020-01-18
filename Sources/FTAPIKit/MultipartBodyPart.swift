@@ -1,11 +1,3 @@
-//
-//  MultipartBodyPart.swift
-//  FTAPIKit
-//
-//  Created by Matěj Kašpar Jirásek on 10/03/2019.
-//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import struct Foundation.Data
 import struct Foundation.URL
 import class Foundation.InputStream
