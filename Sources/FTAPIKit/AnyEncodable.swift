@@ -1,10 +1,3 @@
-//
-//  AnyEncodable.swift
-//  FTAPIKit
-//
-//  Created by Patrik Potoček on 27.3.18.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
 
 struct AnyEncodable: Encodable {
     private let anyEncode: (Encoder) throws -> Void

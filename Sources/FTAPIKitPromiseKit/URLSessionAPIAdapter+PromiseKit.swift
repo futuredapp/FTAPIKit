@@ -1,11 +1,3 @@
-//
-//  URLSessionAPIAdapter+PromiseKit.swift
-//  FTAPIKit
-//
-//  Created by Matěj Jirásek on 03/01/2019.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import PromiseKit
 import Foundation
 #if !COCOAPODS

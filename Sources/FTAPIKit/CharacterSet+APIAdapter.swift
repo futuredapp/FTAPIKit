@@ -1,11 +1,3 @@
-//
-//  CharacterSet+APIAdapter.swift
-//  FTAPIKit-iOS
-//
-//  Created by Radek Dolezal on 24/05/2019.
-//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import Foundation
 
 extension CharacterSet {

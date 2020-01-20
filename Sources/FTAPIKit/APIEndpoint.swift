@@ -1,11 +1,3 @@
-//
-//  APIEndpoint.swift
-//  FTAPIKit-iOS
-//
-//  Created by Matěj Kašpar Jirásek on 04/09/2018.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 /// Protocol describing API endpoint. API Endpoint describes one URI with all the
 /// data and parameters which are sent to it.
 ///

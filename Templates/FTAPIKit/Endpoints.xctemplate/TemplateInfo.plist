@@ -66,6 +66,6 @@
 	<key>SortOrder</key>
 	<string>99</string>
 	<key>Summary</key>
-	<string>This generates a new service for use with the ServiceHolder (dependency injection) from the FuntastyKit.</string>
+	<string>This generates a new endpoint for use with the APIAdapter from the FTAPIKit.</string>
 </dict>
 </plist>

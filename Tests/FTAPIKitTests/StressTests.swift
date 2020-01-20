@@ -1,11 +1,3 @@
-//
-//  FTAPIKit_iOS_Stress_Tests.swift
-//  FTAPIKit-iOS Stress Tests
-//
-//  Created by Mikoláš Stuchlík on 24/06/2019.
-//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import XCTest
 @testable import FTAPIKit
 

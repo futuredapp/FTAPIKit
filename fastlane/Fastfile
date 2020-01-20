@@ -1,4 +1,3 @@
-
 fastlane_require "fastlane-plugin-brew"
 
 desc "Lint and test the library"
