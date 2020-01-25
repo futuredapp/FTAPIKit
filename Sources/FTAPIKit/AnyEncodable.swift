@@ -3,9 +3,7 @@ struct AnyEncodable: Encodable {
     private let anyEncode: (Encoder) throws -> Void
 
     init(_ encodable: Encodable) {
-        anyEncode = { encoder in
-            try encodable.encode(to: encoder)
-        }
+        anyEncode = encodable.encode
     }
 
     func encode(to encoder: Encoder) throws {
