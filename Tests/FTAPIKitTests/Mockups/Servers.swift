@@ -8,7 +8,6 @@ struct HTTPBinServer: URLServer {
         if endpoint is AuthorizedEndpoint {
             request.addValue("Bearer \(UUID().uuidString)", forHTTPHeaderField: "Authorization")
         }
-        print(request)
     }
 }
 
