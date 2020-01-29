@@ -1,11 +1,3 @@
-//
-//  MultipartInputStream.swift
-//  FTAPIKit
-//
-//  Created by Matěj Kašpar Jirásek on 25/02/2019.
-//  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 import Foundation
 
 struct MultipartFormData {
