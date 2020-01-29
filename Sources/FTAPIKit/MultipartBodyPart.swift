@@ -6,9 +6,7 @@
 //  Copyright © 2019 FUNTASTY Digital s.r.o. All rights reserved.
 //
 
-import struct Foundation.Data
-import struct Foundation.URL
-import class Foundation.InputStream
+import Foundation
 
 /// Structure representing part in `multipart/form-data` request.
 /// These parts must have valid headers according
@@ -59,7 +57,7 @@ public struct MultipartBodyPart: Hashable {
     /// - Throws: `APIError.multipartStreamCannotBeOpened` if stream was not created from the file.
     public init(name: String, url: URL) throws {
         guard let inputStream = InputStream(url: url) else {
-            throw StandardAPIError.multipartStreamCannotBeOpened
+            throw URLError(.cannotOpenFile, userInfo: ["url": url])
         }
         self.headers = [
             "Content-Type": url.mimeType,

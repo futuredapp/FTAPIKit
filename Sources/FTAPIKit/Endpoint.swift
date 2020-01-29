@@ -1,3 +1,5 @@
+import struct Foundation.Data
+
 /// Protocol describing API endpoint. API Endpoint describes one URI with all the
 /// data and parameters which are sent to it.
 ///
@@ -13,42 +15,40 @@ public protocol Endpoint {
     /// URL path component without base URI.
     var path: String { get }
 
-    /// URL parameters is string dictionary sent either as URL query, multipart,
-    /// JSON parameters or URL/Base64 encoded body. The `type` parameter of `APIEndpoint`
-    /// protocol describes the way how to send the parameters.
-    var parameters: HTTPParameters { get }
+    var headers: [String: String] { get }
+
+    var query: [String: String] { get }
 
     /// HTTP method/verb describing the action.
     var method: HTTPMethod { get }
 
-    /// Type of the request describing how the parameters and data should be encoded and
-    /// sent to the server. If additional data (not only parameters) are sent, then they
-    /// are returned as an associated value of the type.
-    var type: RequestType { get }
-
-    /// Boolean marking whether the endpoint should be signed and authorization is required.
-    ///
-    /// This value is not used inside the framework. This value should be checked and handled
-    /// accordingly when signing using the `APIAdapterDelegate`.
-    var authorized: Bool { get }
+    func body(encoding: Encoding) throws -> Data?
 }
 
 public extension Endpoint {
-    var parameters: HTTPParameters {
+    var headers: [String: String] {
         return [:]
     }
 
-    var type: RequestType {
-        return .jsonParams
+    var query: [String: String] {
+        return [:]
     }
 
     var method: HTTPMethod {
         return .get
     }
 
-    var authorized: Bool {
-        return false
+    func body(encoding: Encoding) throws -> Data? {
+        return nil
     }
+}
+
+public protocol DataEndpoint: Endpoint {
+    var data: Data? { get }
+}
+
+public extension DataEndpoint {
+    func body(encoding: Encoding) throws -> Data? { data }
 }
 
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
@@ -65,18 +65,16 @@ public protocol RequestEndpoint: Endpoint {
     /// Associated type describing the encodable request model for
     /// JSON serialization. The associated type is derived from
     /// the body property.
-    associatedtype Request: Encodable
+    associatedtype Parameters: Encodable
     /// Generic encodable model, which will be sent as JSON body.
-    var body: Request { get }
+    var parameters: Parameters { get }
 }
 
 public extension RequestEndpoint {
-    var method: HTTPMethod {
-        return .post
-    }
+    var method: HTTPMethod { .post }
 
-    var type: RequestType {
-        return RequestType.jsonBody(body)
+    func body(encoding: Encoding) throws -> Data? {
+        try encoding.encode(parameters)
     }
 }
 
