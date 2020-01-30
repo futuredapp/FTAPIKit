@@ -1,5 +1,5 @@
 import XCTest
-@testable import FTAPIKit
+import FTAPIKit
 
 final class ResponseTests: XCTestCase {
     private let timeout: TimeInterval = 30.0
