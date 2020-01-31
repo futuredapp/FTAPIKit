@@ -1,4 +1,4 @@
-import struct Foundation.Data
+import Foundation
 
 /// Protocol describing API endpoint. API Endpoint describes one URI with all the
 /// data and parameters which are sent to it.
@@ -22,7 +22,7 @@ public protocol Endpoint {
     /// HTTP method/verb describing the action.
     var method: HTTPMethod { get }
 
-    func body(encoding: Encoding) throws -> Data?
+    func body(encoding: Encoding) throws -> InputStream?
 }
 
 public extension Endpoint {
@@ -38,17 +38,17 @@ public extension Endpoint {
         return .get
     }
 
-    func body(encoding: Encoding) throws -> Data? {
+    func body(encoding: Encoding) throws -> InputStream? {
         return nil
     }
 }
 
 public protocol DataEndpoint: Endpoint {
-    var data: Data? { get }
+    var data: Data { get }
 }
 
 public extension DataEndpoint {
-    func body(encoding: Encoding) throws -> Data? { data }
+    func body(encoding: Encoding) throws -> InputStream? { InputStream(data: data) }
 }
 
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
@@ -73,8 +73,8 @@ public protocol RequestEndpoint: Endpoint {
 public extension RequestEndpoint {
     var method: HTTPMethod { .post }
 
-    func body(encoding: Encoding) throws -> Data? {
-        try encoding.encode(parameters)
+    func body(encoding: Encoding) throws -> InputStream? {
+        InputStream(data: try encoding.encode(parameters))
     }
 }
 

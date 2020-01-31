@@ -12,7 +12,6 @@ struct URLRequestBuilder<S: URLServer> {
 
         request.httpMethod = endpoint.method.description
         request.allHTTPHeaderFields = endpoint.headers
-        request.httpBody = try endpoint.body(encoding: server.encoding)
         try server.encoding.configure(request: &request)
         try server.configureRequest(&request, endpoint)
         return request
