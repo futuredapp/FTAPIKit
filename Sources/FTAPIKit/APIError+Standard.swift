@@ -20,6 +20,10 @@ public enum APIErrorStandard: APIError {
         switch (data, response as? HTTPURLResponse, error) {
         case let (_, _, error as URLError):
             self = .connection(error)
+        case let (_, _, error as EncodingError):
+            self = .encoding(error)
+        case let (_, _, error as DecodingError):
+            self = .decoding(error)
         case let (data, response?, nil) where 400..<500 ~= response.statusCode:
             self = .client(response.statusCode, response, data)
         case let (data, response?, nil) where 500..<600 ~= response.statusCode:
