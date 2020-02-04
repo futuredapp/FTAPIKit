@@ -157,16 +157,32 @@ final class ResponseTests: XCTestCase {
     func testMultipartData() {
         let server = HTTPBinServer()
         let file = File()
-        try! file.data.write(to: file.url)
+        XCTAssertNoThrow(try file.write())
         let endpoint = try! TestMultipartEndpoint(file: file)
         let expectation = self.expectation(description: "Result")
-        server.call(endpoint: endpoint) { result in
+        server.call(data: endpoint) { result in
             if case let .failure(error) = result {
                 XCTFail(error.localizedDescription)
             }
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
+    }
+
+    func testUploadTask() {
+        let server = HTTPBinServer()
+        let file = File()
+        XCTAssertNoThrow(try file.write())
+        let endpoint = TestUploadEndpoint(file: file)
+        let expectation = self.expectation(description: "Result")
+        server.call(data: endpoint) { result in
+            if case let .failure(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
+
     }
 
     static var allTests = [
@@ -180,5 +196,7 @@ final class ResponseTests: XCTestCase {
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
         ("testAuthorization", testAuthorization),
+        ("testMultipartData", testMultipartData),
+        ("testUploadTask", testUploadTask),
     ]
 }

@@ -33,6 +33,10 @@ public protocol DataEndpoint: Endpoint {
     var body: Data { get }
 }
 
+public protocol UploadEndpoint: Endpoint {
+    var file: URL { get }
+}
+
 public protocol MultipartEndpoint: Endpoint {
     var parts: [MultipartBodyPart] { get }
 }

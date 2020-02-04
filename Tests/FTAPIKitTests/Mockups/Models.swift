@@ -13,4 +13,8 @@ struct File {
         "Content-Disposition": "form-data; name=jpegFile",
         "Content-Type": "image/jpeg"
     ]
+
+    func write() throws {
+        try data.write(to: url)
+    }
 }
