@@ -45,7 +45,7 @@ struct JSONResponseEndpoint: ResponseEndpoint {
 struct UpdateUserEndpoint: RequestResponseEndpoint {
     typealias Response = Wrapper
 
-    let parameters: User
+    let request: User
     let path = "anything"
 
     struct Wrapper: Decodable {
@@ -56,6 +56,6 @@ struct UpdateUserEndpoint: RequestResponseEndpoint {
 struct FailingUpdateUserEndpoint: RequestResponseEndpoint {
     typealias Response = User
 
-    let parameters: User
+    let request: User
     let path = "anything"
 }

@@ -53,9 +53,9 @@ public protocol RequestEndpoint: Endpoint {
     /// Associated type describing the encodable request model for
     /// JSON serialization. The associated type is derived from
     /// the body property.
-    associatedtype Parameters: Encodable
+    associatedtype Request: Encodable
     /// Generic encodable model, which will be sent as JSON body.
-    var parameters: Parameters { get }
+    var request: Request { get }
 }
 
 public extension RequestEndpoint {

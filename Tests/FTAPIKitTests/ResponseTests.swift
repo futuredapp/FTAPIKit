@@ -113,7 +113,7 @@ final class ResponseTests: XCTestCase {
     func testValidJSONRequestResponse() {
         let server = HTTPBinServer()
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
-        let endpoint = UpdateUserEndpoint(parameters: user)
+        let endpoint = UpdateUserEndpoint(request: user)
         let expectation = self.expectation(description: "Result")
         server.call(response: endpoint) { result in
             switch result {
@@ -130,7 +130,7 @@ final class ResponseTests: XCTestCase {
     func testInvalidJSONRequestResponse() {
         let server = HTTPBinServer()
         let user = User(uuid: UUID(), name: "Some Name", age: .random(in: 0...120))
-        let endpoint = FailingUpdateUserEndpoint(parameters: user)
+        let endpoint = FailingUpdateUserEndpoint(request: user)
         let expectation = self.expectation(description: "Result")
         server.call(response: endpoint) { result in
             if case .success = result {
