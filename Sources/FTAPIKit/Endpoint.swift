@@ -33,6 +33,10 @@ public protocol DataEndpoint: Endpoint {
     var body: Data { get }
 }
 
+public protocol MultipartEndpoint: Endpoint {
+    var parts: [MultipartBodyPart] { get }
+}
+
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
 /// for automatic deserialization.
 public protocol ResponseEndpoint: Endpoint {

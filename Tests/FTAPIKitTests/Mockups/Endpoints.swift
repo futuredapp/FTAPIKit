@@ -59,3 +59,18 @@ struct FailingUpdateUserEndpoint: RequestResponseEndpoint {
     let request: User
     let path = "anything"
 }
+
+struct TestMultipartEndpoint: MultipartEndpoint {
+    let parts: [MultipartBodyPart]
+    let path = "post"
+    let method: HTTPMethod = .post
+
+    init(file: File) throws {
+        self.parts = [
+            MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
+            try MultipartBodyPart(name: "urlImage", url: file.url),
+            MultipartBodyPart(headers: file.headers, data: file.data),
+            MultipartBodyPart(headers: file.headers, inputStream: InputStream(url: file.url) ?? InputStream())
+        ]
+    }
+}

@@ -34,6 +34,13 @@ struct URLRequestBuilder<S: URLServer> {
             request.httpBody = endpoint.body
         case let endpoint as AnyRequestEndpoint:
             request.httpBody = try endpoint.body(encoding: server.encoding)
+        case let endpoint as MultipartEndpoint:
+            let formData = MultipartFormData(parts: endpoint.parts)
+            request.httpBodyStream = try formData.inputStream()
+            request.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
+            if let contentLength = formData.contentLength {
+                request.setValue(contentLength.description, forHTTPHeaderField: "Content-Length")
+            }
         default:
             break
         }
