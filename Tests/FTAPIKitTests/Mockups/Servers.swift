@@ -17,7 +17,7 @@ struct NonExistingServer: URLServer {
 }
 
 struct ErrorThrowingServer: URLServer {
-    typealias E = ThrowawayAPIError
+    typealias ErrorType = ThrowawayAPIError
 
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
