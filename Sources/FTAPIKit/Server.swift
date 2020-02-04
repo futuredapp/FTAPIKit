@@ -5,5 +5,5 @@ public protocol Server {
 
     var decoding: Decoding { get }
     var encoding: Encoding { get }
-    var configureRequest: (inout Request, Endpoint) throws -> Void { get }
+    var requestBuilder: (Self, Endpoint) throws -> Request { get }
 }

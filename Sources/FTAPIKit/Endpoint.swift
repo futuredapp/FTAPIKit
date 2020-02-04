@@ -21,8 +21,6 @@ public protocol Endpoint {
 
     /// HTTP method/verb describing the action.
     var method: HTTPMethod { get }
-
-    func body(encoding: Encoding) throws -> InputStream?
 }
 
 public extension Endpoint {
@@ -32,11 +30,7 @@ public extension Endpoint {
 }
 
 public protocol DataEndpoint: Endpoint {
-    var data: Data { get }
-}
-
-public extension DataEndpoint {
-    func body(encoding: Encoding) throws -> InputStream? { InputStream(data: data) }
+    var body: Data { get }
 }
 
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
@@ -49,7 +43,7 @@ public protocol ResponseEndpoint: Endpoint {
 }
 
 /// Endpoint protocol extending `Endpoint` encapsulating and improving sending JSON models to API.
-public protocol RequestEndpoint: Endpoint {
+public protocol RequestEndpoint: AnyRequestEndpoint {
     /// Associated type describing the encodable request model for
     /// JSON serialization. The associated type is derived from
     /// the body property.
@@ -59,11 +53,17 @@ public protocol RequestEndpoint: Endpoint {
 }
 
 public extension RequestEndpoint {
-    var method: HTTPMethod { .post }
-
-    func body(encoding: Encoding) throws -> InputStream? {
-        InputStream(data: try encoding.encode(parameters))
+    func body(encoding: Encoding) throws -> Data {
+        try encoding.encode(request)
     }
+}
+
+public protocol AnyRequestEndpoint: Endpoint {
+    func body(encoding: Encoding) throws -> Data
+}
+
+public extension RequestEndpoint {
+    var method: HTTPMethod { .post }
 }
 
 /// Typealias combining request and response API endpoint. For describing JSON

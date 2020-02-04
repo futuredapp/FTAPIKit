@@ -88,8 +88,7 @@ extension URLServer {
 
     func request(endpoint: Endpoint) -> Result<URLRequest, ErrorType> {
         do {
-            let builder = URLRequestBuilder(server: self, endpoint: endpoint)
-            let request = try builder.build()
+            let request = try requestBuilder(self, endpoint)
             return .success(request)
         } catch {
             return apiError(error: error)

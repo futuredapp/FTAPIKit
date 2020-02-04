@@ -4,10 +4,13 @@ import Foundation
 struct HTTPBinServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
-    let configureRequest: (inout URLRequest, Endpoint) throws -> Void = { request, endpoint in
+
+    let requestBuilder: (Self, Endpoint) throws -> URLRequest = { server, endpoint in
+        var request = try buildStandardRequest(server: server, endpoint: endpoint)
         if endpoint is AuthorizedEndpoint {
             request.addValue("Bearer \(UUID().uuidString)", forHTTPHeaderField: "Authorization")
         }
+        return request
     }
 }
 
