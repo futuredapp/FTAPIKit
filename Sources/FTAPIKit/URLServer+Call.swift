@@ -35,7 +35,6 @@ public extension URLServer {
         }
     }
 
-    @discardableResult
     private func call(request: URLRequest, file: URL?, completion: @escaping (Result<Void, ErrorType>) -> Void) -> URLSessionTask? {
         task(request: request, file: file, process: { data, response, error in
             if let error = ErrorType(data: data, response: response, error: error, decoding: self.decoding) {
@@ -45,7 +44,6 @@ public extension URLServer {
         }, completion: completion)
     }
 
-    @discardableResult
     private func call(data request: URLRequest, file: URL?,  completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask? {
         task(request: request, file: file, process: { data, response, error in
             if let error = ErrorType(data: data, response: response, error: error, decoding: self.decoding) {
@@ -57,7 +55,6 @@ public extension URLServer {
         }, completion: completion)
     }
 
-    @discardableResult
     private func call<R: Decodable>(response request: URLRequest, file: URL?, completion: @escaping (Result<R, ErrorType>) -> Void) -> URLSessionTask? {
         task(request: request, file: file, process: { data, response, error in
             if let error = ErrorType(data: data, response: response, error: error, decoding: self.decoding) {
