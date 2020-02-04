@@ -77,10 +77,14 @@ struct TestMultipartEndpoint: MultipartEndpoint {
 
 struct TestUploadEndpoint: UploadEndpoint {
     let file: URL
-    let path: String = "put"
+    let path = "put"
     let method: HTTPMethod = .put
 
     init(file: File) {
         self.file = file.url
     }
+}
+
+struct ImageEndpoint: Endpoint {
+    let path = "image/jpeg"
 }

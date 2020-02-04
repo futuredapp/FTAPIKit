@@ -182,7 +182,19 @@ final class ResponseTests: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: timeout)
+    }
 
+    func testDownloadTask() {
+        let server = HTTPBinServer()
+        let endpoint = ImageEndpoint()
+        let expectation = self.expectation(description: "Result")
+        server.download(endpoint: endpoint) { result in
+            if case let .failure(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
     }
 
     static var allTests = [
@@ -198,5 +210,6 @@ final class ResponseTests: XCTestCase {
         ("testAuthorization", testAuthorization),
         ("testMultipartData", testMultipartData),
         ("testUploadTask", testUploadTask),
+        ("testDownloadTask", testDownloadTask),
     ]
 }
