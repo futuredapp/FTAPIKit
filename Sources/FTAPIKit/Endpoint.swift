@@ -26,21 +26,9 @@ public protocol Endpoint {
 }
 
 public extension Endpoint {
-    var headers: [String: String] {
-        return [:]
-    }
-
-    var query: [String: String] {
-        return [:]
-    }
-
-    var method: HTTPMethod {
-        return .get
-    }
-
-    func body(encoding: Encoding) throws -> InputStream? {
-        return nil
-    }
+    var headers: [String: String] { [:] }
+    var query: [String: String] { [:] }
+    var method: HTTPMethod { .get }
 }
 
 public protocol DataEndpoint: Endpoint {
