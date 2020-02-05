@@ -51,7 +51,7 @@ public protocol ResponseEndpoint: Endpoint {
 }
 
 /// Endpoint protocol extending `Endpoint` encapsulating and improving sending JSON models to API.
-public protocol RequestEndpoint: AnyRequestEndpoint {
+public protocol RequestEndpoint: EncodableEndpoint {
     /// Associated type describing the encodable request model for
     /// JSON serialization. The associated type is derived from
     /// the body property.
@@ -66,7 +66,7 @@ public extension RequestEndpoint {
     }
 }
 
-public protocol AnyRequestEndpoint: Endpoint {
+public protocol EncodableEndpoint: Endpoint {
     func body(encoding: Encoding) throws -> Data
 }
 

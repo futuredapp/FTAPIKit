@@ -32,7 +32,7 @@ struct URLRequestBuilder<S: URLServer> {
         switch endpoint {
         case let endpoint as DataEndpoint:
             request.httpBody = endpoint.body
-        case let endpoint as AnyRequestEndpoint:
+        case let endpoint as EncodableEndpoint:
             request.httpBody = try endpoint.body(encoding: server.encoding)
         case let endpoint as MultipartEndpoint:
             let formData = MultipartFormData(parts: endpoint.parts)
