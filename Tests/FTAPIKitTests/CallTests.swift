@@ -1,7 +1,7 @@
 import XCTest
 import FTAPIKit
 
-final class ResponseTests: XCTestCase {
+final class CallTests: XCTestCase {
     private let timeout: TimeInterval = 30.0
 
     func testGet() {
