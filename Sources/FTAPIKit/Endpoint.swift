@@ -41,6 +41,10 @@ public protocol MultipartEndpoint: Endpoint {
     var parts: [MultipartBodyPart] { get }
 }
 
+public protocol URLEncodedEndpoint: Endpoint {
+    var body: [String: String] { get }
+}
+
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
 /// for automatic deserialization.
 public protocol ResponseEndpoint: Endpoint {

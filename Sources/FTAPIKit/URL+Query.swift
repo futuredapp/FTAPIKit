@@ -4,17 +4,17 @@ import MobileCoreServices
 #endif
 
 extension URL {
-    mutating func appendQuery(parameters: [String: String]) {
+    mutating func appendQuery(parameters: [URLQueryItem]) {
         self = appendingQuery(parameters: parameters)
     }
 
-    func appendingQuery(parameters: [String: String]) -> URL {
+    func appendingQuery(parameters: [URLQueryItem]) -> URL {
         guard !parameters.isEmpty else {
             return self
         }
         var components = URLComponents(url: self, resolvingAgainstBaseURL: true)
         let oldItems = components?.queryItems ?? []
-        components?.queryItems = oldItems + parameters.map(URLQueryItem.init)
+        components?.queryItems = oldItems + parameters
         return components?.url ?? self
     }
 }

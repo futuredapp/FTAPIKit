@@ -169,6 +169,19 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+    func testURLEncodedEndpoint() {
+        let server = HTTPBinServer()
+        let endpoint = TestURLEncodedEndpoint()
+        let expectation = self.expectation(description: "Result")
+        server.call(data: endpoint) { result in
+            if case let .failure(error) = result {
+                XCTFail(error.localizedDescription)
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: timeout)
+    }
+
     func testUploadTask() {
         let server = HTTPBinServer()
         let file = File()

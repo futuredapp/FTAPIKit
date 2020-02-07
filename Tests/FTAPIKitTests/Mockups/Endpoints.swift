@@ -75,6 +75,15 @@ struct TestMultipartEndpoint: MultipartEndpoint {
     }
 }
 
+struct TestURLEncodedEndpoint: URLEncodedEndpoint {
+    let path = "post"
+    let method: HTTPMethod = .post
+    let body: [String: String] = [
+        "param1": "value1",
+        "param2": "value2",
+    ]
+}
+
 struct TestUploadEndpoint: UploadEndpoint {
     let file: URL
     let path = "put"
