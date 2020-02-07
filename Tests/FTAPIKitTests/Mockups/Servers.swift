@@ -5,8 +5,8 @@ struct HTTPBinServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
 
-    let requestBuilder: (Self, Endpoint) throws -> URLRequest = { server, endpoint in
-        var request = try buildStandardRequest(server: server, endpoint: endpoint)
+    func buildRequest(endpoint: Endpoint) throws -> URLRequest {
+        var request = try buildStandardRequest(endpoint: endpoint)
         if endpoint is AuthorizedEndpoint {
             request.addValue("Bearer \(UUID().uuidString)", forHTTPHeaderField: "Authorization")
         }

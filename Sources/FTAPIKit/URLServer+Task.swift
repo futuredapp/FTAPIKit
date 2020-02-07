@@ -52,7 +52,7 @@ extension URLServer {
 
     func request(endpoint: Endpoint) -> Result<URLRequest, ErrorType> {
         do {
-            let request = try requestBuilder(self, endpoint)
+            let request = try buildRequest(endpoint: endpoint)
             return .success(request)
         } catch {
             return apiError(error: error)

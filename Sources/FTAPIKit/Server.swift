@@ -4,5 +4,6 @@ public protocol Server {
 
     var decoding: Decoding { get }
     var encoding: Encoding { get }
-    var requestBuilder: (Self, Endpoint) throws -> Request { get }
+
+    func buildRequest(endpoint: Endpoint) throws -> Request
 }

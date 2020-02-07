@@ -1,8 +1,8 @@
 import Foundation
 
 public extension URLServer {
-    static func buildStandardRequest(server: Self, endpoint: Endpoint) throws -> URLRequest {
-        try URLRequestBuilder(server: server, endpoint: endpoint).build()
+    func buildStandardRequest(endpoint: Endpoint) throws -> URLRequest {
+        try URLRequestBuilder(server: self, endpoint: endpoint).build()
     }
 }
 
