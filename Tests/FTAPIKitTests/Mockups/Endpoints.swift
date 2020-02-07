@@ -80,7 +80,7 @@ struct TestURLEncodedEndpoint: URLEncodedEndpoint {
     let method: HTTPMethod = .post
     let body: [String: String] = [
         "param1": "value1",
-        "param2": "value2",
+        "param2": "value2"
     ]
 }
 

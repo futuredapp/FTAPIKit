@@ -31,7 +31,6 @@ public struct JSONEncoding: Encoding {
     }
 }
 
-
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 

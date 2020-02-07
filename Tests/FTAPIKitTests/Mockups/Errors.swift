@@ -8,5 +8,5 @@ struct ThrowawayAPIError: APIError {
         self.init()
     }
 
-    static var unhandled = Self.init()
+    static var unhandled = Self()
 }

@@ -1,4 +1,3 @@
-
 public protocol Server {
     associatedtype Request
 

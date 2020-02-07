@@ -158,15 +158,20 @@ final class ResponseTests: XCTestCase {
         let server = HTTPBinServer()
         let file = File()
         XCTAssertNoThrow(try file.write())
-        let endpoint = try! TestMultipartEndpoint(file: file)
-        let expectation = self.expectation(description: "Result")
-        server.call(data: endpoint) { result in
-            if case let .failure(error) = result {
-                XCTFail(error.localizedDescription)
+        do {
+            let endpoint = try TestMultipartEndpoint(file: file)
+            let expectation = self.expectation(description: "Result")
+            server.call(data: endpoint) { result in
+                if case let .failure(error) = result {
+                    XCTFail(error.localizedDescription)
+                }
+                expectation.fulfill()
             }
-            expectation.fulfill()
+            wait(for: [expectation], timeout: timeout)
+        } catch {
+            let errorFunc = { throw error }
+            XCTAssertNoThrow(errorFunc)
         }
-        wait(for: [expectation], timeout: timeout)
     }
 
     func testURLEncodedEndpoint() {
@@ -223,6 +228,6 @@ final class ResponseTests: XCTestCase {
         ("testAuthorization", testAuthorization),
         ("testMultipartData", testMultipartData),
         ("testUploadTask", testUploadTask),
-        ("testDownloadTask", testDownloadTask),
+        ("testDownloadTask", testDownloadTask)
     ]
 }

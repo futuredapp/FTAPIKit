@@ -7,7 +7,7 @@ let package = Package(
     products: [
         .library(
             name: "FTAPIKit",
-            targets: ["FTAPIKit"]),
+            targets: ["FTAPIKit"])
     ],
     targets: [
         .target(

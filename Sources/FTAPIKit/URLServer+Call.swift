@@ -12,7 +12,6 @@ public extension URLServer {
         }
     }
 
-
     @discardableResult
     func call(data endpoint: Endpoint, completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask? {
         switch request(endpoint: endpoint) {
@@ -44,7 +43,7 @@ public extension URLServer {
         }, completion: completion)
     }
 
-    private func call(data request: URLRequest, file: URL?,  completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask? {
+    private func call(data request: URLRequest, file: URL?, completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask? {
         task(request: request, file: file, process: { data, response, error in
             if let error = ErrorType(data: data, response: response, error: error, decoding: self.decoding) {
                 return .failure(error)
