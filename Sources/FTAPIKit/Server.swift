@@ -1,6 +1,5 @@
 
 public protocol Server {
-    associatedtype ErrorType: APIError = APIError.Standard
     associatedtype Request
 
     var decoding: Decoding { get }

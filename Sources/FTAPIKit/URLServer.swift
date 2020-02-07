@@ -1,6 +1,8 @@
 import Foundation
 
 public protocol URLServer: Server where Request == URLRequest {
+    associatedtype ErrorType: APIError = APIError.Standard
+
     var baseUri: URL { get }
     var urlSession: URLSession { get }
 }
