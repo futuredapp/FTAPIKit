@@ -44,7 +44,7 @@ struct MultipartFormData {
         defer {
             outputStream.close()
         }
-        let boundaryData = Data(boundary.utf8)
+        let boundaryData = Data("--\(boundary)".utf8)
         for part in parts {
             try outputStream.write(data: boundaryData)
             try outputStream.writeLine()
