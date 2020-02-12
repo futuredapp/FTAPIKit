@@ -37,20 +37,24 @@ The framework provides two core protocols reflecting the physical infrastructure
 
 Combining instances of type conforming to `Server` and `Endpoint` we can build request.
 `URLServer` has convenience method for calling endpoints using `URLSession`.
-Recommended usage on application-side is implementing API client which encapsulates
-logic not provided by this framework like signing authorized endpoints
-or conforming to `URLSessionDelegate`.
+If some advanced features are required then we recommend implementing API client.
+This client should encapsulate logic not provided by this framework
+(like signing authorized endpoints or conforming to `URLSessionDelegate`).
 
 ![Architecture](Documentation/Architecture.svg)
 
-There are many convenient `Endpoint` protocols for various use cases
-like multipart upload, automatic encoding/decoding.
+This package contains predefined `Endpoint` protocols.
+Use cases like multipart upload, automatic encoding/decoding
+are separated in various protocols for convenience.
 
-- `Endpoint` protocol body is empty.
+- `Endpoint` protocol has empty body. Typically used in `GET` endpoints.
 - `DataEndpoint` sends provided data in body.
-- `UploadEndpoint` sends file in body stream.
-- `MultipartEndpoint` combines body parts into body stream.
-- `RequestEndpoint` has encodable request which is encoded using server encoding.
+- `UploadEndpoint` uploads file using `InputStream`.
+- `MultipartEndpoint` combines body parts into `InputStream` and sends them to server.
+  Body parts are represented by `MultipartBodyPart` struct and provided to the endpoint
+  in an array.
+- `RequestEndpoint` has encodable request which is encoded using encoding
+  of the `Server` instance.
 
 ![Endpoint types](Documentation/Endpoints.svg)
 
@@ -58,7 +62,7 @@ like multipart upload, automatic encoding/decoding.
 
 ### Defining web service (server)
 
-Firstly we need to define our server. We recommend using structs:
+Firstly we need to define our server. Structs are preferred but not required:
 
 ```swift
 struct HTTPBinServer: URLServer {
@@ -87,15 +91,10 @@ authorization we can override default request building mechanism.
 
 ```swift
 struct HTTPBinServer: URLServer {
-    var token: String?
-
     ...
-
     func buildRequest(endpoint: Endpoint) throws -> URLRequest {
         var request = try buildStandardRequest(endpoint: endpoint)
-        if let token = token {
-            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
+        request.addValue("MyApp/1.0.0", forHTTPHeaderField: "User-Agent")
         return request
     }
 }
@@ -112,9 +111,8 @@ struct GetEndpoint: Endpoint {
 }
 ```
 
-As an example of a bit more complicated endpoint encoding encodable struct,
-sending it to server and receiving updated value back from the server
-we only need to define following code:
+Let's take more complicated example like updating some model.
+We need to supply encodable request and decodable response.
 
 ```swift
 struct UpdateUserEndpoint: RequestResponseEndpoint {
