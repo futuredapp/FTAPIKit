@@ -38,7 +38,7 @@ The framework provides two core protocols reflecting the physical infrastructure
 Combining instances of type conforming to `Server` and `Endpoint` we can build request.
 `URLServer` has convenience method for calling endpoints using `URLSession`.
 If some advanced features are required then we recommend implementing API client.
-This client should encapsulate logic not provided by this framework
+This client should encapsulate logic which is not provided by this framework
 (like signing authorized endpoints or conforming to `URLSessionDelegate`).
 
 ![Architecture](Documentation/Architecture.svg)
