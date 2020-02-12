@@ -146,7 +146,7 @@ server.call(response: endpoint) { result in
 
 Current maintainer and main contributor is [Matěj Kašpar Jirásek](https://github.com/mkj-is), <matej.jirasek@futured.app>.
 
-I want to thanks to other contributors, namely:
+We want to thank other contributors, namely:
 
 - [Mikoláš Stuchlík](https://github.com/mikolasstuchlik)
 - [Radek Doležal](https://github.com/eRDe33)
