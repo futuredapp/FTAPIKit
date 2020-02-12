@@ -35,7 +35,7 @@ The framework provides two core protocols reflecting the physical infrastructure
 - `Server` protocol defining single web service.
 - `Endpoint` protocol defining access points for resources.
 
-Combining instances of type conforming to `Server` and `Endpoint` we can build requqest.
+Combining instances of type conforming to `Server` and `Endpoint` we can build request.
 `URLServer` has convenience method for calling endpoints using `URLSession`.
 Recommended usage on application-side is implementing API client which encapsulates
 logic not provided by this framework like signing authorized endpoints
