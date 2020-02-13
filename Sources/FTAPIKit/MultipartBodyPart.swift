@@ -1,13 +1,11 @@
-import struct Foundation.Data
-import struct Foundation.URL
-import class Foundation.InputStream
+import Foundation
 
 /// Structure representing part in `multipart/form-data` request.
 /// These parts must have valid headers according
 /// to [RFC-7578](https://tools.ietf.org/html/rfc7578).
 /// Everything passed to it is converted to `InputStream`
 /// in order to limit memory usage when sending files to a server.
-public struct MultipartBodyPart: Hashable {
+public struct MultipartBodyPart {
     let headers: [String: String]
     let inputStream: InputStream
 
@@ -51,7 +49,7 @@ public struct MultipartBodyPart: Hashable {
     /// - Throws: `APIError.multipartStreamCannotBeOpened` if stream was not created from the file.
     public init(name: String, url: URL) throws {
         guard let inputStream = InputStream(url: url) else {
-            throw StandardAPIError.multipartStreamCannotBeOpened
+            throw URLError(.cannotOpenFile, userInfo: ["url": url])
         }
         self.headers = [
             "Content-Type": url.mimeType,
