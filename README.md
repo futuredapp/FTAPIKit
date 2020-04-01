@@ -1,6 +1,6 @@
 # FTAPIKit
 
-![Swift](https://github.com/futuredapp/FTAPIKit/workflows/Swift/badge.svg)
+![Build](https://github.com/futuredapp/FTAPIKit/workflows/Build/badge.svg)
 ![Cocoapods](https://img.shields.io/cocoapods/v/FTAPIKit)
 ![Cocoapods platforms](https://img.shields.io/cocoapods/p/FTAPIKit)
 ![License](https://img.shields.io/cocoapods/l/FTAPIKit)
