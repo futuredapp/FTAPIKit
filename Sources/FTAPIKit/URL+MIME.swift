@@ -1,7 +1,5 @@
+import CoreServices
 import Foundation
-#if os(iOS) || os(watchOS) || os(tvOS)
-import MobileCoreServices
-#endif
 
 extension URL {
     var mimeType: String {
