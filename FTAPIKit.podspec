@@ -16,10 +16,7 @@ Pod::Spec.new do |s|
   s.source                      = { git: "https://github.com/futuredapp/FTAPIKit.git", tag: s.version.to_s }
   s.source_files                = "Sources/FTAPIKit/*"
 
-  s.framework                   = "Foundation"
-  s.ios.framework               = "MobileCoreServices"
-  s.tvos.framework              = "MobileCoreServices"
-  s.watchos.framework           = "MobileCoreServices"
+  s.frameworks                  = ["Foundation", "CoreServices"]
 
   s.swift_version               = "5.0"
   s.ios.deployment_target       = "8.0"
