@@ -26,7 +26,7 @@ When using CocoaPods add following line to your `Podfile`:
 pod 'FTAPIKit', '~> 1.0'
 ```
 
-# Features
+## Features
 
 The main feature of this library is to provide documentation-like API
 for defining web services. This is achieved using declarative
