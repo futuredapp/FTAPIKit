@@ -7,8 +7,6 @@
 ![Cocoapods platforms](https://img.shields.io/cocoapods/p/FTAPIKit)
 ![License](https://img.shields.io/cocoapods/l/FTAPIKit)
 
----
-
 Declarative and generic REST API framework using Codable.
 With standard implementation using URLSesssion and JSON encoder/decoder.
 Easily extensible for your asynchronous framework or networking stack.
