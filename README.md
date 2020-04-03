@@ -1,6 +1,8 @@
+![FTAPIKit](Documentation/FTAPIKit.svg)
+
 # FTAPIKit
 
-![Swift](https://github.com/futuredapp/FTAPIKit/workflows/Swift/badge.svg)
+![Build](https://github.com/futuredapp/FTAPIKit/workflows/Build/badge.svg)
 ![Cocoapods](https://img.shields.io/cocoapods/v/FTAPIKit)
 ![Cocoapods platforms](https://img.shields.io/cocoapods/p/FTAPIKit)
 ![License](https://img.shields.io/cocoapods/l/FTAPIKit)
@@ -24,7 +26,7 @@ When using CocoaPods add following line to your `Podfile`:
 pod 'FTAPIKit', '~> 1.0'
 ```
 
-# Features
+## Features
 
 The main feature of this library is to provide documentation-like API
 for defining web services. This is achieved using declarative
