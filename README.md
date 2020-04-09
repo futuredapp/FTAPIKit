@@ -17,13 +17,13 @@ When using Swift package manager install using Xcode 11+
 or add following line to your dependencies:
 
 ```swift
-.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.0.0")
+.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.1.0")
 ```
 
 When using CocoaPods add following line to your `Podfile`:
 
 ```ruby
-pod 'FTAPIKit', '~> 1.0'
+pod 'FTAPIKit', '~> 1.1'
 ```
 
 ## Features
