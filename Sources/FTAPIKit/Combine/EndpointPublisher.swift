@@ -7,7 +7,7 @@ extension Publishers {
         public typealias Output = R
         public typealias Failure = E
 
-        public typealias Builder = (@escaping (Result<R, E>) -> Void) -> URLSessionTask?
+        typealias Builder = (@escaping (Result<R, E>) -> Void) -> URLSessionTask?
 
         let builder: Builder
 
