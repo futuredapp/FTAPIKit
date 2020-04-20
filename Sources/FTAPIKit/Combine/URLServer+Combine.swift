@@ -20,4 +20,10 @@ public extension URLServer {
             self.call(response: endpoint, completion: completion)
         }
     }
+
+    func publisher(download endpoint: Endpoint) -> Publishers.Endpoint<URL, ErrorType> {
+        Publishers.Endpoint { completion in
+            self.download(endpoint: endpoint, completion: completion)
+        }
+    }
 }
