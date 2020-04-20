@@ -17,6 +17,7 @@ Pod::Spec.new do |s|
   s.source_files                = "Sources/FTAPIKit/*"
 
   s.frameworks                  = ["Foundation", "CoreServices"]
+  s.weak_frameworks             = ["Combine"]
 
   s.swift_version               = "5.1"
   s.ios.deployment_target       = "8.0"
