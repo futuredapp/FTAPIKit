@@ -1,10 +1,13 @@
 import XCTest
 import Combine
 
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+/// There is a guard in each test to check whether Combine is available.
+/// If the whole class is marked with `@available` we get segfaults,
+/// because the test runner is still trying to execute unavailable test.
+/// Last Xcode version where this was checked is 11.4.
 final class CombineTests: XCTestCase {
     private let timeout: TimeInterval = 30.0
-    private var cancellable: Cancellable?
+    private var cancellable: AnyObject?
 
     override func tearDown() {
         super.tearDown()
@@ -12,6 +15,10 @@ final class CombineTests: XCTestCase {
     }
 
     func testEmptyResult() {
+        guard #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) else {
+            return
+        }
+
         let server = HTTPBinServer()
         let endpoint = NoContentEndpoint()
         let expectation = self.expectation(description: "Result")
@@ -24,6 +31,10 @@ final class CombineTests: XCTestCase {
     }
 
     func testDataPublisher() {
+        guard #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) else {
+            return
+        }
+
         let server = HTTPBinServer()
         let endpoint = GetEndpoint()
         let expectation = self.expectation(description: "Result")
@@ -39,6 +50,10 @@ final class CombineTests: XCTestCase {
     }
 
     func testValidJSONResponse() {
+        guard #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) else {
+            return
+        }
+
         let server = HTTPBinServer()
         let endpoint = JSONResponseEndpoint()
         let expectation = self.expectation(description: "Result")
@@ -53,6 +68,10 @@ final class CombineTests: XCTestCase {
     }
 
     func testClientError() {
+        guard #available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *) else {
+            return
+        }
+
         let server = HTTPBinServer()
         let endpoint = NotFoundEndpoint()
         let expectation = self.expectation(description: "Result")
