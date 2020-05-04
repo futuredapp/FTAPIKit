@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.social_media_url            = "https://twitter.com/Futuredapps"
 
   s.source                      = { git: "https://github.com/futuredapp/FTAPIKit.git", tag: s.version.to_s }
-  s.source_files                = "Sources/FTAPIKit/*"
+  s.source_files                = "Sources/FTAPIKit/**/*"
 
   s.frameworks                  = ["Foundation", "CoreServices"]
   s.weak_frameworks             = ["Combine"]
