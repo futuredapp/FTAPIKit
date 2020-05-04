@@ -1,7 +1,6 @@
 import Foundation
 #if canImport(Combine)
 import Combine
-#endif
 
 @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 final class EndpointSubscription<S: Subscriber, R, E>: Subscription where S.Input == R, S.Failure == E {
@@ -36,3 +35,5 @@ final class EndpointSubscription<S: Subscriber, R, E>: Subscription where S.Inpu
         subscriber = nil
     }
 }
+
+#endif
