@@ -1,4 +1,4 @@
-![FTAPIKit](Documentation/FTAPIKit.svg)
+<img align="right" alt="FTAPIKit logo" src="Documentation/FTAPIKit.svg">
 
 # FTAPIKit
 
