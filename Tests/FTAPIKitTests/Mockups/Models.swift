@@ -8,7 +8,7 @@ struct User: Codable, Equatable {
 
 struct File {
     let url: URL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(UUID()).txt")
-    let data = Data(repeating: UInt8(ascii: "a"), count: 1024 * 1024)
+    let data = Data(repeating: UInt8(ascii: "a"), count: 1_024 * 1_024)
     let headers: [String: String] = [
         "Content-Disposition": "form-data; name=jpegFile",
         "Content-Type": "image/jpeg"

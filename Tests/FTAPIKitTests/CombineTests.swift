@@ -1,10 +1,10 @@
-import XCTest
 import Combine
+import XCTest
 
 /// There is a guard in each test to check whether Combine is available.
 /// If the whole class is marked with `@available` we get segfaults,
 /// because the test runner is still trying to execute unavailable test.
-/// Last Xcode version where this was checked is 11.4.
+/// Last Xcode version where this was checked is 11.5.
 final class CombineTests: XCTestCase {
     private let timeout: TimeInterval = 30.0
     private var cancellable: AnyObject?
