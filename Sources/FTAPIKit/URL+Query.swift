@@ -1,5 +1,5 @@
-import Foundation
 import CoreServices
+import Foundation
 
 extension URL {
     mutating func appendQuery(parameters: [URLQueryItem]) {

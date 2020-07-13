@@ -1,5 +1,5 @@
-import FTAPIKit
 import Foundation
+import FTAPIKit
 
 struct HTTPBinServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)

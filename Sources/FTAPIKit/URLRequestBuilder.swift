@@ -7,8 +7,8 @@ public extension URLServer {
 }
 
 struct URLRequestBuilder<S: URLServer> {
-    public let server: S
-    public let endpoint: Endpoint
+    let server: S
+    let endpoint: Endpoint
 
     init(server: S, endpoint: Endpoint) {
         self.server = server

@@ -1,7 +1,7 @@
 import Foundation
 
 extension OutputStream {
-    private static let streamBufferSize = 4096
+    private static let streamBufferSize = 4_096
 
     func write(inputStream: InputStream) throws {
         inputStream.open()

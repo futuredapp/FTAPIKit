@@ -1,5 +1,5 @@
-import FTAPIKit
 import Foundation
+import FTAPIKit
 
 struct ThrowawayAPIError: APIError {
     private init() {}

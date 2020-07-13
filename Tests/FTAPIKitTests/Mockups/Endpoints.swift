@@ -1,5 +1,5 @@
-import FTAPIKit
 import Foundation
+import FTAPIKit
 
 struct GetEndpoint: Endpoint {
     let path = "get"

@@ -29,6 +29,6 @@ public enum HTTPMethod: String, CustomStringConvertible {
 
     /// Uppercased HTTP method, used for sending requests.
     public var description: String {
-        return rawValue.uppercased()
+        rawValue.uppercased()
     }
 }
