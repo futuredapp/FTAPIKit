@@ -23,6 +23,7 @@ final class EndpointSubscription<S: Subscriber, R, E>: Subscription where S.Inpu
             switch result {
             case .success(let input):
                 _ = subscriber?.receive(input)
+                subscriber?.receive(completion: .finished)
             case .failure(let error):
                 subscriber?.receive(completion: .failure(error))
             }
