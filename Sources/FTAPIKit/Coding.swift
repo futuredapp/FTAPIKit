@@ -2,7 +2,6 @@ import Foundation
 
 public protocol Encoding {
     func encode<T: Encodable>(_ object: T) throws -> Data
-    func configure(request: inout URLRequest) throws
 }
 
 public protocol Decoding {
@@ -24,10 +23,6 @@ public struct JSONEncoding: Encoding {
 
     public func encode<T: Encodable>(_ object: T) throws -> Data {
         try encoder.encode(object)
-    }
-
-    public func configure(request: inout URLRequest) throws {
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
     }
 }
 
