@@ -215,6 +215,7 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+    // swiftlint:disable:next empty_xctest_method
     static var allTests = [
         ("testGet", testGet),
         ("testClientError", testClientError),
