@@ -23,7 +23,6 @@ struct URLRequestBuilder<S: URLServer> {
 
         request.httpMethod = endpoint.method.description
         request.allHTTPHeaderFields = endpoint.headers
-        try server.encoding.configure(request: &request)
         try buildBody(to: &request)
         return request
     }
@@ -33,6 +32,7 @@ struct URLRequestBuilder<S: URLServer> {
         case let endpoint as DataEndpoint:
             request.httpBody = endpoint.body
         case let endpoint as EncodableEndpoint:
+            try server.encoding.configure(request: &request)
             request.httpBody = try endpoint.body(encoding: server.encoding)
         case let endpoint as URLEncodedEndpoint:
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
