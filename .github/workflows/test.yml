@@ -17,7 +17,7 @@ jobs:
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-        bundle exec pod lib lint
+        bundle exec pod lib lint --allow-warnings
     - name: Swift build & test
       run: |
         swift build
