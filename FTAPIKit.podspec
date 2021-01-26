@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                        = "FTAPIKit"
-  s.version                     = "1.1.2"
+  s.version                     = "1.2.0"
   s.summary                     = "Declarative, generic and protocol-oriented REST API framework using URLSession and Codable"
   s.description                 = <<-DESC
     Protocol-oriented framework for communication with REST APIs.
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.weak_frameworks             = ["Combine"]
 
   s.swift_version               = "5.1"
-  s.ios.deployment_target       = "8.0"
+  s.ios.deployment_target       = "9.0"
   s.osx.deployment_target       = "10.10"
   s.watchos.deployment_target   = "5.0"
   s.tvos.deployment_target      = "12.0"
