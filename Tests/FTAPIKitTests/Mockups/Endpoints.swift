@@ -78,7 +78,7 @@ struct TestMultipartEndpoint: MultipartEndpoint {
 struct TestURLEncodedEndpoint: URLEncodedEndpoint {
     let path = "post"
     let method: HTTPMethod = .post
-    let body: [String: String] = [
+    let body: KeyValuePairs<String, String> = [
         "param1": "value1",
         "param2": "value2"
     ]

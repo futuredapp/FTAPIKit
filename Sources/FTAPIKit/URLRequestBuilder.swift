@@ -51,7 +51,7 @@ struct URLRequestBuilder<S: URLServer> {
         }
     }
 
-    private func queryItems(parameters: [String: String]) -> [URLQueryItem] {
+    private func queryItems(parameters: KeyValuePairs<String, String>) -> [URLQueryItem] {
         parameters.compactMap { key, value in
             guard let encodedKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowed),
                 let encodedValue = value.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowed) else {
