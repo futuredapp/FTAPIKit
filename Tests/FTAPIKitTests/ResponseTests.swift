@@ -214,21 +214,4 @@ final class ResponseTests: XCTestCase {
         }
         wait(for: [expectation], timeout: timeout)
     }
-
-    // swiftlint:disable:next empty_xctest_method
-    static var allTests = [
-        ("testGet", testGet),
-        ("testClientError", testClientError),
-        ("testServerError", testServerError),
-        ("testConnectionError", testConnectionError),
-        ("testEmptyResult", testEmptyResult),
-        ("testCustomError", testCustomError),
-        ("testValidJSONResponse", testValidJSONResponse),
-        ("testValidJSONRequestResponse", testValidJSONRequestResponse),
-        ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
-        ("testAuthorization", testAuthorization),
-        ("testMultipartData", testMultipartData),
-        ("testUploadTask", testUploadTask),
-        ("testDownloadTask", testDownloadTask)
-    ]
 }
