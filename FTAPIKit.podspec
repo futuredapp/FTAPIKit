@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.weak_frameworks             = ["Combine"]
 
   s.swift_version               = "5.1"
-  s.ios.deployment_target       = "8.0"
+  s.ios.deployment_target       = "9.0"
   s.osx.deployment_target       = "10.10"
   s.watchos.deployment_target   = "5.0"
   s.tvos.deployment_target      = "12.0"
