@@ -27,8 +27,8 @@ public enum HTTPMethod: String, CustomStringConvertible {
     }
 }
 
-/// Alias for URL query or URL encoded parameter dictionary.
-public typealias HTTPParameters = [String: String]
+/// Alias for URL query or URL encoded parameters.
+public typealias HTTPParameters = KeyValuePairs<String, String>
 /// Alias for HTTP header dictionary.CustomStringConvertible
 public typealias HTTPHeaders = [String: String]
 

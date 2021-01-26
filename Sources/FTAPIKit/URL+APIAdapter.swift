@@ -4,11 +4,11 @@ import MobileCoreServices
 #endif
 
 extension URL {
-    mutating func appendQuery(parameters: [String: String]) {
+    mutating func appendQuery(parameters: HTTPParameters) {
         self = appendingQuery(parameters: parameters)
     }
 
-    func appendingQuery(parameters: [String: String]) -> URL {
+    func appendingQuery(parameters: HTTPParameters) -> URL {
         guard !parameters.isEmpty else {
             return self
         }
