@@ -17,7 +17,7 @@ public protocol Endpoint {
 
     var headers: [String: String] { get }
 
-    var query: KeyValuePairs<String, String> { get }
+    var query: URLQuery { get }
 
     /// HTTP method/verb describing the action.
     var method: HTTPMethod { get }
@@ -25,7 +25,7 @@ public protocol Endpoint {
 
 public extension Endpoint {
     var headers: [String: String] { [:] }
-    var query: KeyValuePairs<String, String> { [:] }
+    var query: URLQuery { URLQuery() }
     var method: HTTPMethod { .get }
 }
 
@@ -42,7 +42,7 @@ public protocol MultipartEndpoint: Endpoint {
 }
 
 public protocol URLEncodedEndpoint: Endpoint {
-    var body: KeyValuePairs<String, String> { get }
+    var body: URLQuery { get }
 }
 
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
