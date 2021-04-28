@@ -97,13 +97,3 @@ struct TestUploadEndpoint: UploadEndpoint {
 struct ImageEndpoint: Endpoint {
     let path = "image/jpeg"
 }
-
-struct TestURLQueryEndpoint: Endpoint {
-    let path = "get"
-
-    let query: URLQuery = [
-        "param1": "value1",
-        "param2": "value 2",
-        "param3": "value `#~^&*{}°^§€]–><["
-    ]
-}
