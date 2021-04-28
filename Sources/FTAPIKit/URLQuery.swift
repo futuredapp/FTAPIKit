@@ -15,7 +15,7 @@ public struct URLQuery: ExpressibleByDictionaryLiteral {
         self.init(items: elements.map(URLQueryItem.init))
     }
 
-    private func encode(item: URLQueryItem) -> URLQueryItem? {
+    private func encode(item: URLQueryItem) -> URLQueryItem {
         let encodedName = item.name.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowed) ?? item.name
         let encodedValue = item.value?.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowed)
         return URLQueryItem(name: encodedName, value: encodedValue)
@@ -26,7 +26,7 @@ public struct URLQuery: ExpressibleByDictionaryLiteral {
             return nil
         }
         return items.lazy
-            .compactMap(encode)
+            .map(encode)
             .map { item in "\(item.name)=\(item.value ?? String())" }
             .joined(separator: "&")
     }
