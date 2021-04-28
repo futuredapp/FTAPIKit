@@ -17,16 +17,24 @@ final class URLQueryTests: XCTestCase {
         XCTAssertEqual(query.percentEncoded, "array%5B%5D=a&array%5B%5D=b")
     }
 
-    func testQueryAppending() throws {
+    func testQueryAppending() {
         var url = URL(string: "http://httpbin.org/get")!
         url.appendQuery(["a": "a"])
         XCTAssertEqual(url.absoluteString, "http://httpbin.org/get?a=a")
     }
 
-    func testRepeatedQueryAppending() throws {
+    func testRepeatedQueryAppending() {
         var url = URL(string: "http://httpbin.org/get")!
         url.appendQuery(["a": "a"])
         url.appendQuery(["b": "b"])
         XCTAssertEqual(url.absoluteString, "http://httpbin.org/get?a=a&b=b")
+    }
+    
+    func testEmptyQueryItemValues() {
+        let query = URLQuery(items: [
+            URLQueryItem(name: "a", value: nil),
+            URLQueryItem(name: "b", value: nil)
+        ])
+        XCTAssertEqual(query.percentEncoded, "a=&b=")
     }
 }
