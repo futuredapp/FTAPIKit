@@ -29,7 +29,7 @@ final class URLQueryTests: XCTestCase {
         url.appendQuery(["b": "b"])
         XCTAssertEqual(url.absoluteString, "http://httpbin.org/get?a=a&b=b")
     }
-    
+
     func testEmptyQueryItemValues() {
         let query = URLQuery(items: [
             URLQueryItem(name: "a", value: nil),
