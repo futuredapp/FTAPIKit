@@ -2,17 +2,20 @@ import CoreServices
 import Foundation
 
 extension URL {
-    mutating func appendQuery(parameters: [URLQueryItem]) {
-        self = appendingQuery(parameters: parameters)
+    mutating func appendQuery(_ query: URLQuery) {
+        self = appendingQuery(query)
     }
 
-    func appendingQuery(parameters: [URLQueryItem]) -> URL {
-        guard !parameters.isEmpty else {
+    func appendingQuery(_ query: URLQuery) -> URL {
+        guard let query = query.percentEncoded else {
             return self
         }
         var components = URLComponents(url: self, resolvingAgainstBaseURL: true)
-        let oldItems = components?.queryItems ?? []
-        components?.queryItems = oldItems + parameters
+        let queries = [
+            components?.percentEncodedQuery,
+            query
+        ]
+        components?.percentEncodedQuery = queries.compactMap { $0 }.joined(separator: "&")
         return components?.url ?? self
     }
 }

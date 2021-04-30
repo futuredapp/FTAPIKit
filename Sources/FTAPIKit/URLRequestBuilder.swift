@@ -18,7 +18,7 @@ struct URLRequestBuilder<S: URLServer> {
     func build() throws -> URLRequest {
         let url = server.baseUri
             .appendingPathComponent(endpoint.path)
-            .appendingQuery(parameters: endpoint.query.items)
+            .appendingQuery(endpoint.query)
         var request = URLRequest(url: url)
 
         request.httpMethod = endpoint.method.description
@@ -36,9 +36,7 @@ struct URLRequestBuilder<S: URLServer> {
             request.httpBody = try endpoint.body(encoding: server.encoding)
         case let endpoint as URLEncodedEndpoint:
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            var urlComponents = URLComponents()
-            urlComponents.queryItems = endpoint.body.items
-            request.httpBody = urlComponents.query?.data(using: .ascii)
+            request.httpBody = endpoint.body.percentEncoded?.data(using: .ascii)
         case let endpoint as MultipartEndpoint:
             let formData = MultipartFormData(parts: endpoint.parts)
             request.httpBodyStream = try formData.inputStream()
