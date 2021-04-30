@@ -16,7 +16,7 @@ When using Swift package manager install using Xcode 11+
 or add following line to your dependencies:
 
 ```swift
-.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.2.1")
+.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.2.2")
 ```
 
 When using CocoaPods add following line to your `Podfile`:
