@@ -1,7 +1,7 @@
 import Foundation
 
 public struct URLQuery: ExpressibleByDictionaryLiteral {
-    private let items: [URLQueryItem]
+    public let items: [URLQueryItem]
 
     init() {
         self.items = []
