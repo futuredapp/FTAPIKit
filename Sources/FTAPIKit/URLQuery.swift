@@ -1,7 +1,7 @@
 import Foundation
 
 public struct URLQuery: ExpressibleByDictionaryLiteral {
-    private let items: [URLQueryItem]
+    public let items: [URLQueryItem]
 
     init() {
         self.items = []
@@ -21,7 +21,7 @@ public struct URLQuery: ExpressibleByDictionaryLiteral {
         return URLQueryItem(name: encodedName, value: encodedValue)
     }
 
-    var percentEncoded: String? {
+    public var percentEncoded: String? {
         guard !items.isEmpty else {
             return nil
         }
