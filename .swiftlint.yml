@@ -1,5 +1,11 @@
 disabled_rules:
   - line_length
+  # Combination of SwiftLint 0.43.1 and Xcode 12.5.1
+  # warns about false positives for this rule
+  - empty_xctest_method
+  # Type inference of `await try` methods
+  # does not work well in Xcode 13 Beta
+  - implicit_return
 excluded:
   - Pods
   - .build
