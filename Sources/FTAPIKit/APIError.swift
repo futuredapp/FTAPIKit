@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking 
+#endif
+
 public protocol APIError: Error {
     typealias Standard = APIErrorStandard
 

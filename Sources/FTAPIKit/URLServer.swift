@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking 
+#endif
+
 public protocol URLServer: Server where Request == URLRequest {
     associatedtype ErrorType: APIError = APIError.Standard
 

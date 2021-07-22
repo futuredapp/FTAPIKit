@@ -1,5 +1,8 @@
-import Combine
+#if canImport(Combine)
+
 import XCTest
+import Combine
+
 
 /// There is a guard in each test to check whether Combine is available.
 /// If the whole class is marked with `@available` we get segfaults,
@@ -93,3 +96,5 @@ final class CombineTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 }
+
+#endif

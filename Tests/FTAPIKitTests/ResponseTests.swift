@@ -214,4 +214,23 @@ final class ResponseTests: XCTestCase {
         }
         wait(for: [expectation], timeout: timeout)
     }
+
+    static var allTests = [
+        ("testGet", testGet),
+        ("testClientError", testClientError),
+        ("testServerError", testServerError),
+        ("testConnectionError", testConnectionError),
+        ("testEmptyResult", testEmptyResult),
+        ("testCustomError", testCustomError),
+        ("testValidJSONResponse", testValidJSONResponse),
+        ("testValidJSONRequestResponse", testValidJSONRequestResponse),
+        ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
+        ("testAuthorization", testAuthorization),
+        // CRASHING
+        //("testMultipartData", testMultipartData),
+        ("testURLEncodedEndpoint", testURLEncodedEndpoint),
+        // FAILING
+        //("testUploadTask", testUploadTask),
+        ("testDownloadTask", testDownloadTask),
+    ]
 }

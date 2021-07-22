@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking 
+#endif
+
 public protocol Encoding {
     func encode<T: Encodable>(_ object: T) throws -> Data
     func configure(request: inout URLRequest) throws

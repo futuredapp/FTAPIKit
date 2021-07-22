@@ -32,5 +32,11 @@ final class AsyncTests: XCTestCase {
         let response = try await server.call(response: endpoint)
         XCTAssertEqual(user, response.json)
     }
+
+    static var allTests = [
+        ("testCallWithoutResponse", testCallWithoutResponse),
+        ("testCallWithData", testCallWithData),
+        ("testCallParsingResponse", testCallParsingResponse),
+    ]
 }
 #endif

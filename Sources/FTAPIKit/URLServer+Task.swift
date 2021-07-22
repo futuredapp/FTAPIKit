@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking 
+#endif
+
 extension URLServer {
     func task<R>(
         request: URLRequest,

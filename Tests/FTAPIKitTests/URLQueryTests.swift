@@ -37,4 +37,13 @@ final class URLQueryTests: XCTestCase {
         ])
         XCTAssertEqual(query.percentEncoded, "a=&b=")
     }
+
+
+    static var allTests = [
+        ("testSpaceEncoding", testSpaceEncoding),
+        ("testDelimitersEncoding", testDelimitersEncoding),
+        ("testQueryAppending", testQueryAppending),
+        ("testRepeatedQueryAppending", testRepeatedQueryAppending),
+        ("testEmptyQueryItemValues", testEmptyQueryItemValues),
+    ]
 }

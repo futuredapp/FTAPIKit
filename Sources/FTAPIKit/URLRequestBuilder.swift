@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking 
+#endif
+
 public extension URLServer {
     func buildStandardRequest(endpoint: Endpoint) throws -> URLRequest {
         try URLRequestBuilder(server: self, endpoint: endpoint).build()
