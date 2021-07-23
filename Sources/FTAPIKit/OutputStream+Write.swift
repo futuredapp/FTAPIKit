@@ -1,23 +1,23 @@
 import Foundation
-
-
-// We want our buffer to be as close to page size as possible. Therefore we use
-// POSIX API to get pagesize. The alternative is using compiler private macro which
-// is less explicit.
-//
-// In case os can't be imported from some reason, fallback to 4 KiB size.
 #if canImport(os)
 import os
-
-private func memoryPageSize() -> Int { Int(getpagesize()) }
-#else
-private func memoryPageSize() -> Int { 4_096 }
 #endif
-
 
 extension OutputStream {
     private static let streamBufferSize = memoryPageSize()
-
+    
+    /// We want our buffer to be as close to page size as possible. Therefore we use
+    /// POSIX API to get pagesize. The alternative is using compiler private macro which
+    /// is less explicit.
+    ///
+    /// In case os can't be imported from some reason, fallback to 4 KiB size.
+    private static func memoryPageSize() -> Int {
+        #if canImport(os)
+        return Int(getpagesize())
+        #else
+        return 4_096
+        #endif
+    }
     func write(inputStream: InputStream) throws {
         inputStream.open()
         defer { inputStream.close() }
