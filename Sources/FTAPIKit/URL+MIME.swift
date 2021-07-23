@@ -11,15 +11,15 @@ extension URL {
 
 #if canImport(CoreServices)
     func getMimeType() -> String? {
-        if 
-            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(), 
-            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() 
+        if
+            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(),
+            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue()
         {
             return contentType as String
         }
 
         return nil
-    }  
+    }
 #else
     func getMimeType() -> String? {
         // Path to `env` on most operatin systems
@@ -43,10 +43,9 @@ extension URL {
         }
 
         return String(
-            data: stdOut.fileHandleForReading.readDataToEndOfFile(), 
+            data: stdOut.fileHandleForReading.readDataToEndOfFile(),
             encoding: .utf8
         )?.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 #endif
-
 }

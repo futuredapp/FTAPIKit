@@ -2,7 +2,7 @@ import Foundation
 import FTAPIKit
 
 #if os(Linux)
-import FoundationNetworking 
+import FoundationNetworking
 #endif
 
 struct GetEndpoint: Endpoint {

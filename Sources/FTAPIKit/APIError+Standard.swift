@@ -1,7 +1,7 @@
 import Foundation
 
 #if os(Linux)
-import FoundationNetworking 
+import FoundationNetworking
 #endif
 
 /// Standard API error returned in `APIResult` when no custom error

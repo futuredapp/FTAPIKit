@@ -230,9 +230,11 @@ final class ResponseTests: XCTestCase {
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
         ("testAuthorization", testAuthorization),
-        //("testMultipartData", testMultipartData),
+        // Test disabled due to issues with endpoints on Linux https://github.com/futuredapp/FTAPIKit/issues/79
+        // ("testMultipartData", testMultipartData),
         ("testURLEncodedEndpoint", testURLEncodedEndpoint),
-        //("testUploadTask", testUploadTask),
-        ("testDownloadTask", testDownloadTask),
+        // Test disabled due to issues with endpoints on Linux https://github.com/futuredapp/FTAPIKit/issues/79
+        // ("testUploadTask", testUploadTask),
+        ("testDownloadTask", testDownloadTask)
     ]
 }

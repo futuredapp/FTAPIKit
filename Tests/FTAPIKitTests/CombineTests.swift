@@ -1,8 +1,7 @@
 #if canImport(Combine)
 
-import XCTest
 import Combine
-
+import XCTest
 
 /// There is a guard in each test to check whether Combine is available.
 /// If the whole class is marked with `@available` we get segfaults,

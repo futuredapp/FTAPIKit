@@ -36,7 +36,7 @@ final class AsyncTests: XCTestCase {
     static var allTests = [
         ("testCallWithoutResponse", testCallWithoutResponse),
         ("testCallWithData", testCallWithData),
-        ("testCallParsingResponse", testCallParsingResponse),
+        ("testCallParsingResponse", testCallParsingResponse)
     ]
 }
 #endif

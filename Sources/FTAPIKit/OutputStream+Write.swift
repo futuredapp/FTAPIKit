@@ -3,7 +3,7 @@ import Foundation
 #if os(Linux)
 public enum LinuxStreamError: Error {
     case streamIsInErrorState
-} 
+}
 #endif
 
 extension Stream {
@@ -17,7 +17,7 @@ extension Stream {
                 throw error
             }
         #endif
-    } 
+    }
 }
 
 extension OutputStream {
