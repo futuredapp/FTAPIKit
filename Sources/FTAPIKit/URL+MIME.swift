@@ -28,7 +28,7 @@ extension URL {
         let stdOut = Pipe()
         let process = Process()
         process.executableURL = URL(fileURLWithPath: pathToEnv)
-        process.arguments = ["file", "-E", "--brief", "--mime-type", absoluteString.replacingOccurrences(of: "file://", with: "")]
+        process.arguments = ["file", "-E", "--brief", "--mime-type", absoluteString.path]
         process.standardOutput = stdOut
         do {
             try process.run()
