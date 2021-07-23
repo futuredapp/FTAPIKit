@@ -5,7 +5,7 @@ import os
 
 extension OutputStream {
     private static let streamBufferSize = memoryPageSize()
-    
+
     /// We want our buffer to be as close to page size as possible. Therefore we use
     /// POSIX API to get pagesize. The alternative is using compiler private macro which
     /// is less explicit.
