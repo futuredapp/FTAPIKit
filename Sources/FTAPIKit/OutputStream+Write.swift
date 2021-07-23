@@ -18,6 +18,7 @@ extension OutputStream {
         return 4_096
         #endif
     }
+
     func write(inputStream: InputStream) throws {
         inputStream.open()
         defer { inputStream.close() }
