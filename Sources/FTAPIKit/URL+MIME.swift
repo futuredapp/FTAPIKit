@@ -28,13 +28,18 @@ extension URL {
         let stdOut = Pipe()
         let process = Process()
         process.executableURL = URL(fileURLWithPath: pathToEnv)
-        process.arguments = ["file", "--brief", "--mime-type", absoluteString]
+        process.arguments = ["file", "-E", "--brief", "--mime-type", absoluteString.replacingOccurrences(of: "file://", with: "")]
         process.standardOutput = stdOut
         do {
             try process.run()
             process.waitUntilExit()
         } catch {
             assertionFailure("File mime could not be determined: \(error)")
+        }
+
+        guard process.terminationStatus == 0 else {
+            assertionFailure("File mime could not be determined: termination status \(process.terminationStatus)")
+            return nil
         }
 
         return String(

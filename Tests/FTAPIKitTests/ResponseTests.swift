@@ -226,11 +226,9 @@ final class ResponseTests: XCTestCase {
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
         ("testAuthorization", testAuthorization),
-        // CRASHING
         ("testMultipartData", testMultipartData),
         ("testURLEncodedEndpoint", testURLEncodedEndpoint),
-        // FAILING
-        //("testUploadTask", testUploadTask),
+        ("testUploadTask", testUploadTask),
         ("testDownloadTask", testDownloadTask),
     ]
 }
