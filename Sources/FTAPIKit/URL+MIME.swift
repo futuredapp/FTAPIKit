@@ -29,9 +29,10 @@ extension URL {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: pathToEnv)
         process.arguments = ["file", "--brief", "--mime-type", absoluteString]
-        process.standardOutput = pipe
+        process.standardOutput = stdOut
         do {
             try process.run()
+            process.waitUntilExit()
         } catch {
             assertionFailure("File mime could not be determined: \(error)")
         }
