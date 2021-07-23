@@ -9,7 +9,7 @@ extension URL {
         getMimeType() ?? "application/octet-stream"
     }
 
-#if canImport(CoreServices)
+    #if canImport(CoreServices)
     func getMimeType() -> String? {
         if
             let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(),
@@ -20,9 +20,9 @@ extension URL {
 
         return nil
     }
-#else
+    #else
     func getMimeType() -> String? {
-        // Path to `env` on most operatin systems
+        // Path to `env` on most operating systems
         let pathToEnv = "/bin/env"
 
         let stdOut = Pipe()
