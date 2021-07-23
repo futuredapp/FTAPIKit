@@ -1,7 +1,7 @@
 import Foundation
 
 #if canImport(CoreServices)
-import CoreFoundation
+import CoreServices
 #endif
 
 extension URL {
