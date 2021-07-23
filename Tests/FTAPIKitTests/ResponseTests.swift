@@ -154,6 +154,7 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+#if !os(Linux)
     func testMultipartData() {
         let server = HTTPBinServer()
         let file = File()
@@ -173,6 +174,7 @@ final class ResponseTests: XCTestCase {
             XCTAssertNoThrow(errorFunc)
         }
     }
+#endif
 
     func testURLEncodedEndpoint() {
         let server = HTTPBinServer()
@@ -187,6 +189,7 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+#if !os(Linux)
     func testUploadTask() {
         let server = HTTPBinServer()
         let file = File()
@@ -201,6 +204,7 @@ final class ResponseTests: XCTestCase {
         }
         wait(for: [expectation], timeout: timeout)
     }
+#endif
 
     func testDownloadTask() {
         let server = HTTPBinServer()
@@ -226,9 +230,9 @@ final class ResponseTests: XCTestCase {
         ("testValidJSONRequestResponse", testValidJSONRequestResponse),
         ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
         ("testAuthorization", testAuthorization),
-        ("testMultipartData", testMultipartData),
+        //("testMultipartData", testMultipartData),
         ("testURLEncodedEndpoint", testURLEncodedEndpoint),
-        ("testUploadTask", testUploadTask),
+        //("testUploadTask", testUploadTask),
         ("testDownloadTask", testDownloadTask),
     ]
 }

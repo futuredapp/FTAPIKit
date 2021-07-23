@@ -64,6 +64,7 @@ struct FailingUpdateUserEndpoint: RequestResponseEndpoint {
     let path = "anything"
 }
 
+#if !os(Linux)
 struct TestMultipartEndpoint: MultipartEndpoint {
     let parts: [MultipartBodyPart]
     let path = "post"
@@ -78,6 +79,7 @@ struct TestMultipartEndpoint: MultipartEndpoint {
         ]
     }
 }
+#endif
 
 struct TestURLEncodedEndpoint: URLEncodedEndpoint {
     let path = "post"
@@ -88,6 +90,7 @@ struct TestURLEncodedEndpoint: URLEncodedEndpoint {
     ]
 }
 
+#if !os(Linux)
 struct TestUploadEndpoint: UploadEndpoint {
     let file: URL
     let path = "put"
@@ -97,6 +100,7 @@ struct TestUploadEndpoint: UploadEndpoint {
         self.file = file.url
     }
 }
+#endif
 
 struct ImageEndpoint: Endpoint {
     let path = "image/jpeg"

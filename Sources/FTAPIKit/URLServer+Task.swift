@@ -64,9 +64,11 @@ extension URLServer {
     }
 
     func uploadFile(endpoint: Endpoint) -> URL? {
+        #if !os(Linux)
         if let endpoint = endpoint as? UploadEndpoint {
             return endpoint.file
         }
+        #endif
         return nil
     }
 
