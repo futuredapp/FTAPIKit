@@ -4,8 +4,6 @@ import Foundation
 import FoundationNetworking
 #endif
 
-// TODO: Protocol `Encoding` should not have depend on Foundation.URLRequest!
-
 /// `Encoding` is not only represents Swift encoders, but also provides network specific feature, such as
 /// configuring the request with correct headers.
 ///
