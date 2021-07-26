@@ -11,7 +11,7 @@ extension URL {
         let fallback = "application/octet-stream"
 
         #if os(Linux)
-        return linuxMimeType(path) ?? fallback
+        return linuxMimeType(for: path) ?? fallback
         #else
         if #available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *) {
             return uniformMimeType(for: pathExtension) ?? fallback
