@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking
+#endif
+
 /// Standard API error returned in `APIResult` when no custom error
 /// was parsed in the `APIAdapter` first and the response from server
 /// was invalid.

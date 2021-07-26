@@ -1,6 +1,10 @@
 import Foundation
 import FTAPIKit
 
+#if os(Linux)
+import FoundationNetworking
+#endif
+
 struct GetEndpoint: Endpoint {
     let path = "get"
 }
@@ -60,6 +64,7 @@ struct FailingUpdateUserEndpoint: RequestResponseEndpoint {
     let path = "anything"
 }
 
+#if !os(Linux)
 struct TestMultipartEndpoint: MultipartEndpoint {
     let parts: [MultipartBodyPart]
     let path = "post"
@@ -70,10 +75,11 @@ struct TestMultipartEndpoint: MultipartEndpoint {
             MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
             try MultipartBodyPart(name: "urlImage", url: file.url),
             MultipartBodyPart(headers: file.headers, data: file.data),
-            MultipartBodyPart(headers: file.headers, inputStream: InputStream(url: file.url) ?? InputStream())
+            MultipartBodyPart(headers: file.headers, inputStream: InputStream(url: file.url)!)
         ]
     }
 }
+#endif
 
 struct TestURLEncodedEndpoint: URLEncodedEndpoint {
     let path = "post"
@@ -84,6 +90,7 @@ struct TestURLEncodedEndpoint: URLEncodedEndpoint {
     ]
 }
 
+#if !os(Linux)
 struct TestUploadEndpoint: UploadEndpoint {
     let file: URL
     let path = "put"
@@ -93,6 +100,7 @@ struct TestUploadEndpoint: UploadEndpoint {
         self.file = file.url
     }
 }
+#endif
 
 struct ImageEndpoint: Endpoint {
     let path = "image/jpeg"

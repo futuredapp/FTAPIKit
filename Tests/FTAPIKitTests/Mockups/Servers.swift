@@ -1,6 +1,10 @@
 import Foundation
 import FTAPIKit
 
+#if os(Linux)
+import FoundationNetworking
+#endif
+
 struct HTTPBinServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!

@@ -1,3 +1,5 @@
+#if canImport(Combine)
+
 import Combine
 import XCTest
 
@@ -93,3 +95,5 @@ final class CombineTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 }
+
+#endif

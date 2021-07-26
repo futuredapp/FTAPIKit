@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking
+#endif
+
 extension URLServer {
     func task<R>(
         request: URLRequest,
@@ -60,9 +64,11 @@ extension URLServer {
     }
 
     func uploadFile(endpoint: Endpoint) -> URL? {
+        #if !os(Linux)
         if let endpoint = endpoint as? UploadEndpoint {
             return endpoint.file
         }
+        #endif
         return nil
     }
 

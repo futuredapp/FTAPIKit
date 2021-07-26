@@ -3,6 +3,26 @@ import Foundation
 import os
 #endif
 
+#if os(Linux)
+public enum LinuxStreamError: Error {
+    case streamIsInErrorState
+}
+#endif
+
+extension Stream {
+    func throwErrorIfStreamHasError() throws {
+        #if os(Linux)
+            if streamStatus == .error {
+                throw LinuxStreamError.streamIsInErrorState
+            }
+        #else
+            if let error = streamError {
+                throw error
+            }
+        #endif
+    }
+}
+
 extension OutputStream {
     private static let streamBufferSize = memoryPageSize()
 
@@ -27,9 +47,7 @@ extension OutputStream {
             var buffer = [UInt8](repeating: 0, count: OutputStream.streamBufferSize)
             let bytesRead = inputStream.read(&buffer, maxLength: OutputStream.streamBufferSize)
 
-            if let streamError = inputStream.streamError {
-                throw streamError
-            }
+            try inputStream.throwErrorIfStreamHasError()
 
             if bytesRead > 0 {
                 if buffer.count != bytesRead {
@@ -55,9 +73,7 @@ extension OutputStream {
         while bytesToWrite > 0, hasSpaceAvailable {
             let bytesWritten = write(buffer, maxLength: bytesToWrite)
 
-            if let error = streamError {
-                throw error
-            }
+            try throwErrorIfStreamHasError()
 
             bytesToWrite -= bytesWritten
 

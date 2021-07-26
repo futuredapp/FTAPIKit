@@ -1,0 +1,19 @@
+name: Test – Ubuntu
+
+on:
+  - pull_request
+
+jobs:
+  ubuntu-swift-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Swift version to confirm
+        run: swift --version
+
+      - name: Checkout FTAPIKit
+        uses: actions/checkout@v2
+
+      - name: Swift build & test
+        run: |
+          swift build
+          swift test

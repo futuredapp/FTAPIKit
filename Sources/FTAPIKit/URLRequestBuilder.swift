@@ -1,5 +1,9 @@
 import Foundation
 
+#if os(Linux)
+import FoundationNetworking
+#endif
+
 public extension URLServer {
     func buildStandardRequest(endpoint: Endpoint) throws -> URLRequest {
         try URLRequestBuilder(server: self, endpoint: endpoint).build()
@@ -37,6 +41,7 @@ struct URLRequestBuilder<S: URLServer> {
         case let endpoint as URLEncodedEndpoint:
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             request.httpBody = endpoint.body.percentEncoded?.data(using: .ascii)
+        #if !os(Linux)
         case let endpoint as MultipartEndpoint:
             let formData = MultipartFormData(parts: endpoint.parts)
             request.httpBodyStream = try formData.inputStream()
@@ -44,6 +49,7 @@ struct URLRequestBuilder<S: URLServer> {
             if let contentLength = formData.contentLength {
                 request.setValue(contentLength.description, forHTTPHeaderField: "Content-Length")
             }
+        #endif
         default:
             break
         }

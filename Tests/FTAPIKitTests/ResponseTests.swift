@@ -154,6 +154,7 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+#if !os(Linux)
     func testMultipartData() {
         let server = HTTPBinServer()
         let file = File()
@@ -173,6 +174,7 @@ final class ResponseTests: XCTestCase {
             XCTAssertNoThrow(errorFunc)
         }
     }
+#endif
 
     func testURLEncodedEndpoint() {
         let server = HTTPBinServer()
@@ -187,6 +189,7 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
+#if !os(Linux)
     func testUploadTask() {
         let server = HTTPBinServer()
         let file = File()
@@ -201,6 +204,7 @@ final class ResponseTests: XCTestCase {
         }
         wait(for: [expectation], timeout: timeout)
     }
+#endif
 
     func testDownloadTask() {
         let server = HTTPBinServer()
@@ -214,4 +218,23 @@ final class ResponseTests: XCTestCase {
         }
         wait(for: [expectation], timeout: timeout)
     }
+
+    static var allTests = [
+        ("testGet", testGet),
+        ("testClientError", testClientError),
+        ("testServerError", testServerError),
+        ("testConnectionError", testConnectionError),
+        ("testEmptyResult", testEmptyResult),
+        ("testCustomError", testCustomError),
+        ("testValidJSONResponse", testValidJSONResponse),
+        ("testValidJSONRequestResponse", testValidJSONRequestResponse),
+        ("testInvalidJSONRequestResponse", testInvalidJSONRequestResponse),
+        ("testAuthorization", testAuthorization),
+        // Test disabled due to issues with endpoints on Linux https://github.com/futuredapp/FTAPIKit/issues/79
+        // ("testMultipartData", testMultipartData),
+        ("testURLEncodedEndpoint", testURLEncodedEndpoint),
+        // Test disabled due to issues with endpoints on Linux https://github.com/futuredapp/FTAPIKit/issues/79
+        // ("testUploadTask", testUploadTask),
+        ("testDownloadTask", testDownloadTask)
+    ]
 }

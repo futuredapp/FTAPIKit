@@ -33,6 +33,7 @@ public protocol DataEndpoint: Endpoint {
     var body: Data { get }
 }
 
+#if !os(Linux)
 public protocol UploadEndpoint: Endpoint {
     var file: URL { get }
 }
@@ -40,6 +41,7 @@ public protocol UploadEndpoint: Endpoint {
 public protocol MultipartEndpoint: Endpoint {
     var parts: [MultipartBodyPart] { get }
 }
+#endif
 
 public protocol URLEncodedEndpoint: Endpoint {
     var body: URLQuery { get }
