@@ -1,6 +1,9 @@
 name: macOS latest
 
 on:
+  - push:
+      branches:
+        - master
   - pull_request
 
 jobs:
