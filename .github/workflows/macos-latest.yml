@@ -1,6 +1,9 @@
 name: Test  – macOS
 
 on:
+  - push:
+      branches:
+        - master
   - pull_request
 
 jobs:
