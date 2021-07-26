@@ -1,4 +1,4 @@
-name: macOS latest
+name: Test  – macOS
 
 on:
   - pull_request
