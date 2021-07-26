@@ -4,15 +4,27 @@ import Foundation
 import FoundationNetworking
 #endif
 
+// TODO: Protocol `Encoding` should not have depend on Foundation.URLRequest!
+
+/// `Encoding` is not only represents Swift encoders, but also provides network specific feature, such as
+/// configuring the request with correct headers.
+///
+/// - Note: A reference implementation is provided in the form of `JSONEncoding`
 public protocol Encoding {
+
+    /// Encodes the argument
     func encode<T: Encodable>(_ object: T) throws -> Data
+
+    /// Sets correct header to the request, such as `Content-Type`
     func configure(request: inout URLRequest) throws
 }
 
+/// `Decoding` encapsulates Swift decoders.
 public protocol Decoding {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
+/// Reference implementation of `Encoding` using JSON `Foundation.JSONEncoder` under the hood.
 public struct JSONEncoding: Encoding {
     private let encoder: JSONEncoder
 
@@ -20,7 +32,10 @@ public struct JSONEncoding: Encoding {
         self.encoder = encoder
     }
 
-    public init(configure: (JSONEncoder) -> Void) {
+    /// This initializer is a syntax sugar that provides the the possibility to configure the `JSONEncoder` in
+    /// a compact manner.
+    /// - Parameter encoder: Encoder which will be used by the instance
+    public init(configure: (_ encoder: JSONEncoder) -> Void) {
         let encoder = JSONEncoder()
         configure(encoder)
         self.encoder = encoder
@@ -35,6 +50,7 @@ public struct JSONEncoding: Encoding {
     }
 }
 
+/// Reference implementation of `Decoding` using JSON `Foundation.Decoding` under the hood.
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 
@@ -42,7 +58,10 @@ public struct JSONDecoding: Decoding {
         self.decoder = decoder
     }
 
-    public init(configure: (JSONDecoder) -> Void) {
+    /// This initializer is a syntax sugar that provides the the possibility to configure the `JSONDecoder` in
+    /// a compact manner.
+    /// - Parameter decoder: Decoder which will be used by the instance
+    public init(configure: (_ decoder: JSONDecoder) -> Void) {
         let decoder = JSONDecoder()
         configure(decoder)
         self.decoder = decoder

@@ -15,11 +15,16 @@ public protocol Endpoint {
     /// URL path component without base URI.
     var path: String { get }
 
+    /// HTML headers.
+    /// - Note: Provided default implementation.
     var headers: [String: String] { get }
 
+    /// Query of the request, expressible as a dictionary literal with non-unique keys.
+    /// - Note: Provided default implementation.
     var query: URLQuery { get }
 
     /// HTTP method/verb describing the action.
+    /// - Note: Provided default implementation.
     var method: HTTPMethod { get }
 }
 
@@ -29,22 +34,45 @@ public extension Endpoint {
     var method: HTTPMethod { .get }
 }
 
+/// `DataEndpoint` transmits data provided in the `body` property without any further formatting.
 public protocol DataEndpoint: Endpoint {
     var body: Data { get }
 }
 
 #if !os(Linux)
+/// `UploadEndpoint`  will send the provided file to the API.
+///
+/// - Note: If reference implementation is used, `URLSession.uploadTask( ... )` will be used.
 public protocol UploadEndpoint: Endpoint {
+
+    /// File which shell be sent.
     var file: URL { get }
 }
 
+/// Endpoint which will be sent as a multipart HTTP request.
+///
+/// - Note: Of reference implementation is used, the body parts will be composed into a temporary file, which
+/// will be then loaded as an input stream an passed to the request as a `httpBodyStream`.
 public protocol MultipartEndpoint: Endpoint {
+
+    /// List of individual body parts.
     var parts: [MultipartBodyPart] { get }
 }
 #endif
 
+/// The body of the endpoint with the URL query format.
 public protocol URLEncodedEndpoint: Endpoint {
     var body: URLQuery { get }
+}
+
+/// An abstract representation of endpoint, body of which is represented by Swift encodable type. It serves as an
+/// abstraction between the `protocol Server` and more specific `Endpoint` conforming protocols.
+/// Do not use this protocol to represent an encodable endpoint, use `RequestEndpoint` instead.
+public protocol EncodableEndpoint: Endpoint {
+
+    /// Returns `data` which shell be sent as the body of the endpoint. Notice, that only encoder is passed to the function. The origin of the encodable data is not specified by this protocol.
+    /// - Parameter encoding: Server provided encoder, which will also configure headers.
+    func body(encoding: Encoding) throws -> Data
 }
 
 /// Endpoint protocol extending `Endpoint` having decodable associated type, which is used
@@ -57,6 +85,9 @@ public protocol ResponseEndpoint: Endpoint {
 }
 
 /// Endpoint protocol extending `Endpoint` encapsulating and improving sending JSON models to API.
+///
+/// - Note: Provides default implementation for `func body(encoding: Encoding) throws -> Data`
+/// and `var method: HTTPMethod`.
 public protocol RequestEndpoint: EncodableEndpoint {
     /// Associated type describing the encodable request model for
     /// JSON serialization. The associated type is derived from
@@ -67,17 +98,11 @@ public protocol RequestEndpoint: EncodableEndpoint {
 }
 
 public extension RequestEndpoint {
+    var method: HTTPMethod { .post }
+
     func body(encoding: Encoding) throws -> Data {
         try encoding.encode(request)
     }
-}
-
-public protocol EncodableEndpoint: Endpoint {
-    func body(encoding: Encoding) throws -> Data
-}
-
-public extension RequestEndpoint {
-    var method: HTTPMethod { .post }
 }
 
 /// Typealias combining request and response API endpoint. For describing JSON
