@@ -11,7 +11,7 @@ public extension URLServer {
 }
 
 /// Use this structure to translate an instance of `Endpoint` to a valid `URLRequest`. This type is part
-/// of the reference implementation.
+/// of the standard implementation.
 struct URLRequestBuilder<S: URLServer> {
     let server: S
     let endpoint: Endpoint

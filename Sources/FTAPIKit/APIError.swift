@@ -8,21 +8,24 @@ import FoundationNetworking
 /// is provided. A type conforming to `APIError` protocol can be provided to `URLServer`
 /// to use custom error handling.
 ///
-/// - Note: Since this type is specific to the reference implementation, it works with Foundation `URLSession`
+/// - Note: Since this type is specific to the the standard implementation, it works with Foundation `URLSession`
 /// network API.
 public protocol APIError: Error {
-    /// Reference implementation of `APIError`
+    /// Standard implementation of `APIError`
     typealias Standard = APIErrorStandard
 
-    /// Initializer used during error handling in the reference implementation.
+    /// Creates instance if arguments do not represent a positive server response.
     ///
     /// - Parameters:
     ///   - data: The data returned from the server
     ///   - response: The URL response returned from the server
     ///   - error: Error returned by `URLSession` task execution
     ///   - decoding: The decoder associated with this server, in case the `data` parameter is encoded
+    ///
+    /// - Warning: Initializer mustn't return an instance if arguments contain a positive server response. The
+    /// response would be discarded if it does, and the API call would be treated as a failure.
     init?(data: Data?, response: URLResponse?, error: Error?, decoding: Decoding)
 
-    /// In case the optional initializer fails this property is used as fallback.
+    /// If the initializer fails but the server response is not valid, this property is used as a fallback.
     static var unhandled: Self { get }
 }
