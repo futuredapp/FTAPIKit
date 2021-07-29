@@ -4,7 +4,7 @@ import Foundation
 @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
 public extension URLServer {
 
-    /// Performs call to andpoint which does not return no data in the HTTP response.
+    /// Performs call to endpoint which does not return no data in the HTTP response.
     /// - Note: This call maps `func call(endpoint: Endpoint, completion: @escaping (Result<Void, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
     /// - Parameters:
     ///   - endpoint: The endpoint
@@ -23,7 +23,7 @@ public extension URLServer {
         }
     }
 
-    /// Performs call to andpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
+    /// Performs call to endpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
     /// server.
     /// - Note: This call maps `func call(data endpoint: Endpoint, completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
     /// - Parameters:
@@ -43,7 +43,7 @@ public extension URLServer {
         }
     }
 
-    /// Performs call to andpoint which returns data that are supposed to be parsed by the decoder of the instance
+    /// Performs call to endpoint which returns data that are supposed to be parsed by the decoder of the instance
     /// conforming to `protocol Server` in the HTTP response.
     /// - Note: This call maps `func call<EP: ResponseEndpoint>(response endpoint: EP, completion: @escaping (Result<EP.Response, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
     /// - Parameters:

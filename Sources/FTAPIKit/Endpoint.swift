@@ -52,7 +52,7 @@ public protocol UploadEndpoint: Endpoint {
 /// Endpoint which will be sent as a multipart HTTP request.
 ///
 /// - Note: If reference implementation is used, the body parts will be merged into a temporary file, which
-/// will be then transformed to an input stream anf passed to the request as a `httpBodyStream`.
+/// will be then transformed to an input stream and passed to the request as a `httpBodyStream`.
 public protocol MultipartEndpoint: Endpoint {
 
     /// List of individual body parts.

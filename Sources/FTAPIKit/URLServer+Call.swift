@@ -6,7 +6,7 @@ import FoundationNetworking
 
 public extension URLServer {
 
-    /// Performs call to andpoint which does not return no data in the HTTP response.
+    /// Performs call to endpoint which does not return no data in the HTTP response.
     /// - Parameters:
     ///   - endpoint: The endpoint
     ///   - completion: On success void, otherwise error.
@@ -23,7 +23,7 @@ public extension URLServer {
         }
     }
 
-    /// Performs call to andpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
+    /// Performs call to endpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
     /// server.
     /// - Parameters:
     ///   - endpoint: The endpoint
@@ -41,7 +41,7 @@ public extension URLServer {
         }
     }
 
-    /// Performs call to andpoint which returns data that are supposed to be parsed by the decoder of the instance
+    /// Performs call to endpoint which returns data that are supposed to be parsed by the decoder of the instance
     /// conforming to `protocol Server` in the HTTP response.
     /// - Parameters:
     ///   - endpoint: The endpoint

@@ -26,7 +26,7 @@ public struct URLQuery: ExpressibleByDictionaryLiteral {
         self.items = items
     }
 
-    /// Doctionary literals may not be unique, same keys are allowed and can't be overriden.
+    /// Dictionary literals may not be unique, same keys are allowed and can't be overridden.
     public init(dictionaryLiteral elements: (String, String)...) {
         self.init(items: elements.map(URLQueryItem.init))
     }

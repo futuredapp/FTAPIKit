@@ -23,7 +23,7 @@ import FoundationNetworking
 /// `func buildStandardRequest(endpoint: Endpoint) throws -> URLRequest` within our new
 /// implementation and use the `URLRequest` as a baseline.
 ///
-/// - Note: The reference implementation is specificaly made in order to let you customize:
+/// - Note: The reference implementation is specifically made in order to let you customize:
 /// - Error handling
 /// - URLRequest creation
 /// - Encoding and decoding
