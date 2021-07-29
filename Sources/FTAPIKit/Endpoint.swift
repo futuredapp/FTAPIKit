@@ -15,7 +15,7 @@ public protocol Endpoint {
     /// URL path component without base URI.
     var path: String { get }
 
-    /// HTML headers.
+    /// HTTP headers.
     /// - Note: Provided default implementation.
     var headers: [String: String] { get }
 
@@ -34,13 +34,13 @@ public extension Endpoint {
     var method: HTTPMethod { .get }
 }
 
-/// `DataEndpoint` transmits data provided in the `body` property without any further formatting.
+/// `DataEndpoint` transmits data provided in the `body` property without any further encoding.
 public protocol DataEndpoint: Endpoint {
     var body: Data { get }
 }
 
 #if !os(Linux)
-/// `UploadEndpoint`  will send the provided file to the API.
+/// `UploadEndpoint` will send the provided file to the API.
 ///
 /// - Note: If reference implementation is used, `URLSession.uploadTask( ... )` will be used.
 public protocol UploadEndpoint: Endpoint {
@@ -51,8 +51,8 @@ public protocol UploadEndpoint: Endpoint {
 
 /// Endpoint which will be sent as a multipart HTTP request.
 ///
-/// - Note: Of reference implementation is used, the body parts will be composed into a temporary file, which
-/// will be then loaded as an input stream an passed to the request as a `httpBodyStream`.
+/// - Note: If reference implementation is used, the body parts will be merged into a temporary file, which
+/// will be then transformed to an input stream anf passed to the request as a `httpBodyStream`.
 public protocol MultipartEndpoint: Endpoint {
 
     /// List of individual body parts.
@@ -66,11 +66,11 @@ public protocol URLEncodedEndpoint: Endpoint {
 }
 
 /// An abstract representation of endpoint, body of which is represented by Swift encodable type. It serves as an
-/// abstraction between the `protocol Server` and more specific `Endpoint` conforming protocols.
+/// abstraction between the `Server` protocol and more specific `Endpoint` conforming protocols.
 /// Do not use this protocol to represent an encodable endpoint, use `RequestEndpoint` instead.
 public protocol EncodableEndpoint: Endpoint {
 
-    /// Returns `data` which shell be sent as the body of the endpoint. Notice, that only encoder is passed to the function. The origin of the encodable data is not specified by this protocol.
+    /// Returns `data` which will be sent as the body of the endpoint. Note, that only encoder is passed to the function. The origin of the encodable data is not specified by this protocol.
     /// - Parameter encoding: Server provided encoder, which will also configure headers.
     func body(encoding: Encoding) throws -> Data
 }

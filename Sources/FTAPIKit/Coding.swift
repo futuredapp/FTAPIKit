@@ -13,16 +13,16 @@ public protocol Encoding {
     /// Encodes the argument
     func encode<T: Encodable>(_ object: T) throws -> Data
 
-    /// Sets correct header to the request, such as `Content-Type`
+    /// Configures the request with proper headers etc., such as `Content-Type`.
     func configure(request: inout URLRequest) throws
 }
 
-/// `Decoding` encapsulates Swift decoders.
+/// Protocol which enables use of any decoder using type-erasure.
 public protocol Decoding {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
-/// Reference implementation of `Encoding` using JSON `Foundation.JSONEncoder` under the hood.
+/// Type-erased JSON encoder for use with types conforming to `Server` protocol.
 public struct JSONEncoding: Encoding {
     private let encoder: JSONEncoder
 
@@ -30,9 +30,10 @@ public struct JSONEncoding: Encoding {
         self.encoder = encoder
     }
 
-    /// This initializer is a syntax sugar that provides the the possibility to configure the `JSONEncoder` in
-    /// a compact manner.
-    /// - Parameter encoder: Encoder which will be used by the instance
+    /// Creates new encoder with ability to configure `JSONEncoder` in a compact manner
+    /// using a closure.
+    ///
+    /// - Parameter configure: Function with custom configuration of the encoder
     public init(configure: (_ encoder: JSONEncoder) -> Void) {
         let encoder = JSONEncoder()
         configure(encoder)
@@ -48,7 +49,7 @@ public struct JSONEncoding: Encoding {
     }
 }
 
-/// Reference implementation of `Decoding` using JSON `Foundation.Decoding` under the hood.
+/// Type-erased JSON decoder for use with types conforming to `Server` protocol.
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 
@@ -56,9 +57,10 @@ public struct JSONDecoding: Decoding {
         self.decoder = decoder
     }
 
-    /// This initializer is a syntax sugar that provides the the possibility to configure the `JSONDecoder` in
-    /// a compact manner.
-    /// - Parameter decoder: Decoder which will be used by the instance
+    /// Creates new decoder with ability to configure `JSONDecoder` in a compact manner
+    /// using a closure.
+    ///
+    /// - Parameter configure: Function with custom configuration of the decoder
     public init(configure: (_ decoder: JSONDecoder) -> Void) {
         let decoder = JSONDecoder()
         configure(decoder)

@@ -15,7 +15,7 @@ import Foundation
 /// ]
 /// ```
 public struct URLQuery: ExpressibleByDictionaryLiteral {
-    /// Query items
+    /// Array of query items.
     public let items: [URLQueryItem]
 
     init() {
@@ -26,7 +26,7 @@ public struct URLQuery: ExpressibleByDictionaryLiteral {
         self.items = items
     }
 
-    /// Doctionary literals may not be unique, same keys are allowed and own't be overriden.
+    /// Doctionary literals may not be unique, same keys are allowed and can't be overriden.
     public init(dictionaryLiteral elements: (String, String)...) {
         self.init(items: elements.map(URLQueryItem.init))
     }
@@ -39,7 +39,7 @@ public struct URLQuery: ExpressibleByDictionaryLiteral {
         return URLQueryItem(name: encodedName, value: encodedValue)
     }
 
-    /// String of all query items, encoded by percent endocing and divided by `&` delimiter.
+    /// String of all query items, encoded by percent encoding and divided by `&` delimiter.
     public var percentEncoded: String? {
         guard !items.isEmpty else {
             return nil
