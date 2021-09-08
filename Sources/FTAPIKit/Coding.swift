@@ -4,10 +4,10 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// `Encoding` is not only represents Swift encoders, but also provides network specific feature, such as
-/// configuring the request with correct headers.
+/// `Encoding` represents Swift encoders and provides network-specific features, such as configuring
+/// the request with correct headers.
 ///
-/// - Note: A reference implementation is provided in the form of `JSONEncoding`
+/// - Note: A standard implementation is provided in the form of `JSONEncoding`
 public protocol Encoding {
 
     /// Encodes the argument

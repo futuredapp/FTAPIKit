@@ -1,11 +1,3 @@
-//
-//  APIAdapter+Types.swift
-//  FTAPIKit
-//
-//  Created by Matěj Kašpar Jirásek on 08/02/2018.
-//  Copyright © 2018 FUNTASTY Digital s.r.o. All rights reserved.
-//
-
 /// HTTP method enum with all commonly used verbs.
 public enum HTTPMethod: String, CustomStringConvertible {
     /// `OPTIONS` HTTP method
