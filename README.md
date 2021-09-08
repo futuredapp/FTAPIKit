@@ -10,7 +10,7 @@
 ![Ubuntu](https://github.com/futuredapp/FTAPIKit/actions/workflows/ubuntu-latest.yml/badge.svg?branch=main)
 
 Declarative and generic REST API framework using Codable.
-With the standard implementation using URLSesssion and JSON encoder/decoder.
+With standard implementation using URLSesssion and JSON encoder/decoder.
 Easily extensible for your asynchronous framework or networking stack.
 
 ## Installation

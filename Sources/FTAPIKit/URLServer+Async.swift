@@ -4,7 +4,7 @@ import Foundation
 @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
 public extension URLServer {
 
-    /// Performs call to endpoint which does not return no data in the HTTP response.
+    /// Performs call to endpoint which does not return any data in the HTTP response.
     /// - Note: This call maps `func call(endpoint: Endpoint, completion: @escaping (Result<Void, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
     /// - Parameters:
     ///   - endpoint: The endpoint

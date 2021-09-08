@@ -6,7 +6,7 @@ import FoundationNetworking
 
 public extension URLServer {
 
-    /// Performs call to endpoint which does not return no data in the HTTP response.
+    /// Performs call to endpoint which does not return any data in the HTTP response.
     /// - Parameters:
     ///   - endpoint: The endpoint
     ///   - completion: On success void, otherwise error.
