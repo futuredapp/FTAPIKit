@@ -3,6 +3,13 @@ import Foundation
 
 @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
 public extension URLServer {
+
+    /// Performs call to endpoint which does not return any data in the HTTP response.
+    /// - Note: This call maps `func call(endpoint: Endpoint, completion: @escaping (Result<Void, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    /// - Throws: Throws in case that result is .failure
+    /// - Returns: Void on success
     func call(endpoint: Endpoint) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             call(endpoint: endpoint) { result in
@@ -16,6 +23,13 @@ public extension URLServer {
         }
     }
 
+    /// Performs call to endpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
+    /// server.
+    /// - Note: This call maps `func call(data endpoint: Endpoint, completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    /// - Throws: Throws in case that result is .failure
+    /// - Returns: Plain data returned with the HTTP Response
     func call(data endpoint: Endpoint) async throws -> Data {
         return try await withCheckedThrowingContinuation { continuation in
             call(data: endpoint) { result in
@@ -29,6 +43,13 @@ public extension URLServer {
         }
     }
 
+    /// Performs call to endpoint which returns data that are supposed to be parsed by the decoder of the instance
+    /// conforming to `protocol Server` in the HTTP response.
+    /// - Note: This call maps `func call<EP: ResponseEndpoint>(response endpoint: EP, completion: @escaping (Result<EP.Response, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    /// - Throws: Throws in case that result is .failure
+    /// - Returns: Instance of the required type
     func call<EP: ResponseEndpoint>(response endpoint: EP) async throws -> EP.Response {
         return try await withCheckedThrowingContinuation { continuation in
             call(response: endpoint) { result in

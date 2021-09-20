@@ -5,6 +5,16 @@ import FoundationNetworking
 #endif
 
 public extension URLServer {
+
+    /// Created an URLSession download task that call the specified endpoint, saves the result into a file and calls
+    /// the handler.
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    ///   - completion: On success, the location of a temporary file where the server’s response is stored.
+    ///   You must move this file or open it for reading before your completion handler returns. Otherwise, the file
+    ///   is deleted, and the data is lost. Error otherwise.
+    /// - Returns: The URLSessionTask representing this call. You can discard it, or keep it in case you want
+    /// to abort the task before it's finished.
     @discardableResult
     func download(endpoint: Endpoint, completion: @escaping (Result<URL, ErrorType>) -> Void) -> URLSessionTask? {
         switch request(endpoint: endpoint) {

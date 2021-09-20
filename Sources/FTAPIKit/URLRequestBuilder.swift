@@ -10,6 +10,8 @@ public extension URLServer {
     }
 }
 
+/// Use this structure to translate an instance of `Endpoint` to a valid `URLRequest`. This type is part
+/// of the standard implementation.
 struct URLRequestBuilder<S: URLServer> {
     let server: S
     let endpoint: Endpoint
@@ -19,6 +21,9 @@ struct URLRequestBuilder<S: URLServer> {
         self.endpoint = endpoint
     }
 
+    /// Creates an instance of `URLRequest` corresponding to provided endpoint executed on provided server.
+    /// It is safe to execute this method multiple times per instance lifetime.
+    /// - Returns: A valid `URLRequest`.
     func build() throws -> URLRequest {
         let url = server.baseUri
             .appendingPathComponent(endpoint.path)

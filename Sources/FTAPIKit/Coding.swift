@@ -4,15 +4,25 @@ import Foundation
 import FoundationNetworking
 #endif
 
+/// `Encoding` represents Swift encoders and provides network-specific features, such as configuring
+/// the request with correct headers.
+///
+/// - Note: A standard implementation is provided in the form of `JSONEncoding`
 public protocol Encoding {
+
+    /// Encodes the argument
     func encode<T: Encodable>(_ object: T) throws -> Data
+
+    /// Configures the request with proper headers etc., such as `Content-Type`.
     func configure(request: inout URLRequest) throws
 }
 
+/// Protocol which enables use of any decoder using type-erasure.
 public protocol Decoding {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
+/// Type-erased JSON encoder for use with types conforming to `Server` protocol.
 public struct JSONEncoding: Encoding {
     private let encoder: JSONEncoder
 
@@ -20,7 +30,11 @@ public struct JSONEncoding: Encoding {
         self.encoder = encoder
     }
 
-    public init(configure: (JSONEncoder) -> Void) {
+    /// Creates new encoder with ability to configure `JSONEncoder` in a compact manner
+    /// using a closure.
+    ///
+    /// - Parameter configure: Function with custom configuration of the encoder
+    public init(configure: (_ encoder: JSONEncoder) -> Void) {
         let encoder = JSONEncoder()
         configure(encoder)
         self.encoder = encoder
@@ -35,6 +49,7 @@ public struct JSONEncoding: Encoding {
     }
 }
 
+/// Type-erased JSON decoder for use with types conforming to `Server` protocol.
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 
@@ -42,7 +57,11 @@ public struct JSONDecoding: Decoding {
         self.decoder = decoder
     }
 
-    public init(configure: (JSONDecoder) -> Void) {
+    /// Creates new decoder with ability to configure `JSONDecoder` in a compact manner
+    /// using a closure.
+    ///
+    /// - Parameter configure: Function with custom configuration of the decoder
+    public init(configure: (_ decoder: JSONDecoder) -> Void) {
         let decoder = JSONDecoder()
         configure(decoder)
         self.decoder = decoder
