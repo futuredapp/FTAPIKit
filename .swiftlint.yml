@@ -6,6 +6,8 @@ disabled_rules:
   # Type inference of `await try` methods
   # does not work well in Xcode 13 Beta
   - implicit_return
+  # Does not work with URL query literals.
+  - duplicated_key_in_dictionary_literal
 excluded:
   - Pods
   - .build
