@@ -1,4 +1,4 @@
-<img align="right" alt="FTAPIKit logo" src="Documentation/FTAPIKit.svg">
+<img align="right" alt="FTAPIKit logo" src="Sources/FTAPIKit/Documentation.docc/Resources/FTAPIKit.svg">
 
 # FTAPIKit
 
@@ -45,7 +45,7 @@ If some advanced features are required then we recommend implementing API client
 This client should encapsulate logic which is not provided by this framework
 (like signing authorized endpoints or conforming to `URLSessionDelegate`).
 
-![Architecture](Documentation/Architecture.svg)
+![Architecture](Sources/FTAPIKit/Documentation.docc/Resources/Architecture.svg)
 
 This package contains predefined `Endpoint` protocols.
 Use cases like multipart upload, automatic encoding/decoding
@@ -60,7 +60,7 @@ are separated in various protocols for convenience.
 - `RequestEndpoint` has encodable request which is encoded using encoding
   of the `Server` instance.
 
-![Endpoint types](Documentation/Endpoints.svg)
+![Endpoint types](Sources/FTAPIKit/Documentation.docc/Resources/Endpoints.svg)
 
 ## Usage
 
