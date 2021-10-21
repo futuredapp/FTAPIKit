@@ -1,27 +1,29 @@
 import Foundation
 
-/// `URLQuery` is a helper type, that provides a bridge between Swift and URL queries. It provides a nice, dictionary
+/// ``URLQuery`` is a helper type, that provides a bridge between Swift and URL queries. It provides a nice, dictionary
 /// based Swift API and returns a correct URL query items.
 ///
-/// Notice, that the elements of the dictionary literal are not internally stored as a dictionary. Therefore, arrays are
+/// - Note: The elements of the dictionary literal accept duplicate keys. Therefore, arrays and nested structure are
 /// expressible (example follows). However, only type acceptable as `Key` and `Value` is `String`.
 ///
-/// ```
+/// ```swift
 /// let query: URLQuery = [
-///     "name" : "John",
-///     "child[]" : "Eve",
-///     "child[]" : "John jr."
-///     "child[]" : "Maggie"
+///     "name": "John",
+///     "child[]": "Eve",
+///     "child[]": "John jr.",
+///     "child[]": "Maggie"
 /// ]
 /// ```
 public struct URLQuery: ExpressibleByDictionaryLiteral {
-    /// Array of query items.
+    /// Array of URL query items.
     public let items: [URLQueryItem]
 
     init() {
         self.items = []
     }
 
+    /// Creates a structure representing URL query using array of unencoded URL query items.
+    /// - Parameter items: Array of unencoded URL query items.
     public init(items: [URLQueryItem]) {
         self.items = items
     }

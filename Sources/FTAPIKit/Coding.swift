@@ -22,7 +22,7 @@ public protocol Decoding {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
-/// Type-erased JSON encoder for use with types conforming to `Server` protocol.
+/// Type-erased JSON encoder for use with types conforming to ``Server`` protocol.
 public struct JSONEncoding: Encoding {
     private let encoder: JSONEncoder
 
@@ -49,7 +49,7 @@ public struct JSONEncoding: Encoding {
     }
 }
 
-/// Type-erased JSON decoder for use with types conforming to `Server` protocol.
+/// Type-erased JSON decoder for use with types conforming to ``Server`` protocol.
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 

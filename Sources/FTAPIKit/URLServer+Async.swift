@@ -5,7 +5,7 @@ import Foundation
 public extension URLServer {
 
     /// Performs call to endpoint which does not return any data in the HTTP response.
-    /// - Note: This call maps `func call(endpoint: Endpoint, completion: @escaping (Result<Void, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
+    /// - Note: This call maps ``call(endpoint:completion:)`` to the async/await API
     /// - Parameters:
     ///   - endpoint: The endpoint
     /// - Throws: Throws in case that result is .failure
@@ -25,7 +25,7 @@ public extension URLServer {
 
     /// Performs call to endpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
     /// server.
-    /// - Note: This call maps `func call(data endpoint: Endpoint, completion: @escaping (Result<Data, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
+    /// - Note: This call maps ``call(data:completion:)`` to the async/await API
     /// - Parameters:
     ///   - endpoint: The endpoint
     /// - Throws: Throws in case that result is .failure
@@ -44,8 +44,8 @@ public extension URLServer {
     }
 
     /// Performs call to endpoint which returns data that are supposed to be parsed by the decoder of the instance
-    /// conforming to `protocol Server` in the HTTP response.
-    /// - Note: This call maps `func call<EP: ResponseEndpoint>(response endpoint: EP, completion: @escaping (Result<EP.Response, ErrorType>) -> Void) -> URLSessionTask?` to the async/await API
+    /// conforming to ``Server`` in the HTTP response.
+    /// - Note: This call maps  ``call(response:completion:)`` to the async/await API
     /// - Parameters:
     ///   - endpoint: The endpoint
     /// - Throws: Throws in case that result is .failure

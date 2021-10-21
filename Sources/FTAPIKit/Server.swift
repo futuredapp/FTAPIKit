@@ -1,14 +1,14 @@
 /// `Server` is an abstraction rather than a protocol-bound requirement.
 ///
-/// The expectation of a `Server` conforming type is, that it provides a gateway to an API over HTTP. Conforming
+/// The expectation of a type conforming to this protocol is, that it provides a gateway to an API over HTTP. Conforming
 /// type should also have the ability to encode/decode data into requests and responses using the `Codable`
 /// conformances and strongly typed coding of the Swift language.
 ///
 /// Conforming type must specify the type representing a request like `Foundation.URLRequest` or
 /// `Alamofire.Request`. However, conforming type is expected to have the ability to execute the request too.
 ///
-/// The `FTAPIKit` provides a standard implementation tailored for `Foundation.URLSession` and
-/// `Foundation` JSON coders. The standard implementation is represented by `protocol URLServer`.
+/// ``FTAPIKit`` provides a standard implementation tailored for `Foundation.URLSession` and
+/// `Foundation` JSON coders. The standard implementation is represented by ``URLServer``.
 public protocol Server {
     /// The type representing a `Request` of the network library, like `Foundation.URLRequest` or
     /// `Alamofire.Request`.

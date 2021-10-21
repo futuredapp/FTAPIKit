@@ -4,14 +4,14 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// Error protocol used in types conforming to `URLServer` protocol. Default implementation called `APIErrorStandard`
-/// is provided. A type conforming to `APIError` protocol can be provided to `URLServer`
+/// Error protocol used in types conforming to ``URLServer`` protocol. Default implementation called ``APIErrorStandard``
+/// is provided. A type conforming to ``APIError`` protocol can be provided to ``URLServer``
 /// to use custom error handling.
 ///
 /// - Note: Since this type is specific to the standard implementation, it works with Foundation `URLSession`
 /// network API.
 public protocol APIError: Error {
-    /// Standard implementation of `APIError`
+    /// Standard implementation of ``APIError``
     typealias Standard = APIErrorStandard
 
     /// Creates instance if arguments do not represent a valid server response.
