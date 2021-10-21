@@ -29,6 +29,12 @@ Easily extensible for your asynchronous framework or networking stack.
 - ``RequestEndpoint``
 - ``RequestResponseEndpoint``
 
+### Endpoint configuration
+
+- ``HTTPMethod``
+- ``URLQuery``
+- ``MultipartBodyPart``
+
 ### Encoding and decoding
 
 - ``Encoding``
