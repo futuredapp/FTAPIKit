@@ -4,13 +4,15 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// Standard API error returned in `APIResult` when no custom error
-/// was parsed in the `APIAdapter` first and the response from server
+/// Standard API error returned when no custom error
+/// was parsed and the response from server
 /// was invalid.
 public enum APIErrorStandard: APIError {
-    /// Error raised by URLSession.
+    /// Error returned by URL loading APIs.
     case connection(URLError)
+    /// An error that occurs during the encoding of a value.
     case encoding(EncodingError)
+    /// An error that occurs during the decoding of a value.
     case decoding(DecodingError)
     /// Status code error when the response status code
     /// is larger or equal to 500 and less than 600.

@@ -8,7 +8,7 @@ import Foundation
 /// to be referenced and used instantly after creation, so no memory usage is required.
 /// The case for not using enums is long-term sustainability. Enums tend to have many
 /// cases and information about one endpoint is spreaded all over the files. Also,
-/// structs offer us generated initializers, which is very helpful
+/// structs offer us generated initializers, which is very helpful.
 ///
 public protocol Endpoint {
 
@@ -16,11 +16,11 @@ public protocol Endpoint {
     var path: String { get }
 
     /// HTTP headers.
-    /// - Note: Provided default implementation.
+    /// - Note: Default implementation returns empty dictionary.
     var headers: [String: String] { get }
 
     /// Query of the request, expressible as a dictionary literal with non-unique keys.
-    /// - Note: Provided default implementation.
+    /// - Note: Default implementation returns empty query.
     var query: URLQuery { get }
 
     /// HTTP method/verb describing the action.
@@ -45,7 +45,7 @@ public protocol DataEndpoint: Endpoint {
 /// - Note: If the standard implementation is used, `URLSession.uploadTask` methods will be used.
 public protocol UploadEndpoint: Endpoint {
 
-    /// File which shell be sent.
+    /// File which will be sent.
     var file: URL { get }
 }
 
