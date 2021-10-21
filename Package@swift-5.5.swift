@@ -20,4 +20,3 @@ let package = Package(
             dependencies: ["FTAPIKit"])
     ]
 )
-
