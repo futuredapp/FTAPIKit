@@ -13,9 +13,11 @@ let package = Package(
     targets: [
         .target(
             name: "FTAPIKit",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "FTAPIKitTests",
-            dependencies: ["FTAPIKit"])
+            dependencies: ["FTAPIKit"]
+        )
     ]
 )

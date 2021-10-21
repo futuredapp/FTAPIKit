@@ -1,4 +1,4 @@
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
 import Foundation
 import XCTest
 
