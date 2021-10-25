@@ -12,9 +12,6 @@ public protocol Encoding {
 
     /// Encodes the argument
     func encode<T: Encodable>(_ object: T) throws -> Data
-
-    /// Configures the request with proper headers etc., such as `Content-Type`.
-    func configure(request: inout URLRequest) throws
 }
 
 /// Protocol which enables use of any decoder using type-erasure.
@@ -22,8 +19,14 @@ public protocol Decoding {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
+/// Protocol extending types conforming to encoding
+public protocol URLRequestEncoding: Encoding {
+    /// Can configure the request with proper headers such as `Content-Type`.
+    func configure(request: inout URLRequest) throws
+}
+
 /// Type-erased JSON encoder for use with types conforming to `Server` protocol.
-public struct JSONEncoding: Encoding {
+public struct JSONEncoding: URLRequestEncoding {
     private let encoder: JSONEncoder
 
     public init(encoder: JSONEncoder = .init()) {
