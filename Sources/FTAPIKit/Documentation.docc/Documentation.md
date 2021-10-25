@@ -41,6 +41,7 @@ Easily extensible for your asynchronous framework or networking stack.
 - ``JSONEncoding``
 - ``Decoding``
 - ``JSONDecoding``
+- ``URLRequestEncoding``
 
 ### Error handling
 

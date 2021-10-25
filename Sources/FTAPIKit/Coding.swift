@@ -17,13 +17,14 @@ public protocol Decoding {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
-/// Protocol extending types conforming to encoding
+/// Protocol extending encoding with ability to configure `URLRequest`. Used when encoding endpoints in ``URLServer`` calls.
 public protocol URLRequestEncoding: Encoding {
-    /// Can configure the request with proper headers such as `Content-Type`.
+    /// Allows modification of `URLRequest`. Enables things like adding `Content-Type` header etc.
+    /// - Parameter request: Request which can be modified.
     func configure(request: inout URLRequest) throws
 }
 
-/// Type-erased JSON encoder for use with types conforming to `Server` protocol.
+/// Type-erased JSON encoder for use with types conforming to ``Server`` protocol.
 public struct JSONEncoding: URLRequestEncoding {
     private let encoder: JSONEncoder
 
