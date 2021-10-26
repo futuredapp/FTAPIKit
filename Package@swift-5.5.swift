@@ -1,4 +1,5 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
+// This manifest is needed to properly generate DocC documentation.
 
 import PackageDescription
 
@@ -13,11 +14,9 @@ let package = Package(
     targets: [
         .target(
             name: "FTAPIKit",
-            dependencies: []
-        ),
+            dependencies: []),
         .testTarget(
             name: "FTAPIKitTests",
-            dependencies: ["FTAPIKit"]
-        )
+            dependencies: ["FTAPIKit"])
     ]
 )

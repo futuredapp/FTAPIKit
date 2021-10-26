@@ -1,6 +1,6 @@
 import Foundation
 
-/// Structure representing part in `multipart/form-data` request.
+/// Structure representing HTTP body part in `multipart/form-data` request.
 /// These parts must have valid headers according
 /// to [RFC-7578](https://tools.ietf.org/html/rfc7578).
 /// Everything passed to it is converted to `InputStream`
@@ -46,7 +46,7 @@ public struct MultipartBodyPart {
     /// - Parameters:
     ///   - name: Name of the parameter used in `Content-Disposition` header.
     ///   - url: URL to a local file.
-    /// - Throws: `APIError.multipartStreamCannotBeOpened` if stream was not created from the file.
+    /// - Throws: `URLError` with `cannotOpenFile` code if it was not possible to open the file at the provided URL.
     public init(name: String, url: URL) throws {
         guard let inputStream = InputStream(url: url) else {
             throw URLError(.cannotOpenFile, userInfo: ["url": url])
