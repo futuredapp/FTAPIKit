@@ -2,7 +2,7 @@
 import Foundation
 import XCTest
 
-@available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 final class AsyncTests: XCTestCase {
     func testCallWithoutResponse() async throws {
         let server = HTTPBinServer()
