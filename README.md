@@ -6,7 +6,8 @@
 ![Cocoapods platforms](https://img.shields.io/cocoapods/p/FTAPIKit)
 ![License](https://img.shields.io/cocoapods/l/FTAPIKit)
 
-![macOS](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-latest.yml/badge.svg?branch=main)
+![macOS 11](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-11.yml/badge.svg?branch=main)
+![macOS 10.15](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-10.15.yml/badge.svg?branch=main)
 ![Ubuntu](https://github.com/futuredapp/FTAPIKit/actions/workflows/ubuntu-latest.yml/badge.svg?branch=main)
 
 Declarative and generic REST API framework using Codable.
@@ -19,13 +20,13 @@ When using Swift package manager install using Xcode 11+
 or add following line to your dependencies:
 
 ```swift
-.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.3.0")
+.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.4.0")
 ```
 
 When using CocoaPods add following line to your `Podfile`:
 
 ```ruby
-pod 'FTAPIKit', '~> 1.3'
+pod 'FTAPIKit', '~> 1.4'
 ```
 
 ## Features
@@ -45,7 +46,7 @@ If some advanced features are required then we recommend implementing API client
 This client should encapsulate logic which is not provided by this framework
 (like signing authorized endpoints or conforming to `URLSessionDelegate`).
 
-![Architecture](Sources/FTAPIKit/Documentation.docc/Resources/Architecture.svg)
+![Architecture](Sources/FTAPIKit/Documentation.docc/Resources/Architecture.png)
 
 This package contains predefined `Endpoint` protocols.
 Use cases like multipart upload, automatic encoding/decoding
