@@ -46,7 +46,7 @@ If some advanced features are required then we recommend implementing API client
 This client should encapsulate logic which is not provided by this framework
 (like signing authorized endpoints or conforming to `URLSessionDelegate`).
 
-![Architecture](Sources/FTAPIKit/Documentation.docc/Resources/Architecture.svg)
+![Architecture](Sources/FTAPIKit/Documentation.docc/Resources/Architecture.png)
 
 This package contains predefined `Endpoint` protocols.
 Use cases like multipart upload, automatic encoding/decoding
