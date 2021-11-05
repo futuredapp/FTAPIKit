@@ -1,4 +1,7 @@
 import Foundation
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 // This extension is duplicated to support Xcode 13.0 and Xcode 13.1,
 // where backported concurrency is not available.
