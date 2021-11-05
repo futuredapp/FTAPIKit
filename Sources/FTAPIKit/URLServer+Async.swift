@@ -89,7 +89,6 @@ public extension URLServer {
 // Support of async-await for Xcode 13 and 13.1.
 #elseif swift(>=5.5)
 @available(macOS 12, iOS 15, watchOS 8, tvOS 15, *)
-p@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
 public extension URLServer {
 
     /// Performs call to endpoint which does not return any data in the HTTP response.
