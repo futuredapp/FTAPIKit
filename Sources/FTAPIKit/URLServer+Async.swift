@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 
 // Support of async-await for Xcode 13.2+.
-#if swift(>=5.5)
+#if swift(>=5.5.2)
 @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
 public extension URLServer {
 
