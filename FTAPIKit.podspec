@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                        = "FTAPIKit"
-  s.version                     = "1.4.1"
+  s.version                     = "1.5.0"
   s.summary                     = "Declarative, generic and protocol-oriented REST API framework using URLSession and Codable"
   s.description                 = <<-DESC
     Protocol-oriented framework for communication with REST APIs.
