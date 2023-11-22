@@ -12,5 +12,5 @@ struct ThrowawayAPIError: APIError {
         self.init()
     }
 
-    static var unhandled = Self()
+    static let unhandled = Self()
 }

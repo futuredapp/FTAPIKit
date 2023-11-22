@@ -219,7 +219,7 @@ final class ResponseTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
     }
 
-    static var allTests = [
+    static let allTests = [
         ("testGet", testGet),
         ("testClientError", testClientError),
         ("testServerError", testServerError),
