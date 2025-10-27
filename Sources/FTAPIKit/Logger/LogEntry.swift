@@ -1,6 +1,36 @@
 import Foundation
 
-/// Represents a log entry for analytics or custom processing
+/// Represents a log entry for logging network activity.
+/// 
+/// This struct contains all the data needed to log network requests, responses, and errors.
+/// It uses ``EntryType`` with associated values to provide type-safe access to basic
+/// network information without optionals.
+/// 
+/// ## Requirements
+/// 
+/// - iOS 14.0+
+/// - macOS 11.0+
+/// - tvOS 14.0+
+/// - watchOS 7.0+
+/// 
+/// ## Usage
+/// 
+/// ```swift
+/// let logEntry = LogEntry(
+///     type: .request(method: "GET", url: "https://api.example.com/users"),
+///     headers: ["Authorization": "Bearer token123"],
+///     body: "{\"username\": \"user\"}".data(using: .utf8)!,
+///     requestId: "abc12345"
+/// )
+/// 
+/// // Access data through computed properties
+/// print(logEntry.method) // "GET"
+/// print(logEntry.url)    // "https://api.example.com/users"
+/// print(logEntry.statusCode) // nil (for request entries)
+/// ```
+/// 
+/// - Note: This struct is used by ``LoggerProtocol`` implementations for logging
+/// network activity. For analytics tracking, use ``AnalyticEntry`` instead.
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct LogEntry {
     public let type: EntryType

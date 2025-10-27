@@ -47,3 +47,18 @@ Easily extensible for your asynchronous framework or networking stack.
 
 - ``APIError``
 - ``APIErrorStandard``
+
+### Logging
+
+- ``LoggerProtocol``
+- ``DefaultLogger``
+- ``LogEntry``
+- ``LoggerConfiguration``
+- ``LogPrivacy``
+
+### Analytics
+
+- ``AnalyticsProtocol``
+- ``AnalyticEntry``
+- ``AnalyticsConfiguration``
+- ``AnalyticsPrivacy``

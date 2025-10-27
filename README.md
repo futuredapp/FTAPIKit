@@ -16,8 +16,11 @@ Easily extensible for your asynchronous framework or networking stack.
 
 ## Documentation
 
-- **[Logging](LOGGING.md)** - Automatic network request/response logging with OSLog
-- **[Analytics](ANALYTICS.md)** - Privacy-aware analytics tracking with data masking
+For detailed API documentation, see the inline documentation in the source code or use Xcode's Quick Help (⌥⌘?) to view comprehensive documentation for each component.
+
+Key components:
+- **Logging**: ``LoggerProtocol``, ``DefaultLogger``, ``LogEntry`` - Automatic network logging with OSLog
+- **Analytics**: ``AnalyticsProtocol``, ``AnalyticEntry``, ``AnalyticsConfiguration`` - Privacy-aware analytics tracking
 
 ## Installation
 
@@ -68,11 +71,14 @@ are separated in various protocols for convenience.
 
 ![Endpoint types](Sources/FTAPIKit/Documentation.docc/Resources/Endpoints.svg)
 
-## Logging
+## Logging & Analytics
 
-FTAPIKit includes comprehensive logging capabilities for network requests and responses. The logging system uses native `OSLog` with configurable privacy levels and analytics support.
+FTAPIKit includes comprehensive logging and analytics capabilities:
 
-For detailed logging documentation, see [LOGGING.md](LOGGING.md).
+- **Logging**: Automatic network request/response logging using native `OSLog` with configurable privacy levels
+- **Analytics**: Privacy-aware analytics tracking with automatic data masking for sensitive information
+
+Both systems work together seamlessly and can be used independently or in combination.
 
 ## Usage
 
