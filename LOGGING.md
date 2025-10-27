@@ -38,11 +38,11 @@ struct APIServer: URLServer {
         AppConfiguration.current.apiServerUrl
     }
     
-    // Add networkLogger property
-    let networkLogger: NetworkLogger?
+    // Add logger property
+    let logger: LoggerProtocol?
     
-    init(networkLogger: NetworkLogger? = nil) {
-        self.networkLogger = networkLogger
+    init(logger: LoggerProtocol? = nil) {
+        self.logger = logger
     }
 
     func buildRequest(endpoint: any Endpoint) throws -> URLRequest {
@@ -80,7 +80,7 @@ let configuration = LoggerConfiguration(
     subsystem: "com.myapp.networking",
     category: "api"
 )
-let logger = NetworkLogger(configuration: configuration)
+let logger = DefaultLogger(configuration: configuration)
 let server = APIServer(networkLogger: logger)
 let service = ProductionAPIService(server: server)
 
@@ -99,52 +99,96 @@ FTAPIKit uses an organized logging structure in the `Logger/` directory:
 - Maps to native `OSLogPrivacy` system
 
 #### `Logger/LogEntry.swift`
-- `LogEntry` struct for analytics callback
-- Contains all original data (unmasked)
-- Supports request, response and error types
+- `LogEntry` struct - pure data container
+- No business logic, just data storage
+- Used by both logging and analytics
 
 #### `Logger/LoggerConfiguration.swift`
-- `LoggerConfiguration` struct with configuration
-- Custom data decoder with default implementation
-- Pretty JSON formatting with UTF8 fallback
+- `LoggerConfiguration` struct for logging only
+- OSLog subsystem, category, privacy settings
+- Data decoder for logging (no masking)
 
-#### `Logger/NetworkLogger.swift`
-- `NetworkLogger` struct with `LoggerConfiguration`
+#### `Logger/DefaultLogger.swift`
+- `DefaultLogger` struct with `LoggerConfiguration`
 - Uses OSLog with privacy settings
-- Supports analytics callback
+- Pure logging functionality (no analytics)
+
+#### `Logger/AnalyticsProtocol.swift`
+- `AnalyticsProtocol` for analytics functionality
+- Single `track(_ entry: LogEntry)` method
+
+#### `Logger/DefaultAnalytics.swift`
+- `DefaultAnalytics` struct with `AnalyticsConfiguration`
+- Applies privacy masking before callback
+
+#### `Logger/NoOpAnalytics.swift`
+- `NoOpAnalytics` for testing or disabling analytics
+
+#### `Logger/AnalyticsConfiguration.swift`
+- `AnalyticsConfiguration` struct for analytics setup
+- Privacy masking logic for analytics
+- Clean separation from logging concerns
 
 ## Configuration
 
 ### Basic usage
 ```swift
-let logger = NetworkLogger() // Default configuration
+let logger = DefaultLogger() // Default configuration
 ```
 
 ### Advanced usage
 ```swift
+let analyticsConfig = AnalyticsConfiguration(
+    callback: { logEntry in
+        AnalyticsService.trackNetworkEvent(logEntry)
+    },
+    privacy: .sensitive // Analytics gets masked data
+)
+let analytics = analyticsConfig.createAnalytics()
+
 let configuration = LoggerConfiguration(
     subsystem: "com.myapp.networking",
     category: "api",
-    privacy: .sensitive,
-    analyticsCallback: { logEntry in
-        AnalyticsService.trackNetworkEvent(logEntry)
-    },
-    dataDecoder: LoggerConfiguration.defaultDataDecoder
+    privacy: .auto,
+    analytics: analytics
 )
-let logger = NetworkLogger(configuration: configuration)
+let logger = DefaultLogger(configuration: configuration)
 ```
 
 ### Different privacy levels
 
 ```swift
 // Development - no masking
-let devLogger = NetworkLogger(configuration: LoggerConfiguration(privacy: .none))
+let devLogger = DefaultLogger(configuration: LoggerConfiguration(privacy: .none))
 
 // Production - automatic masking
-let prodLogger = NetworkLogger(configuration: LoggerConfiguration(privacy: .auto))
+let prodLogger = DefaultLogger(configuration: LoggerConfiguration(privacy: .auto))
 
 // High security - sensitive data masked
-let secureLogger = NetworkLogger(configuration: LoggerConfiguration(privacy: .sensitive))
+let secureLogger = DefaultLogger(configuration: LoggerConfiguration(privacy: .sensitive))
+```
+
+### Analytics usage
+
+```swift
+// Basic analytics
+let analyticsConfig = AnalyticsConfiguration(
+    callback: { logEntry in
+        print("Analytics: \(logEntry.type) - \(logEntry.method ?? "UNKNOWN")")
+    }
+)
+let analytics = analyticsConfig.createAnalytics()
+
+// Custom analytics implementation
+struct CustomAnalytics: AnalyticsProtocol {
+    func track(_ entry: LogEntry) {
+        // Custom tracking logic
+        MyAnalyticsService.track(entry)
+    }
+}
+
+// No-op analytics for testing
+let noOpAnalytics = NoOpAnalytics()
 ```
 
 ### Custom data decoder
@@ -155,7 +199,7 @@ let configuration = LoggerConfiguration(
     category: "api",
     dataDecoder: LoggerConfiguration.utf8DataDecoder // Simple UTF8 decoding
 )
-let logger = NetworkLogger(configuration: configuration)
+let logger = DefaultLogger(configuration: configuration)
 ```
 
 ### Conditional logging
@@ -167,7 +211,7 @@ let configuration = LoggerConfiguration(
     category: "debug",
     privacy: .none
 )
-let logger = NetworkLogger(configuration: configuration)
+let logger = DefaultLogger(configuration: configuration)
 let server = APIServer(networkLogger: logger)
 #else
 let server = APIServer() // No logging in production
@@ -223,7 +267,7 @@ let configuration = LoggerConfiguration(
         AnalyticsService.trackNetworkEvent(logEntry)
     }
 )
-let logger = NetworkLogger(configuration: configuration)
+let logger = DefaultLogger(configuration: configuration)
 ```
 
 ## Custom Data Decoding

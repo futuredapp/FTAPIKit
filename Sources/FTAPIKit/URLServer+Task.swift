@@ -25,30 +25,28 @@ extension URLServer {
         let requestId = UUID().uuidString
         let startTime = Date()
         
-        // Log request if logger is available
-        if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-            if let logger = networkLogger {
-                logRequest(request, requestId: requestId, logger: logger)
-            }
-        }
+        // Log and track request
+        logAndTrackRequest(request: request, requestId: requestId)
         
         let task = urlSession.dataTask(with: request) { data, response, error in
-            // Log response if logger is available
-            if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                if let logger = self.networkLogger {
-                    self.logResponse(request, response: response, data: data, requestId: requestId, startTime: startTime, logger: logger)
-                }
-            }
+            // Log and track response
+            self.logAndTrackResponse(
+                request: request,
+                response: response,
+                data: data,
+                requestId: requestId,
+                startTime: startTime
+            )
             
             let result = process(data, response, error)
             
-            // Log error if any and logger is available
+            // Log and track error if any
             if case .failure(let error) = result {
-                if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                    if let logger = self.networkLogger {
-                        self.logError(request, error: error, data: nil, requestId: requestId, logger: logger)
-                    }
-                }
+                self.logAndTrackError(
+                    request: request,
+                    error: error,
+                    requestId: requestId
+                )
             }
             
             completion(result)
@@ -66,30 +64,28 @@ extension URLServer {
         let requestId = UUID().uuidString
         let startTime = Date()
         
-        // Log request if logger is available
-        if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-            if let logger = networkLogger {
-                logRequest(request, requestId: requestId, logger: logger)
-            }
-        }
+        // Log and track request
+        logAndTrackRequest(request: request, requestId: requestId)
         
         let task = urlSession.uploadTask(with: request, fromFile: file) { data, response, error in
-            // Log response if logger is available
-            if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                if let logger = self.networkLogger {
-                    self.logResponse(request, response: response, data: data, requestId: requestId, startTime: startTime, logger: logger)
-                }
-            }
+            // Log and track response
+            self.logAndTrackResponse(
+                request: request,
+                response: response,
+                data: data,
+                requestId: requestId,
+                startTime: startTime
+            )
             
             let result = process(data, response, error)
             
-            // Log error if any and logger is available
+            // Log and track error if any
             if case .failure(let error) = result {
-                if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                    if let logger = self.networkLogger {
-                        self.logError(request, error: error, data: nil, requestId: requestId, logger: logger)
-                    }
-                }
+                self.logAndTrackError(
+                    request: request,
+                    error: error,
+                    requestId: requestId
+                )
             }
             
             completion(result)
@@ -106,30 +102,28 @@ extension URLServer {
         let requestId = UUID().uuidString
         let startTime = Date()
         
-        // Log request if logger is available
-        if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-            if let logger = networkLogger {
-                logRequest(request, requestId: requestId, logger: logger)
-            }
-        }
+        // Log and track request
+        logAndTrackRequest(request: request, requestId: requestId)
         
         let task = urlSession.downloadTask(with: request) { url, response, error in
-            // Log response if logger is available
-            if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                if let logger = self.networkLogger {
-                    self.logResponse(request, response: response, data: nil, requestId: requestId, startTime: startTime, logger: logger)
-                }
-            }
+            // Log and track response
+            self.logAndTrackResponse(
+                request: request,
+                response: response,
+                data: nil,
+                requestId: requestId,
+                startTime: startTime
+            )
             
             let result = process(url, response, error)
             
-            // Log error if any and logger is available
+            // Log and track error if any
             if case .failure(let error) = result {
-                if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
-                    if let logger = self.networkLogger {
-                        self.logError(request, error: error, data: nil, requestId: requestId, logger: logger)
-                    }
-                }
+                self.logAndTrackError(
+                    request: request,
+                    error: error,
+                    requestId: requestId
+                )
             }
             
             completion(result)
@@ -159,5 +153,118 @@ extension URLServer {
     func apiError<S>(error: Error?) -> Result<S, ErrorType> {
         let error = ErrorType(data: nil, response: nil, error: error, decoding: decoding) ?? .unhandled
         return .failure(error)
+    }
+    
+    // MARK: - Private Helpers
+    
+    private func logAndTrack(
+        type: String,
+        request: URLRequest,
+        response: HTTPURLResponse? = nil,
+        data: Data? = nil,
+        error: Error? = nil,
+        requestId: String,
+        startTime: Date? = nil
+    ) {
+        let method = request.httpMethod ?? "UNKNOWN"
+        let url = request.url?.absoluteString ?? "UNKNOWN"
+        let headers = response?.allHeaderFields as? [String: String] ?? request.allHTTPHeaderFields
+        let body = data ?? request.httpBody
+        let statusCode = response?.statusCode
+        let duration = startTime.map { Date().timeIntervalSince($0) }
+        let errorString = error.map { String(describing: $0) }
+        
+        // Log if logger is available
+        if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
+            if let logger = logger {
+                let logEntryType: LogEntry.EntryType
+                switch type {
+                case "request": logEntryType = .request
+                case "response": logEntryType = .response
+                case "error": logEntryType = .error
+                default: logEntryType = .request
+                }
+                
+                let logEntry = LogEntry(
+                    type: logEntryType,
+                    method: method,
+                    url: url,
+                    headers: headers,
+                    body: body,
+                    statusCode: statusCode,
+                    error: errorString,
+                    duration: duration,
+                    requestId: requestId
+                )
+                logger.log(logEntry)
+            }
+        }
+        
+        // Track analytics if available
+        if let analytics = analytics {
+            let analyticEntryType: AnalyticEntry.EntryType
+            switch type {
+            case "request": analyticEntryType = .request
+            case "response": analyticEntryType = .response
+            case "error": analyticEntryType = .error
+            default: analyticEntryType = .request
+            }
+            
+            let analyticEntry = AnalyticEntry(
+                type: analyticEntryType,
+                method: method,
+                url: url,
+                headers: headers,
+                body: body,
+                statusCode: statusCode,
+                error: errorString,
+                duration: duration,
+                requestId: requestId
+            )
+            analytics.track(analyticEntry)
+        }
+    }
+    
+    private func logAndTrackRequest(
+        request: URLRequest,
+        requestId: String
+    ) {
+        logAndTrack(
+            type: "request",
+            request: request,
+            requestId: requestId
+        )
+    }
+    
+    private func logAndTrackResponse(
+        request: URLRequest,
+        response: URLResponse?,
+        data: Data?,
+        requestId: String,
+        startTime: Date
+    ) {
+        guard let httpResponse = response as? HTTPURLResponse else { return }
+        
+        logAndTrack(
+            type: "response",
+            request: request,
+            response: httpResponse,
+            data: data,
+            requestId: requestId,
+            startTime: startTime
+        )
+    }
+    
+    private func logAndTrackError(
+        request: URLRequest,
+        error: Error,
+        requestId: String
+    ) {
+        logAndTrack(
+            type: "error",
+            request: request,
+            error: error,
+            requestId: requestId
+        )
     }
 }

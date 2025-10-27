@@ -6,20 +6,17 @@ public struct LoggerConfiguration {
     public let subsystem: String
     public let category: String
     public let privacy: LogPrivacy
-    public let analyticsCallback: ((LogEntry) -> Void)?
     public let dataDecoder: (Data) -> String?
     
     public init(
         subsystem: String = "com.ftapikit.networking",
         category: String = "requests",
         privacy: LogPrivacy = .default,
-        analyticsCallback: ((LogEntry) -> Void)? = nil,
         dataDecoder: @escaping (Data) -> String? = LoggerConfiguration.defaultDataDecoder
     ) {
         self.subsystem = subsystem
         self.category = category
         self.privacy = privacy
-        self.analyticsCallback = analyticsCallback
         self.dataDecoder = dataDecoder
     }
     
@@ -45,4 +42,5 @@ public struct LoggerConfiguration {
     public static func sizeOnlyDataDecoder(_ data: Data) -> String? {
         return "<\(data.count) bytes>"
     }
+    
 }

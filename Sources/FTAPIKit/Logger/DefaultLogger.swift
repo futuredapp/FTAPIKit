@@ -1,0 +1,38 @@
+import Foundation
+import os.log
+
+#if canImport(os.log)
+
+/// Default logger implementation that uses OSLog with configurable privacy and analytics
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+public struct DefaultLogger: LoggerProtocol {
+    private let logger: os.Logger
+    private let configuration: LoggerConfiguration
+    
+    public init(configuration: LoggerConfiguration = LoggerConfiguration()) {
+        self.configuration = configuration
+        self.logger = os.Logger(subsystem: configuration.subsystem, category: configuration.category)
+    }
+    
+    public func log(_ entry: LogEntry) {
+        // Log to OSLog with proper privacy
+        let level: OSLogType = entry.type == .error || (entry.statusCode ?? 0) >= 400 ? .error : .info
+        logToOSLog(message: entry.buildMessage(configuration: configuration), level: level)
+    }
+    
+    private func logToOSLog(message: String, level: OSLogType = .info) {
+        switch configuration.privacy {
+        case .none:
+            logger.log(level: level, "\(message, privacy: .public)")
+        case .auto:
+            logger.log(level: level, "\(message, privacy: .auto)")
+        case .private:
+            logger.log(level: level, "\(message, privacy: .private)")
+        case .sensitive:
+            logger.log(level: level, "\(message, privacy: .sensitive)")
+        }
+    }
+    
+}
+
+#endif

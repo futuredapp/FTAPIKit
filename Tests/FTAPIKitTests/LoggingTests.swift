@@ -5,18 +5,18 @@ import XCTest
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 class LoggingTests: XCTestCase {
     
-    func testNetworkLoggerInitialization() {
-        let logger = NetworkLogger()
+    func testDefaultLoggerInitialization() {
+        let logger = DefaultLogger()
         XCTAssertNotNil(logger)
     }
     
-    func testNetworkLoggerWithCustomConfiguration() {
+    func testDefaultLoggerWithCustomConfiguration() {
         let configuration = LoggerConfiguration(
             subsystem: "com.test.networking",
             category: "test",
             privacy: .sensitive
         )
-        let logger = NetworkLogger(configuration: configuration)
+        let logger = DefaultLogger(configuration: configuration)
         XCTAssertNotNil(logger)
     }
     
@@ -37,101 +37,176 @@ class LoggingTests: XCTestCase {
         XCTAssertEqual(sizeResult, "<11 bytes>")
     }
     
-    func testLogRequest() {
-        let logger = NetworkLogger()
-        let headers = ["Authorization": "Bearer token123", "Content-Type": "application/json"]
-        let body = "{\"test\": \"data\"}".data(using: .utf8)
+    
+    func testAnalyticsConfiguration() {
+        let analyticsConfig = AnalyticsConfiguration(privacy: .sensitive)
         
-        // This should not crash
-        logger.logRequest(
+        let testEntry = AnalyticEntry(
+            type: .request,
+            method: "POST",
+            url: "https://api.example.com/test?token=secret123",
+            headers: ["Authorization": "Bearer token123"],
+            body: "{\"password\": \"secret\"}".data(using: .utf8)!
+        )
+        
+        let maskedEntry = analyticsConfig.maskAnalyticEntry(testEntry)
+        XCTAssertEqual(maskedEntry.type, .request)
+        XCTAssertEqual(maskedEntry.method, "POST")
+        // Should be masked due to .sensitive privacy
+        XCTAssertEqual(maskedEntry.url, "https://api.example.com/test")
+        XCTAssertEqual(maskedEntry.headers?["Authorization"], "***")
+    }
+    
+    func testAnalyticsConfigurationCustomSensitive() {
+        let customSensitiveHeaders = Set(["custom-auth", "x-custom-token"])
+        let customSensitiveQueries = Set(["custom_token", "api_secret"])
+        let customSensitiveBodyParams = Set(["custom_password", "secret_key"])
+        
+        let analyticsConfig = AnalyticsConfiguration(
+            privacy: .auto,
+            sensitiveHeaders: customSensitiveHeaders,
+            sensitiveUrlQueries: customSensitiveQueries,
+            sensitiveBodyParams: customSensitiveBodyParams
+        )
+        
+        let testEntry = AnalyticEntry(
+            type: .request,
+            method: "POST",
+            url: "https://api.example.com/test?custom_token=secret123&public_param=value",
+            headers: ["custom-auth": "Bearer token123", "Content-Type": "application/json"],
+            body: "{\"custom_password\": \"secret\", \"public_field\": \"value\"}".data(using: .utf8)!
+        )
+        
+        let maskedEntry = analyticsConfig.maskAnalyticEntry(testEntry)
+        XCTAssertEqual(maskedEntry.type, .request)
+        XCTAssertEqual(maskedEntry.method, "POST")
+        // Should mask only custom sensitive values in .auto mode
+        XCTAssertEqual(maskedEntry.url, "https://api.example.com/test?custom_token=***&public_param=value")
+        XCTAssertEqual(maskedEntry.headers?["custom-auth"], "***")
+        XCTAssertEqual(maskedEntry.headers?["Content-Type"], "application/json")
+    }
+    
+    
+    func testNoOpAnalytics() {
+        let analytics = NoOpAnalytics()
+        let testEntry = AnalyticEntry(
+            type: .request,
+            method: "POST",
+            url: "https://api.example.com/test"
+        )
+        
+        // Should not crash
+        analytics.track(testEntry)
+    }
+    
+    
+    func testLogRequest() {
+        let logger = DefaultLogger()
+        let headers = ["Authorization": "Bearer token123", "Content-Type": "application/json"]
+        let body = "{\"test\": \"data\"}".data(using: .utf8)!
+        let logEntry = LogEntry(
+            type: .request,
             method: "POST",
             url: "https://api.example.com/test",
             headers: headers,
             body: body,
             requestId: "test-request-id"
         )
+        
+        // This should not crash
+        logger.log(logEntry)
     }
     
     func testLogResponse() {
-        let logger = NetworkLogger()
+        let logger = DefaultLogger()
         let headers = ["Content-Type": "application/json"]
-        let body = "{\"success\": true}".data(using: .utf8)
-        
-        // This should not crash
-        logger.logResponse(
+        let body = "{\"success\": true}".data(using: .utf8)!
+        let logEntry = LogEntry(
+            type: .response,
             method: "POST",
             url: "https://api.example.com/test",
-            statusCode: 200,
             headers: headers,
             body: body,
+            statusCode: 200,
             duration: 0.5,
             requestId: "test-request-id"
         )
+        
+        // This should not crash
+        logger.log(logEntry)
     }
     
     func testLogError() {
-        let logger = NetworkLogger()
-        
-        // This should not crash
-        logger.logError(
+        let logger = DefaultLogger()
+        let logEntry = LogEntry(
+            type: .error,
             method: "POST",
             url: "https://api.example.com/test",
             error: "Network error",
             requestId: "test-request-id"
         )
+        
+        // This should not crash
+        logger.log(logEntry)
     }
     
     func testLogErrorWithData() {
-        let logger = NetworkLogger()
-        let errorData = "{\"error\": \"Invalid JSON\"}".data(using: .utf8)
-        
-        // This should not crash and should include data in the log
-        logger.logError(
+        let logger = DefaultLogger()
+        let errorData = "{\"error\": \"Invalid JSON\"}".data(using: .utf8)!
+        let logEntry = LogEntry(
+            type: .error,
             method: "POST",
             url: "https://api.example.com/test",
+            body: errorData,
             error: "Decoding error",
-            data: errorData,
             requestId: "test-request-id"
         )
+        
+        // This should not crash and should include data in the log
+        logger.log(logEntry)
     }
     
     func testSensitiveHeadersMasking() {
-        let logger = NetworkLogger()
+        let logger = DefaultLogger()
         let headers = [
             "Authorization": "Bearer token123",
             "Content-Type": "application/json",
             "X-API-Key": "secret-key"
         ]
-        
-        // This should not crash and should mask sensitive headers
-        logger.logRequest(
+        let logEntry = LogEntry(
+            type: .request,
             method: "GET",
             url: "https://api.example.com/test",
             headers: headers,
             requestId: "test-request-id"
         )
+        
+        // This should not crash and should mask sensitive headers
+        logger.log(logEntry)
     }
     
     func testSensitiveBodyMasking() {
-        let logger = NetworkLogger()
-        let body = "{\"password\": \"secret123\", \"username\": \"user\"}".data(using: .utf8)
-        
-        // This should not crash and should mask sensitive fields
-        logger.logRequest(
+        let logger = DefaultLogger()
+        let body = "{\"password\": \"secret123\", \"username\": \"user\"}".data(using: .utf8)!
+        let logEntry = LogEntry(
+            type: .request,
             method: "POST",
             url: "https://api.example.com/test",
             body: body,
             requestId: "test-request-id"
         )
+        
+        // This should not crash and should mask sensitive fields
+        logger.log(logEntry)
     }
     
-    func testPrivacyAwareLogEntry() {
+    func testAnalyticsPrivacyMasking() {
         let originalUrl = "https://api.example.com/users?token=secret123"
         let originalHeaders = ["Authorization": "Bearer token123", "Content-Type": "application/json"]
-        let originalBody = "{\"password\": \"secret123\", \"username\": \"user\"}"
+        let originalBody = "{\"password\": \"secret123\", \"username\": \"user\"}".data(using: .utf8)!
         
-        // Create original log entry
-        let originalEntry = LogEntry(
+        // Create original analytic entry
+        let originalEntry = AnalyticEntry(
             type: .request,
             url: originalUrl,
             headers: originalHeaders,
@@ -139,17 +214,19 @@ class LoggingTests: XCTestCase {
         )
         
         // Test with .none privacy - should return original data
-        let noneEntry = originalEntry.withPrivacy(.none)
+        let noneConfig = AnalyticsConfiguration(privacy: .none)
+        let noneEntry = noneConfig.maskAnalyticEntry(originalEntry)
         XCTAssertEqual(noneEntry.url, originalUrl)
         XCTAssertEqual(noneEntry.headers, originalHeaders)
         XCTAssertEqual(noneEntry.body, originalBody)
         
         // Test with .sensitive privacy - should mask everything
-        let sensitiveEntry = originalEntry.withPrivacy(.sensitive)
+        let sensitiveConfig = AnalyticsConfiguration(privacy: .sensitive)
+        let sensitiveEntry = sensitiveConfig.maskAnalyticEntry(originalEntry)
         XCTAssertEqual(sensitiveEntry.url, "https://api.example.com/users")
         XCTAssertEqual(sensitiveEntry.headers?["Authorization"], "***")
         XCTAssertEqual(sensitiveEntry.headers?["Content-Type"], "***")
-        XCTAssertEqual(sensitiveEntry.body, "***")
+        XCTAssertEqual(sensitiveEntry.body, originalBody) // Data is preserved, masking happens during display
     }
     
     func testLogEntryBuildMessage() {
@@ -159,11 +236,12 @@ class LoggingTests: XCTestCase {
             method: "POST",
             url: "https://api.example.com/users",
             headers: ["Content-Type": "application/json"],
-            body: "{\"username\": \"test\"}",
+            body: "{\"username\": \"test\"}".data(using: .utf8)!,
             requestId: "abc12345"
         )
         
-        let requestMessage = requestEntry.buildMessage()
+        let configuration = LoggerConfiguration()
+        let requestMessage = requestEntry.buildMessage(configuration: configuration)
         XCTAssertTrue(requestMessage.contains("[REQUEST]"))
         XCTAssertTrue(requestMessage.contains("POST"))
         XCTAssertTrue(requestMessage.contains("https://api.example.com/users"))
@@ -176,13 +254,13 @@ class LoggingTests: XCTestCase {
             method: "POST",
             url: "https://api.example.com/users",
             headers: ["Content-Type": "application/json"],
-            body: "{\"id\": 123}",
+            body: "{\"id\": 123}".data(using: .utf8)!,
             statusCode: 201,
             duration: 0.5,
             requestId: "abc12345"
         )
         
-        let responseMessage = responseEntry.buildMessage()
+        let responseMessage = responseEntry.buildMessage(configuration: configuration)
         XCTAssertTrue(responseMessage.contains("[RESPONSE]"))
         XCTAssertTrue(responseMessage.contains("201"))
         XCTAssertTrue(responseMessage.contains("500.00ms"))
@@ -192,12 +270,12 @@ class LoggingTests: XCTestCase {
             type: .error,
             method: "POST",
             url: "https://api.example.com/users",
-            body: "{\"error\": \"Connection failed\"}",
+            body: "{\"error\": \"Connection failed\"}".data(using: .utf8)!,
             error: "Network error",
             requestId: "abc12345"
         )
         
-        let errorMessage = errorEntry.buildMessage()
+        let errorMessage = errorEntry.buildMessage(configuration: configuration)
         XCTAssertTrue(errorMessage.contains("[ERROR]"))
         XCTAssertTrue(errorMessage.contains("ERROR: Network error"))
         XCTAssertTrue(errorMessage.contains("Data:"))

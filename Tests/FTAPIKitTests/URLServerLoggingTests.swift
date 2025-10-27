@@ -22,7 +22,18 @@ class URLServerLoggingTests: XCTestCase {
         let server = TestServerWithLogging()
         
         // When - test that server can be created with logger
-        XCTAssertNotNil(server.networkLogger)
+        XCTAssertNotNil(server.logger)
+        
+        // Then - test passes if no crash occurs
+    }
+    
+    func testCustomLogger() {
+        // Given
+        let customLogger = MockLogger()
+        let server = TestServerWithCustomLogger(logger: customLogger)
+        
+        // When - test that server can be created with custom logger
+        XCTAssertNotNil(server.logger)
         
         // Then - test passes if no crash occurs
     }
@@ -32,7 +43,7 @@ class URLServerLoggingTests: XCTestCase {
         let server = TestServerWithLogging()
         
         // When - test that server can be created with logger
-        XCTAssertNotNil(server.networkLogger)
+        XCTAssertNotNil(server.logger)
         
         // Then - test passes if no crash occurs
     }
@@ -62,11 +73,20 @@ class TestServerWithLogging: URLServer {
     
     let baseUri: URL
     let urlSession: URLSession
-    let networkLogger: NetworkLogger?
+    let logger: LoggerProtocol?
     
-    init(baseUri: URL = URL(string: "http://httpbin.org/")!, networkLogger: NetworkLogger? = NetworkLogger()) {
+    init(baseUri: URL = URL(string: "http://httpbin.org/")!, logger: LoggerProtocol? = DefaultLogger()) {
         self.baseUri = baseUri
         self.urlSession = URLSession(configuration: .ephemeral)
-        self.networkLogger = networkLogger
+        self.logger = logger
+    }
+}
+
+// MARK: - Mock Logger for Testing
+
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+struct MockLogger: LoggerProtocol {
+    func log(_ entry: LogEntry) {
+        // Mock implementation - does nothing
     }
 }
