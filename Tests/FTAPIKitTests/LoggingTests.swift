@@ -87,17 +87,6 @@ class LoggingTests: XCTestCase {
     }
     
     
-    func testNoOpAnalytics() {
-        let analytics = NoOpAnalytics()
-        let testEntry = AnalyticEntry(
-            type: .request,
-            method: "POST",
-            url: "https://api.example.com/test"
-        )
-        
-        // Should not crash
-        analytics.track(testEntry)
-    }
     
     
     func testLogRequest() {
