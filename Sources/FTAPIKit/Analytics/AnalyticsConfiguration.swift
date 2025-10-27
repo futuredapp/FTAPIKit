@@ -8,16 +8,24 @@ public struct AnalyticsConfiguration {
     public let sensitiveBodyParams: Set<String>
     
     public init(
-        privacy: AnalyticsPrivacy = .sensitive,
-        sensitiveHeaders: Set<String> = AnalyticsConfiguration.defaultSensitiveHeaders,
-        sensitiveUrlQueries: Set<String> = AnalyticsConfiguration.defaultSensitiveUrlQueries,
-        sensitiveBodyParams: Set<String> = AnalyticsConfiguration.defaultSensitiveBodyParams
+        privacy: AnalyticsPrivacy,
+        sensitiveHeaders: Set<String>,
+        sensitiveUrlQueries: Set<String>,
+        sensitiveBodyParams: Set<String>
     ) {
         self.privacy = privacy
         self.sensitiveHeaders = sensitiveHeaders
         self.sensitiveUrlQueries = sensitiveUrlQueries
         self.sensitiveBodyParams = sensitiveBodyParams
     }
+    
+    /// Default analytics configuration with sensitive privacy
+    public static let `default` = AnalyticsConfiguration(
+        privacy: .sensitive,
+        sensitiveHeaders: defaultSensitiveHeaders,
+        sensitiveUrlQueries: defaultSensitiveUrlQueries,
+        sensitiveBodyParams: defaultSensitiveBodyParams
+    )
     
     /// Default sensitive headers that should be masked
     public static let defaultSensitiveHeaders: Set<String> = [
@@ -53,9 +61,9 @@ public struct AnalyticsConfiguration {
         )
     }
     
-    // MARK: - Private Masking Methods
+    // MARK: - Public Masking Methods
     
-    private func maskUrl(_ url: String?) -> String? {
+    public func maskUrl(_ url: String?) -> String? {
         guard let url = url else { return nil }
         
         switch privacy {
@@ -91,7 +99,7 @@ public struct AnalyticsConfiguration {
         return maskedComponents.url?.absoluteString ?? url
     }
     
-    private func maskHeaders(_ headers: [String: String]?) -> [String: String]? {
+    public func maskHeaders(_ headers: [String: String]?) -> [String: String]? {
         guard let headers = headers else { return nil }
         
         switch privacy {
@@ -101,6 +109,19 @@ public struct AnalyticsConfiguration {
             return maskSensitiveHeaders(headers)
         case .private, .sensitive:
             return headers.mapValues { _ in "***" }
+        }
+    }
+    
+    public func maskBody(_ body: Data?) -> Data? {
+        guard let body = body else { return nil }
+        
+        switch privacy {
+        case .none:
+            return body
+        case .auto:
+            return maskSensitiveBodyParams(body) // Return nil if masking fails
+        case .private, .sensitive:
+            return nil // Always return nil for private/sensitive privacy
         }
     }
     
@@ -114,5 +135,26 @@ public struct AnalyticsConfiguration {
             }
         }
         return maskedHeaders
+    }
+    
+    private func maskSensitiveBodyParams(_ body: Data) -> Data? {
+        // Try to decode as JSON and mask sensitive parameters
+        guard let json = try? JSONSerialization.jsonObject(with: body) as? [String: Any] else {
+            return nil // If not JSON, return nil
+        }
+        
+        var maskedJson = json
+        for key in sensitiveBodyParams {
+            if maskedJson[key] != nil {
+                maskedJson[key] = "***"
+            }
+        }
+        
+        // Convert back to Data
+        guard let maskedData = try? JSONSerialization.data(withJSONObject: maskedJson) else {
+            return nil // If conversion fails, return nil
+        }
+        
+        return maskedData
     }
 }

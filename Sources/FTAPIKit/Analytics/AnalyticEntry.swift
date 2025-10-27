@@ -29,13 +29,14 @@ public struct AnalyticEntry {
         error: String? = nil,
         timestamp: Date = Date(),
         duration: TimeInterval? = nil,
-        requestId: String = UUID().uuidString
+        requestId: String = UUID().uuidString,
+        configuration: AnalyticsConfiguration = AnalyticsConfiguration.default
     ) {
         self.type = type
         self.method = method
-        self.url = url
-        self.headers = headers
-        self.body = body
+        self.url = configuration.maskUrl(url)
+        self.headers = configuration.maskHeaders(headers)
+        self.body = configuration.maskBody(body)
         self.statusCode = statusCode
         self.error = error
         self.timestamp = timestamp

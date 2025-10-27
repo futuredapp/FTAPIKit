@@ -219,7 +219,8 @@ extension URLServer {
                 statusCode: statusCode,
                 error: errorString,
                 duration: duration,
-                requestId: requestId
+                requestId: requestId,
+                configuration: analytics.configuration
             )
             analytics.track(analyticEntry)
         }

@@ -1,6 +1,8 @@
 # FTAPIKit Logging
 
-FTAPIKit now supports automatic network request and response logging using the native `OSLog` system.
+FTAPIKit supports automatic network request and response logging using the native `OSLog` system.
+
+> **Note**: For analytics tracking with privacy-aware data masking, see [ANALYTICS.md](./ANALYTICS.md).
 
 ## Requirements
 
@@ -81,7 +83,7 @@ let configuration = LoggerConfiguration(
     category: "api"
 )
 let logger = DefaultLogger(configuration: configuration)
-let server = APIServer(networkLogger: logger)
+let server = APIServer(logger: logger)
 let service = ProductionAPIService(server: server)
 
 // All network requests will be automatically logged

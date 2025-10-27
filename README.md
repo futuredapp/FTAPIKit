@@ -14,6 +14,11 @@ Declarative and generic REST API framework using Codable.
 With standard implementation using URLSesssion and JSON encoder/decoder.
 Easily extensible for your asynchronous framework or networking stack.
 
+## Documentation
+
+- **[Logging](LOGGING.md)** - Automatic network request/response logging with OSLog
+- **[Analytics](ANALYTICS.md)** - Privacy-aware analytics tracking with data masking
+
 ## Installation
 
 When using Swift package manager install using Xcode 11+
