@@ -25,7 +25,7 @@ public struct NetworkLogger {
     ) {
         let bodyString = body.flatMap { configuration.dataDecoder($0) }
         
-        // Create log entry for analytics (with original data)
+        // Create log entry with original data
         let logEntry = LogEntry(
             type: .request,
             method: method,
@@ -35,13 +35,11 @@ public struct NetworkLogger {
             requestId: requestId
         )
         
-        // Call analytics callback if provided
-        configuration.analyticsCallback?(logEntry)
+        // Call analytics callback if provided (with privacy-aware data)
+        configuration.analyticsCallback?(logEntry.withPrivacy(configuration.privacy))
         
         // Log to OSLog with proper privacy
-        logToOSLog(
-            message: buildRequestMessage(method: method, url: url, headers: headers, body: bodyString, requestId: requestId)
-        )
+        logToOSLog(message: logEntry.buildMessage(), level: .info)
     }
     
     /// Logs a network response
@@ -56,7 +54,7 @@ public struct NetworkLogger {
     ) {
         let bodyString = body.flatMap { configuration.dataDecoder($0) }
         
-        // Create log entry for analytics (with original data)
+        // Create log entry with original data
         let logEntry = LogEntry(
             type: .response,
             method: method,
@@ -68,24 +66,14 @@ public struct NetworkLogger {
             requestId: requestId
         )
         
-        // Call analytics callback if provided
-        configuration.analyticsCallback?(logEntry)
+        // Call analytics callback if provided (with privacy-aware data)
+        configuration.analyticsCallback?(logEntry.withPrivacy(configuration.privacy))
         
         // Log to OSLog with proper privacy
-        let message = buildResponseMessage(
-            method: method,
-            url: url,
-            statusCode: statusCode,
-            headers: headers,
-            body: bodyString,
-            duration: duration,
-            requestId: requestId
-        )
-        
         if statusCode >= 400 {
-            logToOSLog(message: message, level: .error)
+            logToOSLog(message: logEntry.buildMessage(), level: .error)
         } else {
-            logToOSLog(message: message, level: .info)
+            logToOSLog(message: logEntry.buildMessage(), level: .info)
         }
     }
     
@@ -101,7 +89,7 @@ public struct NetworkLogger {
         let urlString = url ?? "UNKNOWN"
         let dataString = data.flatMap { configuration.dataDecoder($0) }
         
-        // Create log entry for analytics (with original data)
+        // Create log entry with original data
         let logEntry = LogEntry(
             type: .error,
             method: methodString,
@@ -111,12 +99,11 @@ public struct NetworkLogger {
             requestId: requestId
         )
         
-        // Call analytics callback if provided
-        configuration.analyticsCallback?(logEntry)
+        // Call analytics callback if provided (with privacy-aware data)
+        configuration.analyticsCallback?(logEntry.withPrivacy(configuration.privacy))
         
         // Log to OSLog with proper privacy
-        let message = buildErrorMessage(method: methodString, url: urlString, error: error, data: dataString, requestId: requestId)
-        logToOSLog(message: message, level: .error)
+        logToOSLog(message: logEntry.buildMessage(), level: .error)
     }
     
     // MARK: - Private Methods
@@ -134,67 +121,6 @@ public struct NetworkLogger {
         }
     }
     
-    private func buildRequestMessage(
-        method: String,
-        url: String,
-        headers: [String: String]?,
-        body: String?,
-        requestId: String
-    ) -> String {
-        var message = "[REQUEST] [\(String(requestId.prefix(8)))] \(method) \(url)"
-        
-        if let headers = headers, !headers.isEmpty {
-            message += " Headers: \(headers)"
-        }
-        
-        if let body = body {
-            message += " Body: \(body)"
-        }
-        
-        return message
-    }
-    
-    private func buildResponseMessage(
-        method: String,
-        url: String,
-        statusCode: Int,
-        headers: [String: String]?,
-        body: String?,
-        duration: TimeInterval?,
-        requestId: String
-    ) -> String {
-        var message = "[RESPONSE] [\(String(requestId.prefix(8)))] \(method) \(url) \(statusCode)"
-        
-        if let duration = duration {
-            message += " (\(String(format: "%.2f", duration * 1000))ms)"
-        }
-        
-        if let headers = headers, !headers.isEmpty {
-            message += " Headers: \(headers)"
-        }
-        
-        if let body = body {
-            message += " Body: \(body)"
-        }
-        
-        return message
-    }
-    
-    private func buildErrorMessage(
-        method: String,
-        url: String,
-        error: String,
-        data: String?,
-        requestId: String
-    ) -> String {
-        var message = "[ERROR] [\(String(requestId.prefix(8)))] \(method) \(url) ERROR: \(error)"
-        
-        if let data = data {
-            message += " Data: \(data)"
-        }
-        
-        return message
-    }
 }
 
 #endif

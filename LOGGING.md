@@ -197,25 +197,20 @@ let server = APIServer() // No logging in production
 
 Logger uses native `OSLogPrivacy` system:
 
-### `.none` - No masking
-- All data is logged without masking
-- Suitable only for development
-- Uses `OSLogPrivacy.public`
+### OSLog Privacy (Console Logs)
+- **`.none`** - No privacy masking (public data)
+- **`.auto`** - Automatic sensitive data detection and masking
+- **`.private`** - All data masked
+- **`.sensitive`** - All data masked (same as private)
 
-### `.auto` - Automatic masking (default)
-- OSLog automatically detects sensitive data
-- Suitable for production
-- Uses `OSLogPrivacy.auto`
+### Analytics Callback Privacy (LogEntry)
+The `LogEntry` sent to analytics callbacks **automatically respects privacy settings**:
 
-### `.private` - Private data
-- Masks all private information
-- Suitable for sensitive applications
-- Uses `OSLogPrivacy.private`
+- **`.none`** - Original data sent to callback
+- **`.auto`** - Sensitive fields masked in callback
+- **`.private/.sensitive`** - All sensitive data masked in callback
 
-### `.sensitive` - Sensitive data
-- Maximum masking
-- Suitable for banking, healthcare
-- Uses `OSLogPrivacy.sensitive`
+This prevents sensitive data from being accidentally sent to analytics services.
 
 ## Analytics Callback
 
@@ -305,11 +300,12 @@ class NetworkAnalytics {
     
     private func trackError(_ logEntry: LogEntry) {
         // Error tracking with response data for debugging
+        // Note: logEntry.body is already privacy-masked based on logger configuration
         ErrorTracker.trackNetworkError(
             method: logEntry.method,
-            url: logEntry.url,
+            url: logEntry.url, // May be masked if privacy is .private/.sensitive
             error: logEntry.error,
-            responseData: logEntry.body, // Contains decoded response data
+            responseData: logEntry.body, // Already masked based on privacy settings
             requestId: logEntry.requestId
         )
     }
@@ -343,6 +339,28 @@ With `privacy: .sensitive`:
 [ERROR] [A1B2C3D4] POST https://api.example.com/users ERROR: Decoding error Data: {"error": "Invalid JSON structure"}
 ```
 
+### Analytics Callback Privacy Example
+
+**With `privacy: .none`:**
+```swift
+// LogEntry sent to callback contains original data:
+LogEntry(
+    url: "https://api.example.com/users?token=secret123",
+    headers: ["Authorization": "Bearer token123"],
+    body: "{\"password\": \"secret123\"}"
+)
+```
+
+**With `privacy: .sensitive`:**
+```swift
+// LogEntry sent to callback contains masked data:
+LogEntry(
+    url: "https://api.example.com/users", // Query params removed
+    headers: ["Authorization": "***", "Content-Type": "***"], // All values masked
+    body: "***" // Entire body masked
+)
+```
+
 ## Benefits
 
 1. **Better organization** - Each type has its own file
@@ -350,7 +368,9 @@ With `privacy: .sensitive`:
 3. **Custom data decoding** - Pretty JSON with UTF8 fallback
 4. **Simple configuration** - One way to set up
 5. **Native OSLogPrivacy** - Automatic sensitive data masking
-6. **Analytics support** - `LogEntry` contains original data
+6. **Analytics support** - `LogEntry` contains privacy-aware data
+7. **Unified message building** - Single `buildMessage()` function for all log types
+8. **Cleaner code** - Internal functions instead of static methods
 
 ## Compatibility
 

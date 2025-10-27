@@ -124,4 +124,82 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
     }
+    
+    func testPrivacyAwareLogEntry() {
+        let originalUrl = "https://api.example.com/users?token=secret123"
+        let originalHeaders = ["Authorization": "Bearer token123", "Content-Type": "application/json"]
+        let originalBody = "{\"password\": \"secret123\", \"username\": \"user\"}"
+        
+        // Create original log entry
+        let originalEntry = LogEntry(
+            type: .request,
+            url: originalUrl,
+            headers: originalHeaders,
+            body: originalBody
+        )
+        
+        // Test with .none privacy - should return original data
+        let noneEntry = originalEntry.withPrivacy(.none)
+        XCTAssertEqual(noneEntry.url, originalUrl)
+        XCTAssertEqual(noneEntry.headers, originalHeaders)
+        XCTAssertEqual(noneEntry.body, originalBody)
+        
+        // Test with .sensitive privacy - should mask everything
+        let sensitiveEntry = originalEntry.withPrivacy(.sensitive)
+        XCTAssertEqual(sensitiveEntry.url, "https://api.example.com/users")
+        XCTAssertEqual(sensitiveEntry.headers?["Authorization"], "***")
+        XCTAssertEqual(sensitiveEntry.headers?["Content-Type"], "***")
+        XCTAssertEqual(sensitiveEntry.body, "***")
+    }
+    
+    func testLogEntryBuildMessage() {
+        // Test request message
+        let requestEntry = LogEntry(
+            type: .request,
+            method: "POST",
+            url: "https://api.example.com/users",
+            headers: ["Content-Type": "application/json"],
+            body: "{\"username\": \"test\"}",
+            requestId: "abc12345"
+        )
+        
+        let requestMessage = requestEntry.buildMessage()
+        XCTAssertTrue(requestMessage.contains("[REQUEST]"))
+        XCTAssertTrue(requestMessage.contains("POST"))
+        XCTAssertTrue(requestMessage.contains("https://api.example.com/users"))
+        XCTAssertTrue(requestMessage.contains("Headers:"))
+        XCTAssertTrue(requestMessage.contains("Body:"))
+        
+        // Test response message
+        let responseEntry = LogEntry(
+            type: .response,
+            method: "POST",
+            url: "https://api.example.com/users",
+            headers: ["Content-Type": "application/json"],
+            body: "{\"id\": 123}",
+            statusCode: 201,
+            duration: 0.5,
+            requestId: "abc12345"
+        )
+        
+        let responseMessage = responseEntry.buildMessage()
+        XCTAssertTrue(responseMessage.contains("[RESPONSE]"))
+        XCTAssertTrue(responseMessage.contains("201"))
+        XCTAssertTrue(responseMessage.contains("500.00ms"))
+        
+        // Test error message
+        let errorEntry = LogEntry(
+            type: .error,
+            method: "POST",
+            url: "https://api.example.com/users",
+            body: "{\"error\": \"Connection failed\"}",
+            error: "Network error",
+            requestId: "abc12345"
+        )
+        
+        let errorMessage = errorEntry.buildMessage()
+        XCTAssertTrue(errorMessage.contains("[ERROR]"))
+        XCTAssertTrue(errorMessage.contains("ERROR: Network error"))
+        XCTAssertTrue(errorMessage.contains("Data:"))
+    }
 }
