@@ -63,6 +63,12 @@ are separated in various protocols for convenience.
 
 ![Endpoint types](Sources/FTAPIKit/Documentation.docc/Resources/Endpoints.svg)
 
+## Logging
+
+FTAPIKit includes comprehensive logging capabilities for network requests and responses. The logging system uses native `OSLog` with configurable privacy levels and analytics support.
+
+For detailed logging documentation, see [LOGGING.md](LOGGING.md).
+
 ## Usage
 
 ### Defining web service (server)

@@ -43,12 +43,20 @@ public protocol URLServer: Server where Request == URLRequest {
     /// `URLSession` instance, which is used for task execution
     /// - Note: Provided default implementation.
     var urlSession: URLSession { get }
+    
+    /// Optional network logger for logging requests and responses
+    /// - Note: Only available on iOS 14.0+, macOS 11.0+, tvOS 14.0+, watchOS 7.0+
+    @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+    var networkLogger: NetworkLogger? { get }
 }
 
 public extension URLServer {
     var urlSession: URLSession { .shared }
     var decoding: Decoding { JSONDecoding() }
     var encoding: Encoding { JSONEncoding() }
+    
+    @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+    var networkLogger: NetworkLogger? { nil }
 
     func buildRequest(endpoint: Endpoint) throws -> URLRequest {
         try buildStandardRequest(endpoint: endpoint)
