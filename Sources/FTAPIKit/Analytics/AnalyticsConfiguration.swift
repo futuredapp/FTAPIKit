@@ -45,21 +45,6 @@ public struct AnalyticsConfiguration {
         "api_key", "session_id", "csrf_token", "jwt", "private_key", "client_secret"
     ]
     
-    /// Creates a privacy-aware AnalyticEntry by masking sensitive data
-    public func maskAnalyticEntry(_ entry: AnalyticEntry) -> AnalyticEntry {
-        return AnalyticEntry(
-            type: entry.type,
-            method: entry.method,
-            url: maskUrl(entry.url),
-            headers: maskHeaders(entry.headers),
-            body: entry.body, // Body masking is handled by dataMasker in LoggerConfiguration
-            statusCode: entry.statusCode,
-            error: entry.error,
-            timestamp: entry.timestamp,
-            duration: entry.duration,
-            requestId: entry.requestId
-        )
-    }
     
     // MARK: - Public Masking Methods
     

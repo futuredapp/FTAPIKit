@@ -47,15 +47,13 @@ class LoggingTests: XCTestCase {
         )
         
         let testEntry = AnalyticEntry(
-            type: .request,
-            method: "POST",
-            url: "https://api.example.com/test?token=secret123",
+            type: .request(method: "POST", url: "https://api.example.com/test?token=secret123"),
             headers: ["Authorization": "Bearer token123"],
             body: "{\"password\": \"secret\"}".data(using: .utf8)!,
             configuration: analyticsConfig
         )
         
-        XCTAssertEqual(testEntry.type, .request)
+        XCTAssertEqual(testEntry.type.rawValue, "request")
         XCTAssertEqual(testEntry.method, "POST")
         // Should be masked due to .sensitive privacy
         XCTAssertEqual(testEntry.url, "https://api.example.com/test")
@@ -75,15 +73,13 @@ class LoggingTests: XCTestCase {
         )
         
         let testEntry = AnalyticEntry(
-            type: .request,
-            method: "POST",
-            url: "https://api.example.com/test?custom_token=secret123&public_param=value",
+            type: .request(method: "POST", url: "https://api.example.com/test?custom_token=secret123&public_param=value"),
             headers: ["custom-auth": "Bearer token123", "Content-Type": "application/json"],
             body: "{\"custom_password\": \"secret\", \"public_field\": \"value\"}".data(using: .utf8)!,
             configuration: analyticsConfig
         )
         
-        XCTAssertEqual(testEntry.type, .request)
+        XCTAssertEqual(testEntry.type.rawValue, "request")
         XCTAssertEqual(testEntry.method, "POST")
         // Should mask only custom sensitive values in .auto mode
         XCTAssertEqual(testEntry.url, "https://api.example.com/test?custom_token=***&public_param=value")
@@ -169,9 +165,7 @@ class LoggingTests: XCTestCase {
         let headers = ["Authorization": "Bearer token123", "Content-Type": "application/json"]
         let body = "{\"test\": \"data\"}".data(using: .utf8)!
         let logEntry = LogEntry(
-            type: .request,
-            method: "POST",
-            url: "https://api.example.com/test",
+            type: .request(method: "POST", url: "https://api.example.com/test"),
             headers: headers,
             body: body,
             requestId: "test-request-id"
@@ -186,12 +180,9 @@ class LoggingTests: XCTestCase {
         let headers = ["Content-Type": "application/json"]
         let body = "{\"success\": true}".data(using: .utf8)!
         let logEntry = LogEntry(
-            type: .response,
-            method: "POST",
-            url: "https://api.example.com/test",
+            type: .response(method: "POST", url: "https://api.example.com/test", statusCode: 200),
             headers: headers,
             body: body,
-            statusCode: 200,
             duration: 0.5,
             requestId: "test-request-id"
         )
@@ -203,10 +194,7 @@ class LoggingTests: XCTestCase {
     func testLogError() {
         let logger = DefaultLogger()
         let logEntry = LogEntry(
-            type: .error,
-            method: "POST",
-            url: "https://api.example.com/test",
-            error: "Network error",
+            type: .error(method: "POST", url: "https://api.example.com/test", error: "Network error"),
             requestId: "test-request-id"
         )
         
@@ -218,11 +206,8 @@ class LoggingTests: XCTestCase {
         let logger = DefaultLogger()
         let errorData = "{\"error\": \"Invalid JSON\"}".data(using: .utf8)!
         let logEntry = LogEntry(
-            type: .error,
-            method: "POST",
-            url: "https://api.example.com/test",
+            type: .error(method: "POST", url: "https://api.example.com/test", error: "Decoding error"),
             body: errorData,
-            error: "Decoding error",
             requestId: "test-request-id"
         )
         
@@ -238,9 +223,7 @@ class LoggingTests: XCTestCase {
             "X-API-Key": "secret-key"
         ]
         let logEntry = LogEntry(
-            type: .request,
-            method: "GET",
-            url: "https://api.example.com/test",
+            type: .request(method: "GET", url: "https://api.example.com/test"),
             headers: headers,
             requestId: "test-request-id"
         )
@@ -253,9 +236,7 @@ class LoggingTests: XCTestCase {
         let logger = DefaultLogger()
         let body = "{\"password\": \"secret123\", \"username\": \"user\"}".data(using: .utf8)!
         let logEntry = LogEntry(
-            type: .request,
-            method: "POST",
-            url: "https://api.example.com/test",
+            type: .request(method: "POST", url: "https://api.example.com/test"),
             body: body,
             requestId: "test-request-id"
         )
@@ -268,9 +249,7 @@ class LoggingTests: XCTestCase {
     func testLogEntryBuildMessage() {
         // Test request message
         let requestEntry = LogEntry(
-            type: .request,
-            method: "POST",
-            url: "https://api.example.com/users",
+            type: .request(method: "POST", url: "https://api.example.com/users"),
             headers: ["Content-Type": "application/json"],
             body: "{\"username\": \"test\"}".data(using: .utf8)!,
             requestId: "abc12345"
@@ -286,12 +265,9 @@ class LoggingTests: XCTestCase {
         
         // Test response message
         let responseEntry = LogEntry(
-            type: .response,
-            method: "POST",
-            url: "https://api.example.com/users",
+            type: .response(method: "POST", url: "https://api.example.com/users", statusCode: 201),
             headers: ["Content-Type": "application/json"],
             body: "{\"id\": 123}".data(using: .utf8)!,
-            statusCode: 201,
             duration: 0.5,
             requestId: "abc12345"
         )
@@ -303,11 +279,8 @@ class LoggingTests: XCTestCase {
         
         // Test error message
         let errorEntry = LogEntry(
-            type: .error,
-            method: "POST",
-            url: "https://api.example.com/users",
+            type: .error(method: "POST", url: "https://api.example.com/users", error: "Network error"),
             body: "{\"error\": \"Connection failed\"}".data(using: .utf8)!,
-            error: "Network error",
             requestId: "abc12345"
         )
         

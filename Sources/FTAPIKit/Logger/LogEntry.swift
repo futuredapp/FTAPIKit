@@ -3,45 +3,60 @@ import Foundation
 /// Represents a log entry for analytics or custom processing
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct LogEntry {
-    public enum EntryType: String {
-        case request = "request"
-        case response = "response"
-        case error = "error"
-    }
-    
     public let type: EntryType
-    public let method: String?
-    public let url: String?
     public let headers: [String: String]?
     public let body: Data?
-    public let statusCode: Int?
-    public let error: String?
     public let timestamp: Date
     public let duration: TimeInterval?
     public let requestId: String
     
     public init(
         type: EntryType,
-        method: String? = nil,
-        url: String? = nil,
         headers: [String: String]? = nil,
         body: Data? = nil,
-        statusCode: Int? = nil,
-        error: String? = nil,
         timestamp: Date = Date(),
         duration: TimeInterval? = nil,
         requestId: String = UUID().uuidString
     ) {
         self.type = type
-        self.method = method
-        self.url = url
         self.headers = headers
         self.body = body
-        self.statusCode = statusCode
-        self.error = error
         self.timestamp = timestamp
         self.duration = duration
         self.requestId = requestId
+    }
+    
+    /// Convenience computed properties for accessing associated values
+    public var method: String {
+        switch type {
+        case .request(let method, _), .response(let method, _, _), .error(let method, _, _):
+            return method
+        }
+    }
+    
+    public var url: String {
+        switch type {
+        case .request(_, let url), .response(_, let url, _), .error(_, let url, _):
+            return url
+        }
+    }
+    
+    public var statusCode: Int? {
+        switch type {
+        case .response(_, _, let statusCode):
+            return statusCode
+        case .request, .error:
+            return nil
+        }
+    }
+    
+    public var error: String? {
+        switch type {
+        case .error(_, _, let error):
+            return error
+        case .request, .response:
+            return nil
+        }
     }
     
     
@@ -50,8 +65,8 @@ public struct LogEntry {
         let requestIdPrefix = String(requestId.prefix(8))
         
         switch type {
-        case .request:
-            var message = "[REQUEST] [\(requestIdPrefix)] \(method ?? "UNKNOWN") \(url ?? "UNKNOWN")"
+        case .request(let method, let url):
+            var message = "[REQUEST] [\(requestIdPrefix)] \(method) \(url)"
             
             if let headers = headers, !headers.isEmpty {
                 message += " Headers: \(headers)"
@@ -63,8 +78,8 @@ public struct LogEntry {
             
             return message
             
-        case .response:
-            var message = "[RESPONSE] [\(requestIdPrefix)] \(method ?? "UNKNOWN") \(url ?? "UNKNOWN") \(statusCode ?? 0)"
+        case .response(let method, let url, let statusCode):
+            var message = "[RESPONSE] [\(requestIdPrefix)] \(method) \(url) \(statusCode)"
             
             if let duration = duration {
                 message += " (\(String(format: "%.2f", duration * 1000))ms)"
@@ -80,8 +95,8 @@ public struct LogEntry {
             
             return message
             
-        case .error:
-            var message = "[ERROR] [\(requestIdPrefix)] \(method ?? "UNKNOWN") \(url ?? "UNKNOWN") ERROR: \(error ?? "Unknown error")"
+        case .error(let method, let url, let error):
+            var message = "[ERROR] [\(requestIdPrefix)] \(method) \(url) ERROR: \(error)"
             
             if let body = body, let bodyString = configuration.dataDecoder(body) {
                 message += " Data: \(bodyString)"

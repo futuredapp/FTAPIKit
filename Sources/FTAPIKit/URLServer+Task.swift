@@ -177,22 +177,22 @@ extension URLServer {
         // Log if logger is available
         if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
             if let logger = logger {
-                let logEntryType: LogEntry.EntryType
+                let logEntryType: EntryType
                 switch type {
-                case "request": logEntryType = .request
-                case "response": logEntryType = .response
-                case "error": logEntryType = .error
-                default: logEntryType = .request
+                case "request":
+                    logEntryType = .request(method: method, url: url)
+                case "response":
+                    logEntryType = .response(method: method, url: url, statusCode: statusCode ?? 0)
+                case "error":
+                    logEntryType = .error(method: method, url: url, error: errorString ?? "Unknown error")
+                default:
+                    logEntryType = .request(method: method, url: url)
                 }
                 
                 let logEntry = LogEntry(
                     type: logEntryType,
-                    method: method,
-                    url: url,
                     headers: headers,
                     body: body,
-                    statusCode: statusCode,
-                    error: errorString,
                     duration: duration,
                     requestId: requestId
                 )
@@ -202,22 +202,22 @@ extension URLServer {
         
         // Track analytics if available
         if let analytics = analytics {
-            let analyticEntryType: AnalyticEntry.EntryType
+            let analyticEntryType: EntryType
             switch type {
-            case "request": analyticEntryType = .request
-            case "response": analyticEntryType = .response
-            case "error": analyticEntryType = .error
-            default: analyticEntryType = .request
+            case "request":
+                analyticEntryType = .request(method: method, url: url)
+            case "response":
+                analyticEntryType = .response(method: method, url: url, statusCode: statusCode ?? 0)
+            case "error":
+                analyticEntryType = .error(method: method, url: url, error: errorString ?? "Unknown error")
+            default:
+                analyticEntryType = .request(method: method, url: url)
             }
             
             let analyticEntry = AnalyticEntry(
                 type: analyticEntryType,
-                method: method,
-                url: url,
                 headers: headers,
                 body: body,
-                statusCode: statusCode,
-                error: errorString,
                 duration: duration,
                 requestId: requestId,
                 configuration: analytics.configuration

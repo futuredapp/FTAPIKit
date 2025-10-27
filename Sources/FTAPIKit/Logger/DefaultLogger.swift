@@ -16,7 +16,16 @@ public struct DefaultLogger: LoggerProtocol {
     
     public func log(_ entry: LogEntry) {
         // Log to OSLog with proper privacy
-        let level: OSLogType = entry.type == .error || (entry.statusCode ?? 0) >= 400 ? .error : .info
+        let level: OSLogType = {
+            switch entry.type {
+            case .error:
+                return .error
+            case .response(_, _, let statusCode):
+                return statusCode >= 400 ? .error : .info
+            case .request:
+                return .info
+            }
+        }()
         logToOSLog(message: entry.buildMessage(configuration: configuration), level: level)
     }
     
