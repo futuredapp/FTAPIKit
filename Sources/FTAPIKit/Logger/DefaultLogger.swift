@@ -41,9 +41,13 @@ public struct DefaultLogger: LoggerProtocol {
     private let logger: os.Logger
     private let configuration: LoggerConfiguration
     
-    public init(configuration: LoggerConfiguration = LoggerConfiguration()) {
+    public init(
+        subsystem: String = "com.ftapikit.networking",
+        category: String = "networking",
+        configuration: LoggerConfiguration = LoggerConfiguration()
+    ) {
         self.configuration = configuration
-        self.logger = os.Logger(subsystem: configuration.subsystem, category: configuration.category)
+        self.logger = os.Logger(subsystem: subsystem, category: category)
     }
     
     public func log(_ entry: LogEntry) {

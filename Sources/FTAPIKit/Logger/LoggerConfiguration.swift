@@ -3,19 +3,13 @@ import Foundation
 /// Configuration for the network logger
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct LoggerConfiguration {
-    public let subsystem: String
-    public let category: String
     public let privacy: LogPrivacy
     public let dataDecoder: (Data) -> String?
     
     public init(
-        subsystem: String = "com.ftapikit.networking",
-        category: String = "requests",
         privacy: LogPrivacy = .default,
         dataDecoder: @escaping (Data) -> String? = LoggerConfiguration.defaultDataDecoder
     ) {
-        self.subsystem = subsystem
-        self.category = category
         self.privacy = privacy
         self.dataDecoder = dataDecoder
     }

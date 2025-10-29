@@ -12,8 +12,6 @@ class LoggingTests: XCTestCase {
     
     func testDefaultLoggerWithCustomConfiguration() {
         let configuration = LoggerConfiguration(
-            subsystem: "com.test.networking",
-            category: "test",
             privacy: .sensitive
         )
         let logger = DefaultLogger(configuration: configuration)
