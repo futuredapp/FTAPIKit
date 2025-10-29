@@ -163,7 +163,7 @@ class LoggingTests: XCTestCase {
         
         let errorMessage = errorEntry.buildMessage(configuration: configuration)
         XCTAssertTrue(errorMessage.contains("[ERROR]"))
-        XCTAssertTrue(errorMessage.contains("ERROR: Network error"))
+        XCTAssertTrue(errorMessage.contains("ERROR    Network error"))
         XCTAssertTrue(errorMessage.contains("Data:"))
     }
 }

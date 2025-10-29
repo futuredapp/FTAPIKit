@@ -93,48 +93,111 @@ public struct LogEntry {
     /// Builds a formatted log message from this LogEntry
     func buildMessage(configuration: LoggerConfiguration) -> String {
         let requestIdPrefix = String(requestId.prefix(8))
+        let timestampString = formatTimestamp(timestamp)
         
         switch type {
         case .request(let method, let url):
-            var message = "[REQUEST] [\(requestIdPrefix)] \(method) \(url)"
+            var message = "[REQUEST] [\(requestIdPrefix)]"
             
+            // Collect all titles for alignment calculation
+            var allTitles = ["Method", "URL", "Timestamp"]
             if let headers = headers, !headers.isEmpty {
-                message += " Headers: \(headers)"
+                allTitles.append(contentsOf: headers.keys)
+            }
+            
+            let maxTitleLength = allTitles.map { $0.count }.max() ?? 0
+            message += format(title: "Method", text: method, maxTitleLength: maxTitleLength)
+            message += format(title: "URL", text: url, maxTitleLength: maxTitleLength)
+            message += format(title: "Timestamp", text: timestampString, maxTitleLength: maxTitleLength)
+
+            if let headers = headers, !headers.isEmpty {
+                message += format(headers: headers, maxTitleLength: maxTitleLength)
             }
             
             if let body = body, let bodyString = configuration.dataDecoder(body) {
-                message += " Body: \(bodyString)"
+                message += "\n\tBody:\n \(bodyString)"
             }
             
             return message
             
         case .response(let method, let url, let statusCode):
-            var message = "[RESPONSE] [\(requestIdPrefix)] \(method) \(url) \(statusCode)"
+            var message = "[RESPONSE] [\(requestIdPrefix)]"
             
+            // Collect all titles for alignment calculation
+            var allTitles = ["Method", "URL", "Status Code", "Timestamp"]
+            if duration != nil {
+                allTitles.append("Duration")
+            }
+            if let headers = headers, !headers.isEmpty {
+                allTitles.append(contentsOf: headers.keys)
+            }
+            
+            let maxTitleLength = allTitles.map { $0.count }.max() ?? 0
+            message += format(title: "Method", text: method, maxTitleLength: maxTitleLength)
+            message += format(title: "URL", text: url, maxTitleLength: maxTitleLength)
+            message += format(title: "Status Code", text: "\(statusCode)", maxTitleLength: maxTitleLength)
+            message += format(title: "Timestamp", text: timestampString, maxTitleLength: maxTitleLength)
+
             if let duration = duration {
-                message += " (\(String(format: "%.2f", duration * 1000))ms)"
+                message += format(title: "Duration", text: "\(String(format: "%.2f", duration * 1000))ms", maxTitleLength: maxTitleLength)
             }
             
             if let headers = headers, !headers.isEmpty {
-                message += " Headers: \(headers)"
+                message += format(headers: headers, maxTitleLength: maxTitleLength)
             }
             
             if let body = body, let bodyString = configuration.dataDecoder(body) {
-                message += " Body: \(bodyString)"
+                message += "\nBody:\n \(bodyString)"
             }
             
             return message
             
         case .error(let method, let url, let error):
-            var message = "[ERROR] [\(requestIdPrefix)] \(method) \(url) ERROR: \(error)"
+            var message = "[ERROR] [\(requestIdPrefix)]"
             
+            // Collect all titles for alignment calculation
+            var allTitles = ["Method", "URL", "ERROR", "Timestamp"]
+            if let headers = headers, !headers.isEmpty {
+                allTitles.append(contentsOf: headers.keys)
+            }
+            
+            let maxTitleLength = allTitles.map { $0.count }.max() ?? 0
+            message += format(title: "Method", text: method, maxTitleLength: maxTitleLength)
+            message += format(title: "URL", text: url, maxTitleLength: maxTitleLength)
+            message += format(title: "ERROR", text: error, maxTitleLength: maxTitleLength)
+            message += format(title: "Timestamp", text: timestampString, maxTitleLength: maxTitleLength)
+
             if let body = body, let bodyString = configuration.dataDecoder(body) {
-                message += " Data: \(bodyString)"
+                message += "\nData: \(bodyString)"
             }
             
             return message
         }
     }
+
+    private func format(headers: [String: String], maxTitleLength: Int) -> String {
+        guard !headers.isEmpty else {
+            return ""
+        }
+
+        var message = "\nHeaders:"
+        // Sort headers by key to ensure consistent ordering
+        let sortedHeaders = headers.sorted { $0.key < $1.key }
+        for (key, value) in sortedHeaders {
+            message += format(title: key, text: value, maxTitleLength: maxTitleLength)
+        }
+        return message
+    }
+
+    private func format(title: String, text: String, maxTitleLength: Int) -> String {
+        let padding = String(repeating: " ", count: max(1, maxTitleLength - title.count))
+        return "\n\t\(title)\(padding)\(text)"
+    }
     
-    
+    private func formatTimestamp(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        formatter.timeZone = TimeZone.current
+        return formatter.string(from: date)
+    }
 }
