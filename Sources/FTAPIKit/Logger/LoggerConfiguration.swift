@@ -7,10 +7,10 @@ import os.log
 /// Configuration for the network logger
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct LoggerConfiguration {
-    public let subsystem: String
-    public let category: String
-    public let privacy: LogPrivacy
-    public let dataDecoder: (Data) -> String?
+    internal let subsystem: String
+    internal let category: String
+    internal let privacy: LogPrivacy
+    internal let dataDecoder: (Data) -> String?
     
     #if canImport(os.log)
     internal let logger: os.Logger

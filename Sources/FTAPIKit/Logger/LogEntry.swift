@@ -32,15 +32,15 @@ import Foundation
 /// - Note: This struct is used by ``LoggerProtocol`` implementations for logging
 /// network activity. For analytics tracking, use ``AnalyticEntry`` instead.
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
-public struct LogEntry {
-    public let type: EntryType
-    public let headers: [String: String]?
-    public let body: Data?
-    public let timestamp: Date
-    public let duration: TimeInterval?
-    public let requestId: String
+struct LogEntry {
+    let type: EntryType
+    let headers: [String: String]?
+    let body: Data?
+    let timestamp: Date
+    let duration: TimeInterval?
+    let requestId: String
     
-    public init(
+    init(
         type: EntryType,
         headers: [String: String]? = nil,
         body: Data? = nil,
@@ -57,21 +57,21 @@ public struct LogEntry {
     }
     
     /// Convenience computed properties for accessing associated values
-    public var method: String {
+    var method: String {
         switch type {
         case .request(let method, _), .response(let method, _, _), .error(let method, _, _):
             return method
         }
     }
     
-    public var url: String {
+    var url: String {
         switch type {
         case .request(_, let url), .response(_, let url, _), .error(_, let url, _):
             return url
         }
     }
     
-    public var statusCode: Int? {
+    var statusCode: Int? {
         switch type {
         case .response(_, _, let statusCode):
             return statusCode
@@ -80,7 +80,7 @@ public struct LogEntry {
         }
     }
     
-    public var error: String? {
+    var error: String? {
         switch type {
         case .error(_, _, let error):
             return error
