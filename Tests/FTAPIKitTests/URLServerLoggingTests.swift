@@ -2,6 +2,10 @@ import Foundation
 import XCTest
 @testable import FTAPIKit
 
+#if canImport(os.log)
+import os.log
+#endif
+
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 class URLServerLoggingTests: XCTestCase {
     
@@ -84,9 +88,10 @@ class TestServerWithLogging: URLServer {
 
 // MARK: - Mock Logger for Testing
 
+#if canImport(os.log)
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 struct MockLogger: LoggerProtocol {
-    func log(_ entry: LogEntry) {
-        // Mock implementation - does nothing
-    }
+    let logger = os.Logger(subsystem: "com.test", category: "test")
+    let configuration = LoggerConfiguration()
 }
+#endif

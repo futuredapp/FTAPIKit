@@ -1,5 +1,9 @@
 import Foundation
 
+#if canImport(os.log)
+import os.log
+#endif
+
 #if os(Linux)
 import FoundationNetworking
 #endif
@@ -196,7 +200,32 @@ extension URLServer {
                     duration: duration,
                     requestId: requestId
                 )
-                logger.log(logEntry)
+                
+                #if canImport(os.log)
+                // Log to OSLog with proper privacy
+                let level: OSLogType = {
+                    switch logEntry.type {
+                    case .error:
+                        return .error
+                    case .response(_, _, let statusCode):
+                        return statusCode >= 400 ? .error : .info
+                    case .request:
+                        return .info
+                    }
+                }()
+                
+                let message = logEntry.buildMessage(configuration: logger.configuration)
+                switch logger.configuration.privacy {
+                case .none:
+                    logger.logger.log(level: level, "\(message, privacy: .public)")
+                case .auto:
+                    logger.logger.log(level: level, "\(message, privacy: .auto)")
+                case .private:
+                    logger.logger.log(level: level, "\(message, privacy: .private)")
+                case .sensitive:
+                    logger.logger.log(level: level, "\(message, privacy: .sensitive)")
+                }
+                #endif
             }
         }
         

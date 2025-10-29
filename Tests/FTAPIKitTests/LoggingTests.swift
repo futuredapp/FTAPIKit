@@ -46,8 +46,14 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // This should not crash
-        logger.log(logEntry)
+        // Test that logger and configuration are properly initialized
+        XCTAssertNotNil(logger.logger)
+        XCTAssertNotNil(logger.configuration)
+        
+        // Test that LogEntry can be built without crashing
+        let message = logEntry.buildMessage(configuration: logger.configuration)
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertTrue(message.contains("[REQUEST]"))
     }
     
     func testLogResponse() {
@@ -62,8 +68,14 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // This should not crash
-        logger.log(logEntry)
+        // Test that logger and configuration are properly initialized
+        XCTAssertNotNil(logger.logger)
+        XCTAssertNotNil(logger.configuration)
+        
+        // Test that LogEntry can be built without crashing
+        let message = logEntry.buildMessage(configuration: logger.configuration)
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertTrue(message.contains("[RESPONSE]"))
     }
     
     func testLogError() {
@@ -73,8 +85,14 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // This should not crash
-        logger.log(logEntry)
+        // Test that logger and configuration are properly initialized
+        XCTAssertNotNil(logger.logger)
+        XCTAssertNotNil(logger.configuration)
+        
+        // Test that LogEntry can be built without crashing
+        let message = logEntry.buildMessage(configuration: logger.configuration)
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertTrue(message.contains("[ERROR]"))
     }
     
     func testLogErrorWithData() {
@@ -86,8 +104,15 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // This should not crash and should include data in the log
-        logger.log(logEntry)
+        // Test that logger and configuration are properly initialized
+        XCTAssertNotNil(logger.logger)
+        XCTAssertNotNil(logger.configuration)
+        
+        // Test that LogEntry can be built without crashing and includes data
+        let message = logEntry.buildMessage(configuration: logger.configuration)
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertTrue(message.contains("[ERROR]"))
+        XCTAssertTrue(message.contains("Data:"))
     }
     
     func testSensitiveHeadersMasking() {
@@ -103,8 +128,15 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // This should not crash and should mask sensitive headers
-        logger.log(logEntry)
+        // Test that logger and configuration are properly initialized
+        XCTAssertNotNil(logger.logger)
+        XCTAssertNotNil(logger.configuration)
+        
+        // Test that LogEntry can be built without crashing and includes headers
+        let message = logEntry.buildMessage(configuration: logger.configuration)
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertTrue(message.contains("[REQUEST]"))
+        XCTAssertTrue(message.contains("Headers:"))
     }
     
     func testSensitiveBodyMasking() {
@@ -116,8 +148,15 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // This should not crash and should mask sensitive fields
-        logger.log(logEntry)
+        // Test that logger and configuration are properly initialized
+        XCTAssertNotNil(logger.logger)
+        XCTAssertNotNil(logger.configuration)
+        
+        // Test that LogEntry can be built without crashing and includes body
+        let message = logEntry.buildMessage(configuration: logger.configuration)
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertTrue(message.contains("[REQUEST]"))
+        XCTAssertTrue(message.contains("Body:"))
     }
     
     
