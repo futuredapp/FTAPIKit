@@ -50,8 +50,6 @@ Easily extensible for your asynchronous framework or networking stack.
 
 ### Logging
 
-- ``LoggerProtocol``
-- ``DefaultLogger``
 - ``LogEntry``
 - ``LoggerConfiguration``
 - ``LogPrivacy``

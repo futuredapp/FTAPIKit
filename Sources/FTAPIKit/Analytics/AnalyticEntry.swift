@@ -6,36 +6,6 @@ import Foundation
 /// the configured ``AnalyticsConfiguration``. It uses ``EntryType`` with associated values
 /// to provide type-safe access to basic network information without optionals.
 /// 
-/// ## Requirements
-/// 
-/// - iOS 9.0+
-/// - macOS 10.10+
-/// - tvOS 9.0+
-/// - watchOS 2.0+
-/// 
-/// ## Usage
-/// 
-/// ```swift
-/// let analyticsConfig = AnalyticsConfiguration(
-///     privacy: .auto,
-///     sensitiveHeaders: ["authorization"],
-///     sensitiveUrlQueries: ["token"],
-///     sensitiveBodyParams: ["password"]
-/// )
-/// 
-/// let analyticEntry = AnalyticEntry(
-///     type: .request(method: "POST", url: "https://api.example.com/login?token=secret123"),
-///     headers: ["Authorization": "Bearer token123"],
-///     body: "{\"username\": \"user\", \"password\": \"secret123\"}".data(using: .utf8)!,
-///     configuration: analyticsConfig
-/// )
-/// 
-/// // Data is automatically masked based on configuration
-/// print(analyticEntry.url)    // "https://api.example.com/login?token=***"
-/// print(analyticEntry.headers?["Authorization"]) // "***"
-/// print(analyticEntry.body)   // nil (masked due to sensitive body params)
-/// ```
-/// 
 /// - Note: This struct is used by ``AnalyticsProtocol`` implementations for tracking
 /// network activity. For logging purposes, use ``LogEntry`` instead.
 public struct AnalyticEntry {

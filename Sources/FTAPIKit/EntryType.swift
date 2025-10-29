@@ -5,18 +5,6 @@ import Foundation
 /// This enum uses associated values to provide type-safe access to network entry data,
 /// eliminating the need for optionals for basic information like method, URL, and status code.
 /// 
-/// ## Usage
-/// 
-/// ```swift
-/// // Create entries with associated values
-/// let requestEntry = EntryType.request(method: "GET", url: "https://api.example.com/users")
-/// let responseEntry = EntryType.response(method: "GET", url: "https://api.example.com/users", statusCode: 200)
-/// let errorEntry = EntryType.error(method: "POST", url: "https://api.example.com/users", error: "Network error")
-/// 
-/// // Access associated values
-/// print(requestEntry.rawValue) // "request"
-/// ```
-/// 
 /// - Note: This enum is used by both ``LogEntry`` and ``AnalyticEntry`` for consistent
 /// type-safe data representation across logging and analytics systems.
 public enum EntryType {

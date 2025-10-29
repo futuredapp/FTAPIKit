@@ -6,35 +6,6 @@ import Foundation
 /// for analytics purposes. It provides privacy-aware data tracking with automatic masking
 /// of sensitive information.
 /// 
-/// ## Requirements
-/// 
-/// - iOS 9.0+
-/// - macOS 10.10+
-/// - tvOS 9.0+
-/// - watchOS 2.0+
-/// 
-/// ## Usage
-/// 
-/// ```swift
-/// struct CustomAnalytics: AnalyticsProtocol {
-///     let configuration: AnalyticsConfiguration
-///     
-///     func track(_ entry: AnalyticEntry) {
-///         // Send to your analytics service
-///         AnalyticsService.track(
-///             event: entry.type.rawValue,
-///             properties: [
-///                 "method": entry.method,
-///                 "url": entry.url,
-///                 "statusCode": entry.statusCode ?? 0
-///             ]
-///         )
-///     }
-/// }
-/// 
-/// let analytics = CustomAnalytics(configuration: .default)
-/// ```
-/// 
 /// - Note: The ``AnalyticEntry`` passed to the `track` method contains privacy-masked data
 /// based on the configured privacy level and sensitive data sets.
 public protocol AnalyticsProtocol {

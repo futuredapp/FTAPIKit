@@ -19,7 +19,7 @@ Easily extensible for your asynchronous framework or networking stack.
 For detailed API documentation, see the inline documentation in the source code or use Xcode's Quick Help (⌥⌘?) to view comprehensive documentation for each component.
 
 Key components:
-- **Logging**: ``LoggerProtocol``, ``DefaultLogger``, ``LogEntry`` - Automatic network logging with OSLog
+- **Logging**: ``LogEntry``, ``LoggerConfiguration``, ``LogPrivacy`` - Automatic network logging with OSLog
 - **Analytics**: ``AnalyticsProtocol``, ``AnalyticEntry``, ``AnalyticsConfiguration`` - Privacy-aware analytics tracking
 
 ## Installation
