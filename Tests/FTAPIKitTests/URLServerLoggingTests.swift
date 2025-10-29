@@ -34,7 +34,7 @@ class URLServerLoggingTests: XCTestCase {
     func testCustomLogger() {
         // Given
         let customLogger = MockLogger()
-        let server = TestServerWithCustomLogger(logger: customLogger)
+        let server = TestServerWithCustomLogger(logger: customLogger.configuration)
         
         // When - test that server can be created with custom logger
         XCTAssertNotNil(server.logger)
@@ -77,9 +77,9 @@ class TestServerWithLogging: URLServer {
     
     let baseUri: URL
     let urlSession: URLSession
-    let logger: LoggerProtocol?
+    let logger: LoggerConfiguration?
     
-    init(baseUri: URL = URL(string: "http://httpbin.org/")!, logger: LoggerProtocol? = DefaultLogger()) {
+    init(baseUri: URL = URL(string: "http://httpbin.org/")!, logger: LoggerConfiguration? = LoggerConfiguration()) {
         self.baseUri = baseUri
         self.urlSession = URLSession(configuration: .ephemeral)
         self.logger = logger
@@ -90,8 +90,10 @@ class TestServerWithLogging: URLServer {
 
 #if canImport(os.log)
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
-struct MockLogger: LoggerProtocol {
-    let logger = os.Logger(subsystem: "com.test", category: "test")
-    let configuration = LoggerConfiguration()
+struct MockLogger {
+    let configuration = LoggerConfiguration(
+        subsystem: "com.test",
+        category: "test"
+    )
 }
 #endif

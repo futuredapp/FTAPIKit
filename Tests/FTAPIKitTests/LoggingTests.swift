@@ -5,17 +5,22 @@ import XCTest
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 class LoggingTests: XCTestCase {
     
-    func testDefaultLoggerInitialization() {
-        let logger = DefaultLogger()
-        XCTAssertNotNil(logger)
+    func testLoggerConfigurationInitialization() {
+        let configuration = LoggerConfiguration()
+        XCTAssertNotNil(configuration)
+        XCTAssertEqual(configuration.subsystem, "com.ftapikit.networking")
+        XCTAssertEqual(configuration.category, "networking")
     }
     
-    func testDefaultLoggerWithCustomConfiguration() {
+    func testLoggerConfigurationWithCustomSettings() {
         let configuration = LoggerConfiguration(
+            subsystem: "com.test",
+            category: "test",
             privacy: .sensitive
         )
-        let logger = DefaultLogger(configuration: configuration)
-        XCTAssertNotNil(logger)
+        XCTAssertEqual(configuration.subsystem, "com.test")
+        XCTAssertEqual(configuration.category, "test")
+        XCTAssertEqual(configuration.privacy, .sensitive)
     }
     
     func testLoggerConfigurationDataDecoder() {
@@ -36,7 +41,7 @@ class LoggingTests: XCTestCase {
     }
     
     func testLogRequest() {
-        let logger = DefaultLogger()
+        let configuration = LoggerConfiguration()
         let headers = ["Authorization": "Bearer token123", "Content-Type": "application/json"]
         let body = "{\"test\": \"data\"}".data(using: .utf8)!
         let logEntry = LogEntry(
@@ -46,18 +51,19 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // Test that logger and configuration are properly initialized
-        XCTAssertNotNil(logger.logger)
-        XCTAssertNotNil(logger.configuration)
+        // Test that configuration is properly initialized
+        XCTAssertNotNil(configuration)
+        XCTAssertEqual(configuration.subsystem, "com.ftapikit.networking")
+        XCTAssertEqual(configuration.category, "networking")
         
         // Test that LogEntry can be built without crashing
-        let message = logEntry.buildMessage(configuration: logger.configuration)
+        let message = logEntry.buildMessage(configuration: configuration)
         XCTAssertFalse(message.isEmpty)
         XCTAssertTrue(message.contains("[REQUEST]"))
     }
     
     func testLogResponse() {
-        let logger = DefaultLogger()
+        let configuration = LoggerConfiguration()
         let headers = ["Content-Type": "application/json"]
         let body = "{\"success\": true}".data(using: .utf8)!
         let logEntry = LogEntry(
@@ -68,35 +74,33 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // Test that logger and configuration are properly initialized
-        XCTAssertNotNil(logger.logger)
-        XCTAssertNotNil(logger.configuration)
+        // Test that configuration is properly initialized
+        XCTAssertNotNil(configuration)
         
         // Test that LogEntry can be built without crashing
-        let message = logEntry.buildMessage(configuration: logger.configuration)
+        let message = logEntry.buildMessage(configuration: configuration)
         XCTAssertFalse(message.isEmpty)
         XCTAssertTrue(message.contains("[RESPONSE]"))
     }
     
     func testLogError() {
-        let logger = DefaultLogger()
+        let configuration = LoggerConfiguration()
         let logEntry = LogEntry(
             type: .error(method: "POST", url: "https://api.example.com/test", error: "Network error"),
             requestId: "test-request-id"
         )
         
-        // Test that logger and configuration are properly initialized
-        XCTAssertNotNil(logger.logger)
-        XCTAssertNotNil(logger.configuration)
+        // Test that configuration is properly initialized
+        XCTAssertNotNil(configuration)
         
         // Test that LogEntry can be built without crashing
-        let message = logEntry.buildMessage(configuration: logger.configuration)
+        let message = logEntry.buildMessage(configuration: configuration)
         XCTAssertFalse(message.isEmpty)
         XCTAssertTrue(message.contains("[ERROR]"))
     }
     
     func testLogErrorWithData() {
-        let logger = DefaultLogger()
+        let configuration = LoggerConfiguration()
         let errorData = "{\"error\": \"Invalid JSON\"}".data(using: .utf8)!
         let logEntry = LogEntry(
             type: .error(method: "POST", url: "https://api.example.com/test", error: "Decoding error"),
@@ -104,19 +108,18 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // Test that logger and configuration are properly initialized
-        XCTAssertNotNil(logger.logger)
-        XCTAssertNotNil(logger.configuration)
+        // Test that configuration is properly initialized
+        XCTAssertNotNil(configuration)
         
         // Test that LogEntry can be built without crashing and includes data
-        let message = logEntry.buildMessage(configuration: logger.configuration)
+        let message = logEntry.buildMessage(configuration: configuration)
         XCTAssertFalse(message.isEmpty)
         XCTAssertTrue(message.contains("[ERROR]"))
         XCTAssertTrue(message.contains("Data:"))
     }
     
     func testSensitiveHeadersMasking() {
-        let logger = DefaultLogger()
+        let configuration = LoggerConfiguration()
         let headers = [
             "Authorization": "Bearer token123",
             "Content-Type": "application/json",
@@ -128,19 +131,18 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // Test that logger and configuration are properly initialized
-        XCTAssertNotNil(logger.logger)
-        XCTAssertNotNil(logger.configuration)
+        // Test that configuration is properly initialized
+        XCTAssertNotNil(configuration)
         
         // Test that LogEntry can be built without crashing and includes headers
-        let message = logEntry.buildMessage(configuration: logger.configuration)
+        let message = logEntry.buildMessage(configuration: configuration)
         XCTAssertFalse(message.isEmpty)
         XCTAssertTrue(message.contains("[REQUEST]"))
         XCTAssertTrue(message.contains("Headers:"))
     }
     
     func testSensitiveBodyMasking() {
-        let logger = DefaultLogger()
+        let configuration = LoggerConfiguration()
         let body = "{\"password\": \"secret123\", \"username\": \"user\"}".data(using: .utf8)!
         let logEntry = LogEntry(
             type: .request(method: "POST", url: "https://api.example.com/test"),
@@ -148,12 +150,11 @@ class LoggingTests: XCTestCase {
             requestId: "test-request-id"
         )
         
-        // Test that logger and configuration are properly initialized
-        XCTAssertNotNil(logger.logger)
-        XCTAssertNotNil(logger.configuration)
+        // Test that configuration is properly initialized
+        XCTAssertNotNil(configuration)
         
         // Test that LogEntry can be built without crashing and includes body
-        let message = logEntry.buildMessage(configuration: logger.configuration)
+        let message = logEntry.buildMessage(configuration: configuration)
         XCTAssertFalse(message.isEmpty)
         XCTAssertTrue(message.contains("[REQUEST]"))
         XCTAssertTrue(message.contains("Body:"))

@@ -47,7 +47,7 @@ public protocol URLServer: Server where Request == URLRequest {
     /// Optional logger for logging requests and responses
     /// - Note: Only available on iOS 14.0+, macOS 11.0+, tvOS 14.0+, watchOS 7.0+
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
-    var logger: LoggerProtocol? { get }
+    var logger: LoggerConfiguration? { get }
     
     /// Optional analytics for tracking requests and responses
     var analytics: AnalyticsProtocol? { get }
@@ -59,7 +59,7 @@ public extension URLServer {
     var encoding: Encoding { JSONEncoding() }
     
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
-    var logger: LoggerProtocol? { nil }
+    var logger: LoggerConfiguration? { nil }
     
     var analytics: AnalyticsProtocol? { nil }
 

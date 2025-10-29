@@ -34,9 +34,9 @@ struct ErrorThrowingServer: URLServer {
 struct TestServerWithCustomLogger: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "https://api.example.com/")!
-    let logger: LoggerProtocol?
+    let logger: LoggerConfiguration?
     
-    init(logger: LoggerProtocol) {
+    init(logger: LoggerConfiguration) {
         self.logger = logger
     }
 }

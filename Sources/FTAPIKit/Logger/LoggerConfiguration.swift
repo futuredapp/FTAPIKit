@@ -1,17 +1,35 @@
 import Foundation
 
+#if canImport(os.log)
+import os.log
+#endif
+
 /// Configuration for the network logger
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct LoggerConfiguration {
+    public let subsystem: String
+    public let category: String
     public let privacy: LogPrivacy
     public let dataDecoder: (Data) -> String?
     
+    #if canImport(os.log)
+    internal let logger: os.Logger
+    #endif
+    
     public init(
+        subsystem: String = "com.ftapikit.networking",
+        category: String = "networking",
         privacy: LogPrivacy = .default,
         dataDecoder: @escaping (Data) -> String? = LoggerConfiguration.defaultDataDecoder
     ) {
+        self.subsystem = subsystem
+        self.category = category
         self.privacy = privacy
         self.dataDecoder = dataDecoder
+        
+        #if canImport(os.log)
+        self.logger = os.Logger(subsystem: subsystem, category: category)
+        #endif
     }
     
     /// Default data decoder that tries to format as pretty JSON with UTF8 fallback

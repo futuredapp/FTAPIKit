@@ -214,16 +214,16 @@ extension URLServer {
                     }
                 }()
                 
-                let message = logEntry.buildMessage(configuration: logger.configuration)
-                switch logger.configuration.privacy {
+                let message = logEntry.buildMessage(configuration: logger)
+                switch logger.privacy {
                 case .none:
-                    logger.logger.log(level: level, "\(message, privacy: .public)")
+                    logger.logger.log(level: level, "\(message, privacy: OSLogPrivacy.public)")
                 case .auto:
-                    logger.logger.log(level: level, "\(message, privacy: .auto)")
+                    logger.logger.log(level: level, "\(message, privacy: OSLogPrivacy.auto)")
                 case .private:
-                    logger.logger.log(level: level, "\(message, privacy: .private)")
+                    logger.logger.log(level: level, "\(message, privacy: OSLogPrivacy.private)")
                 case .sensitive:
-                    logger.logger.log(level: level, "\(message, privacy: .sensitive)")
+                    logger.logger.log(level: level, "\(message, privacy: OSLogPrivacy.sensitive)")
                 }
                 #endif
             }
