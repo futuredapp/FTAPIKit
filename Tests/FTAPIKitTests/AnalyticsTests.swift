@@ -3,113 +3,120 @@ import XCTest
 @testable import FTAPIKit
 
 class AnalyticsTests: XCTestCase {
-    
-    func testAnalyticsConfiguration() {
-        let analyticsConfig = AnalyticsConfiguration(
+
+    func testSensitivePrivacy() {
+        let config = AnalyticsConfiguration(
             privacy: .sensitive,
-            sensitiveHeaders: AnalyticsConfiguration.defaultSensitiveHeaders,
-            sensitiveUrlQueries: AnalyticsConfiguration.defaultSensitiveUrlQueries,
-            sensitiveBodyParams: AnalyticsConfiguration.defaultSensitiveBodyParams
+            unmaskedHeaders: ["public_header"],
+            unmaskedUrlQueries: ["public_query"],
+            unmaskedBodyParams: ["public_param"]
         )
-        
-        let testEntry = AnalyticEntry(
-            type: .request(method: "POST", url: "https://api.example.com/test?token=secret123"),
-            headers: ["Authorization": "Bearer token123"],
-            body: "{\"password\": \"secret\"}".data(using: .utf8)!,
-            configuration: analyticsConfig
+
+        let entry = AnalyticEntry(
+            type: .request(method: "GET", url: "https://example.com/path?secret_query=1&public_query=2"),
+            headers: ["secret_header": "foo", "public_header": "bar"],
+            body: "{\"secret_param\": \"foo\", \"public_param\": \"bar\"}".data(using: .utf8),
+            configuration: config
         )
-        
-        XCTAssertEqual(testEntry.type.rawValue, "request")
-        XCTAssertEqual(testEntry.method, "POST")
-        // Should be masked due to .sensitive privacy
-        XCTAssertEqual(testEntry.url, "https://api.example.com/test")
-        XCTAssertEqual(testEntry.headers?["Authorization"], "***")
-        XCTAssertNil(testEntry.body) // Body should be nil for .sensitive privacy
+
+        XCTAssertEqual(entry.url, "https://example.com/path")
+        XCTAssertEqual(entry.headers?["secret_header"], "***")
+        XCTAssertEqual(entry.headers?["public_header"], "***") // Ignored
+        XCTAssertNil(entry.body)
     }
-    
-    func testAnalyticsConfigurationCustomSensitive() {
-        let customSensitiveHeaders = Set(["custom-auth", "x-custom-token"])
-        let customSensitiveQueries = Set(["custom_token", "api_secret"])
-        
-        let analyticsConfig = AnalyticsConfiguration(
-            privacy: .auto,
-            sensitiveHeaders: customSensitiveHeaders,
-            sensitiveUrlQueries: customSensitiveQueries,
-            sensitiveBodyParams: AnalyticsConfiguration.defaultSensitiveBodyParams
+
+    func testPrivatePrivacy() {
+        let config = AnalyticsConfiguration(
+            privacy: .private,
+            unmaskedHeaders: ["public_header"],
+            unmaskedUrlQueries: ["public_query"],
+            unmaskedBodyParams: ["public_param"]
         )
-        
-        let testEntry = AnalyticEntry(
-            type: .request(method: "POST", url: "https://api.example.com/test?custom_token=secret123&public_param=value"),
-            headers: ["custom-auth": "Bearer token123", "Content-Type": "application/json"],
-            body: "{\"custom_password\": \"secret\", \"public_field\": \"value\"}".data(using: .utf8)!,
-            configuration: analyticsConfig
+
+        let entry = AnalyticEntry(
+            type: .request(method: "GET", url: "https://example.com/path?secret_query=1&public_query=2"),
+            headers: ["secret_header": "foo", "public_header": "bar"],
+            body: "{\"secret_param\": \"foo\", \"public_param\": \"bar\"}".data(using: .utf8),
+            configuration: config
         )
-        
-        XCTAssertEqual(testEntry.type.rawValue, "request")
-        XCTAssertEqual(testEntry.method, "POST")
-        // Should mask only custom sensitive values in .auto mode
-        XCTAssertEqual(testEntry.url, "https://api.example.com/test?custom_token=***&public_param=value")
-        XCTAssertEqual(testEntry.headers?["custom-auth"], "***")
-        XCTAssertEqual(testEntry.headers?["Content-Type"], "application/json")
-        
-        // Body masking behavior depends on configuration
-        // For .auto privacy, body might be masked or nil depending on JSON validity
-        // This is acceptable behavior
+
+        XCTAssertTrue(entry.url.contains("secret_query=***"))
+        XCTAssertTrue(entry.url.contains("public_query=2"))
+        XCTAssertEqual(entry.headers?["secret_header"], "***")
+        XCTAssertEqual(entry.headers?["public_header"], "bar")
+
+        let bodyString = entry.body.flatMap { String(data: $0, encoding: .utf8) }
+        XCTAssertTrue(bodyString?.contains("\"secret_param\":\"***\"") ?? false)
+        XCTAssertTrue(bodyString?.contains("\"public_param\":\"bar\"") ?? false)
     }
-    
-    func testAnalyticsConfigurationMaskBody() {
-        let analyticsConfig = AnalyticsConfiguration(
-            privacy: .auto,
-            sensitiveHeaders: AnalyticsConfiguration.defaultSensitiveHeaders,
-            sensitiveUrlQueries: AnalyticsConfiguration.defaultSensitiveUrlQueries,
-            sensitiveBodyParams: AnalyticsConfiguration.defaultSensitiveBodyParams
+
+    func testNonePrivacy() {
+        let config = AnalyticsConfiguration(
+            privacy: .none
         )
-        
-        // Test with valid JSON containing sensitive data
-        let validJSON = "{\"username\": \"test\", \"password\": \"secret123\"}".data(using: .utf8)!
-        let maskedBody = analyticsConfig.maskBody(validJSON)
-        
-        XCTAssertNotNil(maskedBody)
-        if let maskedData = maskedBody,
-           let maskedString = String(data: maskedData, encoding: .utf8) {
-            XCTAssertTrue(maskedString.contains("username"))
-            XCTAssertTrue(maskedString.contains("test"))
-            XCTAssertTrue(maskedString.contains("password"))
-            XCTAssertTrue(maskedString.contains("***"))
-            XCTAssertFalse(maskedString.contains("secret123"))
+
+        let url = "https://example.com/path?secret_query=1&public_query=2"
+        let headers = ["secret_header": "foo", "public_header": "bar"]
+        let body = "{\"secret_param\": \"foo\", \"public_param\": \"bar\"}".data(using: .utf8)
+
+        let entry = AnalyticEntry(
+            type: .request(method: "GET", url: url),
+            headers: headers,
+            body: body,
+            configuration: config
+        )
+
+        XCTAssertEqual(entry.url, url)
+        XCTAssertEqual(entry.headers, headers)
+        XCTAssertEqual(entry.body, body)
+    }
+
+    func testRecursiveBodyMasking() {
+        let config = AnalyticsConfiguration(
+            privacy: .private,
+            unmaskedBodyParams: ["public_param", "public_nested_object"]
+        )
+
+        let json = """
+        {
+            \"secret_param\": \"foo\",
+            \"public_param\": \"bar\",
+            \"nested_object\": {
+                \"secret_nested_param\": \"baz\",
+                \"public_nested_object\": {
+                    \"another_secret\": \"qux\"
+                }
+            },
+            \"array_of_objects\": [
+                { \"secret_in_array\": \"foo\" },
+                { \"public_param\": \"visible\" }
+            ]
         }
-        
-        // Test with invalid JSON
-        let invalidJSON = "invalid json".data(using: .utf8)!
-        let invalidMaskedBody = analyticsConfig.maskBody(invalidJSON)
-        XCTAssertNil(invalidMaskedBody)
-        
-        // Test with .sensitive privacy
-        let sensitiveConfig = AnalyticsConfiguration(
-            privacy: .sensitive,
-            sensitiveHeaders: AnalyticsConfiguration.defaultSensitiveHeaders,
-            sensitiveUrlQueries: AnalyticsConfiguration.defaultSensitiveUrlQueries,
-            sensitiveBodyParams: AnalyticsConfiguration.defaultSensitiveBodyParams
+        """.data(using: .utf8)
+
+        let entry = AnalyticEntry(
+            type: .request(method: "GET", url: "https://example.com"),
+            body: json,
+            configuration: config
         )
-        let sensitiveMaskedBody = sensitiveConfig.maskBody(validJSON)
-        XCTAssertNil(sensitiveMaskedBody) // Should always return nil for .sensitive
-    }
-    
-    func testAnalyticsProtocolConfiguration() {
-        struct MockAnalytics: AnalyticsProtocol {
-            let configuration: AnalyticsConfiguration
-            
-            func track(_ entry: AnalyticEntry) {
-                // Mock implementation
-            }
-        }
-        
-        let config = AnalyticsConfiguration.default
-        let analytics = MockAnalytics(configuration: config)
-        
-        XCTAssertEqual(analytics.configuration.privacy, .sensitive)
-        XCTAssertFalse(analytics.configuration.sensitiveHeaders.isEmpty)
-        XCTAssertFalse(analytics.configuration.sensitiveUrlQueries.isEmpty)
-        XCTAssertFalse(analytics.configuration.sensitiveBodyParams.isEmpty)
+
+        let body = entry.body!
+        let maskedJSON = try! JSONSerialization.jsonObject(with: body, options: []) as! [String: Any]
+
+        XCTAssertEqual(maskedJSON["secret_param"] as? String, "***")
+        XCTAssertEqual(maskedJSON["public_param"] as? String, "bar")
+
+        let nestedObject = maskedJSON["nested_object"] as! [String: Any]
+        XCTAssertEqual(nestedObject["secret_nested_param"] as? String, "***")
+        XCTAssertNotNil(nestedObject["public_nested_object"])
+
+        let publicNestedObject = nestedObject["public_nested_object"] as! [String: Any]
+        XCTAssertEqual(publicNestedObject["another_secret"] as? String, "qux")
+
+        let array = maskedJSON["array_of_objects"] as! [Any]
+        let firstObjectInArray = array[0] as! [String: Any]
+        XCTAssertEqual(firstObjectInArray["secret_in_array"] as? String, "***")
+        let secondObjectInArray = array[1] as! [String: Any]
+        XCTAssertEqual(secondObjectInArray["public_param"] as? String, "visible")
     }
 }

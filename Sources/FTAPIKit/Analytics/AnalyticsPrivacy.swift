@@ -5,9 +5,6 @@ public enum AnalyticsPrivacy {
     /// No privacy masking - all data is preserved
     case none
     
-    /// Automatic masking - only sensitive headers are masked
-    case auto
-    
     /// Private masking - all headers are masked
     case `private`
     
