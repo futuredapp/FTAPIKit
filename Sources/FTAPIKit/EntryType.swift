@@ -35,11 +35,11 @@ public enum EntryType {
     public var rawValue: String {
         switch self {
         case .request:
-            return "request"
+            "request"
         case .response:
-            return "response"
+            "response"
         case .error:
-            return "error"
+            "error"
         }
     }
 }

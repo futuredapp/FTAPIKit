@@ -47,12 +47,12 @@ public struct LoggerConfiguration {
     
     /// Simple UTF8 decoder (no JSON formatting)
     public static func utf8DataDecoder(_ data: Data) -> String? {
-        return String(data: data, encoding: .utf8)
+        String(data: data, encoding: .utf8)
     }
     
     /// Custom decoder that only shows data size
     public static func sizeOnlyDataDecoder(_ data: Data) -> String? {
-        return "<\(data.count) bytes>"
+        "<\(data.count) bytes>"
     }
     
 }

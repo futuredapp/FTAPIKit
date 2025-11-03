@@ -154,9 +154,9 @@ let server = HTTPBinServer()
 let endpoint = UpdateUserEndpoint(request: user)
 server.call(response: endpoint) { result in
     switch result {
-    case .success(let updatedUser):
+    case let .success(updatedUser):
         ...
-    case .failure(let error):
+    case let .failure(error):
         ...
     }
 }

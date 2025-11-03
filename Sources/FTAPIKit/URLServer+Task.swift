@@ -34,7 +34,7 @@ extension URLServer {
         
         let task = urlSession.dataTask(with: request) { data, response, error in
             // Log and track response
-            self.logAndTrackResponse(
+            logAndTrackResponse(
                 request: request,
                 response: response,
                 data: data,
@@ -45,8 +45,8 @@ extension URLServer {
             let result = process(data, response, error)
             
             // Log and track error if any
-            if case .failure(let error) = result {
-                self.logAndTrackError(
+            if case let .failure(error) = result {
+                logAndTrackError(
                     request: request,
                     error: error,
                     requestId: requestId
@@ -73,7 +73,7 @@ extension URLServer {
         
         let task = urlSession.uploadTask(with: request, fromFile: file) { data, response, error in
             // Log and track response
-            self.logAndTrackResponse(
+            logAndTrackResponse(
                 request: request,
                 response: response,
                 data: data,
@@ -84,8 +84,8 @@ extension URLServer {
             let result = process(data, response, error)
             
             // Log and track error if any
-            if case .failure(let error) = result {
-                self.logAndTrackError(
+            if case let .failure(error) = result {
+                logAndTrackError(
                     request: request,
                     error: error,
                     requestId: requestId
@@ -111,7 +111,7 @@ extension URLServer {
         
         let task = urlSession.downloadTask(with: request) { url, response, error in
             // Log and track response
-            self.logAndTrackResponse(
+            logAndTrackResponse(
                 request: request,
                 response: response,
                 data: nil,
@@ -122,8 +122,8 @@ extension URLServer {
             let result = process(url, response, error)
             
             // Log and track error if any
-            if case .failure(let error) = result {
-                self.logAndTrackError(
+            if case let .failure(error) = result {
+                logAndTrackError(
                     request: request,
                     error: error,
                     requestId: requestId
@@ -206,11 +206,11 @@ extension URLServer {
                 let level: OSLogType = {
                     switch logEntry.type {
                     case .error:
-                        return .error
-                    case .response(_, _, let statusCode):
-                        return statusCode >= 400 ? .error : .info
+                        .error
+                    case let .response(_, _, statusCode):
+                        statusCode >= 400 ? .error : .info
                     case .request:
-                        return .info
+                        .info
                     }
                 }()
                 

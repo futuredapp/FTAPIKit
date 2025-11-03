@@ -28,11 +28,11 @@ public struct AnalyticEntry {
         // Create masked type with masked URL
         let maskedType: EntryType
         switch type {
-        case .request(let method, let url):
+        case let .request(method, url):
             maskedType = .request(method: method, url: configuration.maskUrl(url) ?? url)
-        case .response(let method, let url, let statusCode):
+        case let .response(method, url, statusCode):
             maskedType = .response(method: method, url: configuration.maskUrl(url) ?? url, statusCode: statusCode)
-        case .error(let method, let url, let error):
+        case let .error(method, url, error):
             maskedType = .error(method: method, url: configuration.maskUrl(url) ?? url, error: error)
         }
         
@@ -47,33 +47,33 @@ public struct AnalyticEntry {
     /// Convenience computed properties for accessing associated values
     public var method: String {
         switch type {
-        case .request(let method, _), .response(let method, _, _), .error(let method, _, _):
-            return method
+        case let .request(method, _), let .response(method, _, _), let .error(method, _, _):
+            method
         }
     }
     
     public var url: String {
         switch type {
-        case .request(_, let url), .response(_, let url, _), .error(_, let url, _):
-            return url
+        case let .request(_, url), let .response(_, url, _), let .error(_, url, _):
+            url
         }
     }
     
     public var statusCode: Int? {
         switch type {
-        case .response(_, _, let statusCode):
-            return statusCode
+        case let .response(_, _, statusCode):
+            statusCode
         case .request, .error:
-            return nil
+            nil
         }
     }
     
     public var error: String? {
         switch type {
-        case .error(_, _, let error):
-            return error
+        case let .error(_, _, error):
+            error
         case .request, .response:
-            return nil
+            nil
         }
     }
 }

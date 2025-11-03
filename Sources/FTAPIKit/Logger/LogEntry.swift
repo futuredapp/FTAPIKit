@@ -35,33 +35,33 @@ struct LogEntry {
     /// Convenience computed properties for accessing associated values
     var method: String {
         switch type {
-        case .request(let method, _), .response(let method, _, _), .error(let method, _, _):
-            return method
+        case let .request(method, _), let .response(method, _, _), let .error(method, _, _):
+            method
         }
     }
     
     var url: String {
         switch type {
-        case .request(_, let url), .response(_, let url, _), .error(_, let url, _):
-            return url
+        case let .request(_, url), let .response(_, url, _), let .error(_, url, _):
+            url
         }
     }
     
     var statusCode: Int? {
         switch type {
-        case .response(_, _, let statusCode):
-            return statusCode
+        case let .response(_, _, statusCode):
+            statusCode
         case .request, .error:
-            return nil
+            nil
         }
     }
     
     var error: String? {
         switch type {
-        case .error(_, _, let error):
-            return error
+        case let .error(_, _, error):
+            error
         case .request, .response:
-            return nil
+            nil
         }
     }
     
@@ -72,12 +72,12 @@ struct LogEntry {
         let timestampString = formatTimestamp(timestamp)
         
         switch type {
-        case .request(let method, let url):
+        case let .request(method, url):
             var message = "[REQUEST] [\(requestIdPrefix)]"
             
             // Collect all titles for alignment calculation
             var allTitles = ["Method", "URL", "Timestamp"]
-            if let headers = headers, !headers.isEmpty {
+            if let headers, !headers.isEmpty {
                 allTitles.append(contentsOf: headers.keys)
             }
             
@@ -86,17 +86,17 @@ struct LogEntry {
             message += format(title: "URL", text: url, maxTitleLength: maxTitleLength)
             message += format(title: "Timestamp", text: timestampString, maxTitleLength: maxTitleLength)
 
-            if let headers = headers, !headers.isEmpty {
+            if let headers, !headers.isEmpty {
                 message += format(headers: headers, maxTitleLength: maxTitleLength)
             }
             
-            if let body = body, let bodyString = configuration.dataDecoder(body) {
+            if let body, let bodyString = configuration.dataDecoder(body) {
                 message += "\n\tBody:\n \(bodyString)"
             }
             
             return message
             
-        case .response(let method, let url, let statusCode):
+        case let .response(method, url, statusCode):
             var message = "[RESPONSE] [\(requestIdPrefix)]"
             
             // Collect all titles for alignment calculation
@@ -104,7 +104,7 @@ struct LogEntry {
             if duration != nil {
                 allTitles.append("Duration")
             }
-            if let headers = headers, !headers.isEmpty {
+            if let headers, !headers.isEmpty {
                 allTitles.append(contentsOf: headers.keys)
             }
             
@@ -114,26 +114,26 @@ struct LogEntry {
             message += format(title: "Status Code", text: "\(statusCode)", maxTitleLength: maxTitleLength)
             message += format(title: "Timestamp", text: timestampString, maxTitleLength: maxTitleLength)
 
-            if let duration = duration {
+            if let duration {
                 message += format(title: "Duration", text: "\(String(format: "%.2f", duration * 1000))ms", maxTitleLength: maxTitleLength)
             }
             
-            if let headers = headers, !headers.isEmpty {
+            if let headers, !headers.isEmpty {
                 message += format(headers: headers, maxTitleLength: maxTitleLength)
             }
             
-            if let body = body, let bodyString = configuration.dataDecoder(body) {
+            if let body, let bodyString = configuration.dataDecoder(body) {
                 message += "\nBody:\n \(bodyString)"
             }
             
             return message
             
-        case .error(let method, let url, let error):
+        case let .error(method, url, error):
             var message = "[ERROR] [\(requestIdPrefix)]"
             
             // Collect all titles for alignment calculation
             var allTitles = ["Method", "URL", "ERROR", "Timestamp"]
-            if let headers = headers, !headers.isEmpty {
+            if let headers, !headers.isEmpty {
                 allTitles.append(contentsOf: headers.keys)
             }
             
@@ -143,7 +143,7 @@ struct LogEntry {
             message += format(title: "ERROR", text: error, maxTitleLength: maxTitleLength)
             message += format(title: "Timestamp", text: timestampString, maxTitleLength: maxTitleLength)
 
-            if let body = body, let bodyString = configuration.dataDecoder(body) {
+            if let body, let bodyString = configuration.dataDecoder(body) {
                 message += "\nData: \(bodyString)"
             }
             
