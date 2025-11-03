@@ -4,20 +4,29 @@ import PackageDescription
 
 let package = Package(
     name: "FTAPIKit",
-    platforms: [.iOS(.v12), .macOS(.v10_10), .tvOS(.v12), .watchOS(.v5)],
+    platforms: [
+        .iOS(.v14),
+        .macOS(.v11),
+        .tvOS(.v14),
+        .watchOS(.v7)
+    ],
     products: [
         .library(
             name: "FTAPIKit",
             targets: ["FTAPIKit"])
     ],
+    dependencies: [
+        .package(url: "https://github.com/ssestak/FTNetworkTracer", branch: "main")
+    ],
     targets: [
         .target(
             name: "FTAPIKit",
-            dependencies: []
+            dependencies: [
+                .product(name: "FTNetworkTracer", package: "FTNetworkTracer")
+            ]
         ),
         .testTarget(
             name: "FTAPIKitTests",
-            dependencies: ["FTAPIKit"]
-        )
+            dependencies: ["FTAPIKit"])
     ]
 )

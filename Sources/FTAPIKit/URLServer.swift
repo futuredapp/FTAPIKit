@@ -1,4 +1,5 @@
 import Foundation
+import FTNetworkTracer
 
 #if os(Linux)
 import FoundationNetworking
@@ -43,12 +44,15 @@ public protocol URLServer: Server where Request == URLRequest {
     /// `URLSession` instance, which is used for task execution
     /// - Note: Provided default implementation.
     var urlSession: URLSession { get }
+
+    var networkTracer: FTNetworkTracer? { get }
 }
 
 public extension URLServer {
     var urlSession: URLSession { .shared }
     var decoding: Decoding { JSONDecoding() }
     var encoding: Encoding { JSONEncoding() }
+    var networkTracer: FTNetworkTracer? { nil }
 
     func buildRequest(endpoint: Endpoint) throws -> URLRequest {
         try buildStandardRequest(endpoint: endpoint)

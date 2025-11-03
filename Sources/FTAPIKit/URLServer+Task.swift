@@ -22,8 +22,30 @@ extension URLServer {
         process: @escaping (Data?, URLResponse?, Error?) -> Result<R, ErrorType>,
         completion: @escaping (Result<R, ErrorType>) -> Void
     ) -> URLSessionDataTask? {
+        let requestId = UUID().uuidString
+        let startTime = Date()
+
+        networkTracer?.logAndTrackRequest(request: request, requestId: requestId)
+
         let task = urlSession.dataTask(with: request) { data, response, error in
-            completion(process(data, response, error))
+            networkTracer?.logAndTrackResponse(
+                request: request,
+                response: response,
+                data: data,
+                requestId: requestId,
+                startTime: startTime
+            )
+
+            let result = process(data, response, error)
+
+            if case let .failure(error) = result {
+                networkTracer?.logAndTrackError(
+                    request: request,
+                    error: error,
+                    requestId: requestId
+                )
+            }
+            completion(result)
         }
         task.resume()
         return task
@@ -35,8 +57,32 @@ extension URLServer {
         process: @escaping (Data?, URLResponse?, Error?) -> Result<R, ErrorType>,
         completion: @escaping (Result<R, ErrorType>) -> Void
     ) -> URLSessionUploadTask? {
+        let requestId = UUID().uuidString
+        let startTime = Date()
+
+        networkTracer?.logAndTrackRequest(request: request, requestId: requestId)
+
         let task = urlSession.uploadTask(with: request, fromFile: file) { data, response, error in
-            completion(process(data, response, error))
+            networkTracer?.logAndTrackResponse(
+                request: request,
+                response: response,
+                data: data,
+                requestId: requestId,
+                startTime: startTime
+            )
+
+            let result = process(data, response, error)
+
+            // Log and track error if any
+            if case let .failure(error) = result {
+                networkTracer?.logAndTrackError(
+                    request: request,
+                    error: error,
+                    requestId: requestId
+                )
+            }
+
+            completion(result)
         }
         task.resume()
         return task
@@ -47,8 +93,31 @@ extension URLServer {
         process: @escaping (URL?, URLResponse?, Error?) -> Result<URL, ErrorType>,
         completion: @escaping (Result<URL, ErrorType>) -> Void
     ) -> URLSessionDownloadTask? {
+        let requestId = UUID().uuidString
+        let startTime = Date()
+
+        networkTracer?.logAndTrackRequest(request: request, requestId: requestId)
+
         let task = urlSession.downloadTask(with: request) { url, response, error in
-            completion(process(url, response, error))
+            networkTracer?.logAndTrackResponse(
+                request: request,
+                response: response,
+                data: nil,
+                requestId: requestId,
+                startTime: startTime
+            )
+
+            let result = process(url, response, error)
+
+            if case let .failure(error) = result {
+                networkTracer?.logAndTrackError(
+                    request: request,
+                    error: error,
+                    requestId: requestId
+                )
+            }
+
+            completion(result)
         }
         task.resume()
         return task
