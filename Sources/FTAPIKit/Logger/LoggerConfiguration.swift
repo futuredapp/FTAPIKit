@@ -4,7 +4,11 @@ import Foundation
 import os.log
 #endif
 
-/// Configuration for the network logger
+/// Configuration for the network logger.
+///
+/// This struct defines the configuration for the network logger, including the
+/// subsystem and category for `OSLog`, the privacy level for logging, and a
+/// custom data decoder for formatting body data.
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct LoggerConfiguration {
     let subsystem: String
@@ -16,6 +20,13 @@ public struct LoggerConfiguration {
     let logger: os.Logger
     #endif
     
+    /// Initializes a new logger configuration.
+    ///
+    /// - Parameters:
+    ///   - subsystem: The subsystem for `OSLog`.
+    ///   - category: The category for `OSLog`.
+    ///   - privacy: The privacy level for logging.
+    ///   - dataDecoder: A closure that decodes `Data` into a `String` for logging.
     public init(
         subsystem: String = "com.ftapikit.networking",
         category: String = "networking",

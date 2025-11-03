@@ -1,12 +1,23 @@
 import Foundation
 
-/// Configuration for analytics functionality
+/// Configuration for analytics functionality.
+///
+/// This struct defines the privacy level and exceptions for masking sensitive data
+/// in analytics. It allows you to specify which headers, URL query parameters,
+/// and body parameters should not be masked.
 public struct AnalyticsConfiguration {
     private let privacy: AnalyticsPrivacy
     private let unmaskedHeaders: Set<String>
     private let unmaskedUrlQueries: Set<String>
     private let unmaskedBodyParams: Set<String>
 
+    /// Initializes a new analytics configuration.
+    ///
+    /// - Parameters:
+    ///   - privacy: The privacy level for data masking.
+    ///   - unmaskedHeaders: A set of header keys that should not be masked.
+    ///   - unmaskedUrlQueries: A set of URL query parameter keys that should not be masked.
+    ///   - unmaskedBodyParams: A set of body parameter keys that should not be masked.
     public init(
         privacy: AnalyticsPrivacy,
         unmaskedHeaders: Set<String> = [],
