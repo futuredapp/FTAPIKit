@@ -16,7 +16,7 @@ let package = Package(
             targets: ["FTAPIKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/ssestak/FTNetworkTracer", branch: "main")
+        .package(url: "https://github.com/futuredapp/FTNetworkTracer", branch: "main")
     ],
     targets: [
         .target(
