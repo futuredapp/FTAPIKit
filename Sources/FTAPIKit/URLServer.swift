@@ -45,6 +45,8 @@ public protocol URLServer: Server where Request == URLRequest {
     /// - Note: Provided default implementation.
     var urlSession: URLSession { get }
 
+    /// Optional network tracer for request logging and tracking
+    /// - Note: Provided default implementation returns nil.
     var networkTracer: FTNetworkTracer? { get }
 }
 
