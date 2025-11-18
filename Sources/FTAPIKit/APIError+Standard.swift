@@ -41,5 +41,5 @@ public enum APIErrorStandard: APIError {
         }
     }
 
-    public static var unhandled: Standard = .unhandled(data: nil, response: nil, error: nil)
+    public static let unhandled: Standard = .unhandled(data: nil, response: nil, error: nil)
 }
