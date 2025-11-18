@@ -82,7 +82,7 @@ public protocol ResponseEndpoint: Endpoint {
     /// Associated type describing the return type conforming to `Decodable`
     /// protocol. This is only a phantom-type used by `APIAdapter`
     /// for automatic decoding/deserialization of API results.
-    associatedtype Response: Decodable
+    associatedtype Response: Decodable & Sendable
 }
 
 /// Protocol extending ``Endpoint``, which supports sending `Encodable` data to the server.
