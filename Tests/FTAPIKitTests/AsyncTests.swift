@@ -1,8 +1,7 @@
-#if swift(>=5.5.2) && !os(Linux)
+#if !os(Linux)
 import Foundation
 import XCTest
 
-@available(macOS 12, iOS 15, watchOS 8, tvOS 15, *)
 final class AsyncTests: XCTestCase {
     func testCallWithoutResponse() async throws {
         let server = HTTPBinServer()
