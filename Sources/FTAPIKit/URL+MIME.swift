@@ -1,7 +1,4 @@
 import Foundation
-#if canImport(CoreServices)
-import CoreServices
-#endif
 #if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers
 #endif
@@ -13,30 +10,13 @@ extension URL {
         #if os(Linux)
         return linuxMimeType(for: path) ?? fallback
         #else
-        if #available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *) {
-            return uniformMimeType(for: pathExtension) ?? fallback
-        } else {
-            return coreServicesMimeType(for: pathExtension) ?? fallback
-        }
+        return uniformMimeType(for: pathExtension) ?? fallback
         #endif
     }
 
     #if canImport(UniformTypeIdentifiers)
-    @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
     private func uniformMimeType(for fileExtension: String) -> String? {
         UTType(filenameExtension: fileExtension)?.preferredMIMEType
-    }
-    #endif
-
-    #if canImport(CoreServices)
-    private func coreServicesMimeType(for fileExtension: String) -> String? {
-        if
-            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension as CFString, nil)?.takeRetainedValue(),
-            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue()
-        {
-            return contentType as String
-        }
-        return nil
     }
     #endif
 
