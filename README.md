@@ -9,23 +9,27 @@
 ![macOS 14](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-14.yml/badge.svg?branch=main)
 ![Ubuntu](https://github.com/futuredapp/FTAPIKit/actions/workflows/ubuntu-latest.yml/badge.svg?branch=main)
 
-Declarative and generic REST API framework using Codable.
-With standard implementation using URLSesssion and JSON encoder/decoder.
-Easily extensible for your asynchronous framework or networking stack.
+Declarative async/await REST API framework using Swift Concurrency and Codable.
+With standard implementation using URLSession and JSON encoder/decoder.
+Built for Swift 6.1 with full concurrency safety.
+
+## Requirements
+
+- Swift 6.1+
+- iOS 15+, macOS 12+, tvOS 15+, watchOS 8+, or Linux
 
 ## Installation
 
-When using Swift package manager install using Xcode 11+
-or add following line to your dependencies:
+When using Swift Package Manager install using Xcode or add the following line to your dependencies:
 
 ```swift
-.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "1.5.0")
+.package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "2.0.0")
 ```
 
 When using CocoaPods add following line to your `Podfile`:
 
 ```ruby
-pod 'FTAPIKit', '~> 1.5'
+pod 'FTAPIKit', '~> 2.0'
 ```
 
 ## Features
@@ -96,7 +100,7 @@ authorization we can override default request building mechanism.
 ```swift
 struct HTTPBinServer: URLServer {
     ...
-    func buildRequest(endpoint: Endpoint) throws -> URLRequest {
+    func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
         var request = try buildStandardRequest(endpoint: endpoint)
         request.addValue("MyApp/1.0.0", forHTTPHeaderField: "User-Agent")
         return request
@@ -129,18 +133,141 @@ struct UpdateUserEndpoint: RequestResponseEndpoint {
 
 ### Executing the request
 
-When we have server and enpoint defined we can call the web service:
+When we have server and endpoint defined we can call the web service using async/await:
 
 ```swift
 let server = HTTPBinServer()
 let endpoint = UpdateUserEndpoint(request: user)
+
+Task {
+    do {
+        let updatedUser = try await server.call(response: endpoint)
+        // Handle success
+    } catch {
+        // Handle error
+    }
+}
+```
+
+### Async buildRequest
+
+One of the key features in FTAPIKit 2.0 is the ability to use async operations in `buildRequest`. This enables use cases like:
+
+- **Token Refresh**: Await token refresh before building the request
+- **Dynamic Configuration**: Fetch configuration or headers asynchronously
+- **Rate Limiting**: Implement delays or throttling
+
+Example with async token refresh:
+
+```swift
+struct MyServer: URLServer {
+    let baseUri = URL(string: "https://api.example.com")!
+    let tokenManager: TokenManager
+
+    func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
+        // Refresh token if needed
+        await tokenManager.refreshIfNeeded()
+
+        var request = try buildStandardRequest(endpoint: endpoint)
+        request.addValue("Bearer \(tokenManager.token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+}
+```
+
+## Migrating from 1.x to 2.0
+
+FTAPIKit 2.0 is a major rewrite focused on Swift Concurrency. Here are the breaking changes:
+
+### Completion Handlers Removed
+
+**Old (1.x):**
+```swift
 server.call(response: endpoint) { result in
     switch result {
-    case .success(let updatedUser):
-        ...
+    case .success(let response):
+        print(response)
     case .failure(let error):
-        ...
+        print(error)
     }
+}
+```
+
+**New (2.0):**
+```swift
+Task {
+    do {
+        let response = try await server.call(response: endpoint)
+        print(response)
+    } catch {
+        print(error)
+    }
+}
+```
+
+### Combine Removed
+
+Combine support has been removed in favor of async/await, which provides better performance and cleaner code.
+
+**Old (1.x) - Combine:**
+```swift
+server.publisher(response: endpoint)
+    .sink(
+        receiveCompletion: { completion in
+            // Handle completion
+        },
+        receiveValue: { response in
+            // Handle response
+        }
+    )
+    .store(in: &cancellables)
+```
+
+**New (2.0) - Async/Await:**
+```swift
+let task = Task {
+    do {
+        let response = try await server.call(response: endpoint)
+        // Handle response
+    } catch {
+        // Handle error
+    }
+}
+
+// Cancel if needed
+task.cancel()
+```
+
+### buildRequest is Now Async
+
+If you override `buildRequest`, you must mark it as `async`:
+
+**Old (1.x):**
+```swift
+func buildRequest(endpoint: Endpoint) throws -> URLRequest {
+    var request = try buildStandardRequest(endpoint: endpoint)
+    request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    return request
+}
+```
+
+**New (2.0):**
+```swift
+func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
+    var request = try buildStandardRequest(endpoint: endpoint)
+    request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    return request
+}
+```
+
+### Response Types Must Be Sendable
+
+All `ResponseEndpoint` response types must conform to `Sendable` for Swift 6 concurrency safety:
+
+```swift
+struct User: Codable, Sendable {  // Add Sendable conformance
+    let id: Int
+    let name: String
 }
 ```
 

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(swiftlint lint:*)",
+      "Bash(swift test:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(swift build:*)",
+      "Bash(xcode-select:*)",
+      "Bash(xcrun swift:*)",
+      "Bash(swiftlint:*)",
+      "Bash(git checkout:*)",
+      "Bash(git reset:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
