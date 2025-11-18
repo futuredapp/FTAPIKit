@@ -15,7 +15,7 @@ import FoundationNetworking
 ///
 /// It provides a default implementation for
 /// `var decoding: Decoding`, `var encoding: Encoding` and
-/// `func buildRequest(endpoint: Endpoint) throws -> URLRequest`.  The `URLRequest`
+/// `func buildRequest(endpoint: Endpoint) async throws -> URLRequest`.  The `URLRequest`
 /// creation is implemented in `struct URLRequestBuilder`.
 ///
 /// In case that the requests need to cooperate with other services, like OAuth, override the default implementation
@@ -56,7 +56,7 @@ public extension URLServer {
     var encoding: Encoding { JSONEncoding() }
     var networkObservers: [any NetworkObserver] { [] }
 
-    func buildRequest(endpoint: Endpoint) throws -> URLRequest {
+    func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
         try buildStandardRequest(endpoint: endpoint)
     }
 }

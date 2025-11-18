@@ -26,5 +26,5 @@ public protocol Server {
     /// the request may be delayed before the valid tokens are received.
     /// - Parameter endpoint: An instance of an endpoint representing a call.
     /// - Returns: A valid request.
-    func buildRequest(endpoint: Endpoint) throws -> Request
+    func buildRequest(endpoint: Endpoint) async throws -> Request
 }
