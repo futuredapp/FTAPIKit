@@ -1,6 +1,5 @@
 import Foundation
 import FTAPIKit
-import FTNetworkTracer
 
 #if os(Linux)
 import FoundationNetworking
@@ -31,12 +30,12 @@ struct ErrorThrowingServer: URLServer {
     let baseUri = URL(string: "http://httpbin.org/")!
 }
 
-struct HTTPBinServerWithTracer: URLServer {
+struct HTTPBinServerWithObservers: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
-    let networkTracer: FTNetworkTracer?
+    let networkObservers: [any NetworkObserver]
 
-    init(tracer: FTNetworkTracer?) {
-        self.networkTracer = tracer
+    init(observers: [any NetworkObserver] = []) {
+        self.networkObservers = observers
     }
 }

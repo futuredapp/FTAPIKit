@@ -22,29 +22,17 @@ extension URLServer {
         process: @escaping (Data?, URLResponse?, Error?) -> Result<R, ErrorType>,
         completion: @escaping (Result<R, ErrorType>) -> Void
     ) -> URLSessionDataTask? {
-        let requestId = UUID().uuidString
-        let startTime = Date()
-
-        networkTracer?.logAndTrackRequest(request: request, requestId: requestId)
+        let tokens = networkObservers.map { RequestToken(observer: $0, request: request) }
 
         let task = urlSession.dataTask(with: request) { data, response, error in
-            networkTracer?.logAndTrackResponse(
-                request: request,
-                response: response,
-                data: data,
-                requestId: requestId,
-                startTime: startTime
-            )
+            tokens.forEach { $0.didReceiveResponse(response, data) }
 
             let result = process(data, response, error)
 
-            if case let .failure(error) = result {
-                networkTracer?.logAndTrackError(
-                    request: request,
-                    error: error,
-                    requestId: requestId
-                )
+            if case let .failure(apiError) = result {
+                tokens.forEach { $0.didFail(apiError) }
             }
+
             completion(result)
         }
         task.resume()
@@ -57,29 +45,15 @@ extension URLServer {
         process: @escaping (Data?, URLResponse?, Error?) -> Result<R, ErrorType>,
         completion: @escaping (Result<R, ErrorType>) -> Void
     ) -> URLSessionUploadTask? {
-        let requestId = UUID().uuidString
-        let startTime = Date()
-
-        networkTracer?.logAndTrackRequest(request: request, requestId: requestId)
+        let tokens = networkObservers.map { RequestToken(observer: $0, request: request) }
 
         let task = urlSession.uploadTask(with: request, fromFile: file) { data, response, error in
-            networkTracer?.logAndTrackResponse(
-                request: request,
-                response: response,
-                data: data,
-                requestId: requestId,
-                startTime: startTime
-            )
+            tokens.forEach { $0.didReceiveResponse(response, data) }
 
             let result = process(data, response, error)
 
-            // Log and track error if any
-            if case let .failure(error) = result {
-                networkTracer?.logAndTrackError(
-                    request: request,
-                    error: error,
-                    requestId: requestId
-                )
+            if case let .failure(apiError) = result {
+                tokens.forEach { $0.didFail(apiError) }
             }
 
             completion(result)
@@ -93,28 +67,15 @@ extension URLServer {
         process: @escaping (URL?, URLResponse?, Error?) -> Result<URL, ErrorType>,
         completion: @escaping (Result<URL, ErrorType>) -> Void
     ) -> URLSessionDownloadTask? {
-        let requestId = UUID().uuidString
-        let startTime = Date()
-
-        networkTracer?.logAndTrackRequest(request: request, requestId: requestId)
+        let tokens = networkObservers.map { RequestToken(observer: $0, request: request) }
 
         let task = urlSession.downloadTask(with: request) { url, response, error in
-            networkTracer?.logAndTrackResponse(
-                request: request,
-                response: response,
-                data: nil,
-                requestId: requestId,
-                startTime: startTime
-            )
+            tokens.forEach { $0.didReceiveResponse(response, nil) }
 
             let result = process(url, response, error)
 
-            if case let .failure(error) = result {
-                networkTracer?.logAndTrackError(
-                    request: request,
-                    error: error,
-                    requestId: requestId
-                )
+            if case let .failure(apiError) = result {
+                tokens.forEach { $0.didFail(apiError) }
             }
 
             completion(result)
@@ -144,5 +105,26 @@ extension URLServer {
     func apiError<S>(error: Error?) -> Result<S, ErrorType> {
         let error = ErrorType(data: nil, response: nil, error: error, decoding: decoding) ?? .unhandled
         return .failure(error)
+    }
+}
+
+// This hides the specific 'Context' type inside closures.
+private struct RequestToken: Sendable {
+    let didReceiveResponse: @Sendable (URLResponse?, Data?) -> Void
+    let didFail: @Sendable (Error) -> Void
+
+    // The generic 'T' captures the specific observer type and its associated Context
+    init<T: NetworkObserver>(observer: T, request: URLRequest) {
+        // We generate the context immediately upon initialization
+        let context = observer.willSendRequest(request)
+
+        // We capture the specific 'observer' and 'context' inside these closures
+        self.didReceiveResponse = { [weak observer] response, data in
+            observer?.didReceiveResponse(for: request, response: response, data: data, context: context)
+        }
+
+        self.didFail = { [weak observer] error in
+            observer?.didFail(request: request, error: error, context: context)
+        }
     }
 }
