@@ -50,11 +50,8 @@ final class NetworkObserverTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
 
         XCTAssertEqual(mockObserver.willSendCount, 1, "willSendRequest should be called once")
-        XCTAssertGreaterThanOrEqual(
-            mockObserver.didReceiveCount + mockObserver.didFailCount,
-            1,
-            "Either didReceive or didFail should be called"
-        )
+        // didReceiveResponse is always called; didFail is called additionally on failure
+        XCTAssertEqual(mockObserver.didReceiveCount, 1, "didReceiveResponse should always be called")
     }
 
     func testObserverLogsFailedRequest() {
@@ -69,13 +66,10 @@ final class NetworkObserverTests: XCTestCase {
 
         wait(for: [expectation], timeout: timeout)
 
-        // Verify observer was called (request is always logged, even on failure)
-        XCTAssertEqual(mockObserver.willSendCount, 1, "Request should be logged once")
-        XCTAssertGreaterThanOrEqual(
-            mockObserver.didReceiveCount + mockObserver.didFailCount,
-            1,
-            "Either response or error should be logged"
-        )
+        // didReceiveResponse is always called with raw data; didFail is called additionally on failure
+        XCTAssertEqual(mockObserver.willSendCount, 1, "willSendRequest should be called once")
+        XCTAssertEqual(mockObserver.didReceiveCount, 1, "didReceiveResponse should always be called")
+        XCTAssertEqual(mockObserver.didFailCount, 1, "didFail should be called on failure")
     }
 
     func testMultipleObserversAllReceiveCallbacks() {
@@ -94,7 +88,7 @@ final class NetworkObserverTests: XCTestCase {
         // Both observers should receive callbacks
         XCTAssertEqual(observer1.willSendCount, 1, "Observer 1 willSendRequest should be called")
         XCTAssertEqual(observer2.willSendCount, 1, "Observer 2 willSendRequest should be called")
-        XCTAssertGreaterThanOrEqual(observer1.didReceiveCount + observer1.didFailCount, 1)
-        XCTAssertGreaterThanOrEqual(observer2.didReceiveCount + observer2.didFailCount, 1)
+        XCTAssertEqual(observer1.didReceiveCount, 1, "Observer 1 didReceiveResponse should be called")
+        XCTAssertEqual(observer2.didReceiveCount, 1, "Observer 2 didReceiveResponse should be called")
     }
 }
