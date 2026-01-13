@@ -1,4 +1,4 @@
-<img align="right" alt="FTAPIKit logo" src="Sources/FTAPIKit/Documentation.docc/Resources/FTAPIKit.svg">
+<img align="right" alt="FTAPIKit logo" src="Sources/FTAPIKit/Documentation.docc/Resources/FTAPIKit.svg" height="65">
 
 # FTAPIKit
 
@@ -13,6 +13,7 @@
 Declarative and generic REST API framework using Codable.
 With standard implementation using URLSesssion and JSON encoder/decoder.
 Easily extensible for your asynchronous framework or networking stack.
+The repository also contains set of Xcode templates, see `Installation`.
 
 ## Installation
 
@@ -27,6 +28,14 @@ When using CocoaPods add following line to your `Podfile`:
 
 ```ruby
 pod 'FTAPIKit', '~> 1.5'
+```
+
+The repository includes an API endpoint Xcode template for user convenience. You can install it using make:
+
+```bash
+git clone --depth=1 https://github.com/futuredapp/FTAPIKit.git
+cd Templates
+make
 ```
 
 ## Features
