@@ -6,7 +6,6 @@ import FoundationNetworking
 #endif
 
 final class NetworkObserverTests: XCTestCase {
-    private let timeout: TimeInterval = 30.0
 
     // MARK: - Unit Tests (no network required)
 
@@ -17,12 +16,12 @@ final class NetworkObserverTests: XCTestCase {
         XCTAssertEqual(server.networkObservers.count, 1, "NetworkObservers should contain one observer")
     }
 
-    func testEmptyObserversDoesNotCauseIssues() {
+    func testEmptyObserversDoesNotCauseIssues() async throws {
         let server = HTTPBinServer() // Default observers is empty array
         let endpoint = GetEndpoint()
 
         // Verify empty observers doesn't cause problems during request building
-        XCTAssertNoThrow(try server.buildRequest(endpoint: endpoint))
+        _ = try await server.buildRequest(endpoint: endpoint)
         XCTAssertTrue(server.networkObservers.isEmpty, "Default networkObservers should be empty")
     }
 
@@ -37,34 +36,29 @@ final class NetworkObserverTests: XCTestCase {
     // MARK: - Integration Tests (requires network)
     // Note: These tests may fail if httpbin.org is unavailable
 
-    func testObserverReceivesLifecycleCallbacks() {
+    func testObserverReceivesLifecycleCallbacks() async throws {
         let mockObserver = MockNetworkObserver()
         let server = HTTPBinServerWithObservers(observers: [mockObserver])
         let endpoint = GetEndpoint()
-        let expectation = self.expectation(description: "Request completed")
 
-        server.call(endpoint: endpoint) { _ in
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: timeout)
+        _ = try await server.call(data: endpoint)
 
         XCTAssertEqual(mockObserver.willSendCount, 1, "willSendRequest should be called once")
         // didReceiveResponse is always called; didFail is called additionally on failure
         XCTAssertEqual(mockObserver.didReceiveCount, 1, "didReceiveResponse should always be called")
     }
 
-    func testObserverLogsFailedRequest() {
+    func testObserverLogsFailedRequest() async {
         let mockObserver = MockNetworkObserver()
         let server = HTTPBinServerWithObservers(observers: [mockObserver])
         let endpoint = NotFoundEndpoint()
-        let expectation = self.expectation(description: "Result")
 
-        server.call(endpoint: endpoint) { _ in
-            expectation.fulfill()
+        do {
+            _ = try await server.call(data: endpoint)
+            XCTFail("Expected error for 404 endpoint")
+        } catch {
+            // Expected error
         }
-
-        wait(for: [expectation], timeout: timeout)
 
         // didReceiveResponse is always called with raw data; didFail is called additionally on failure
         XCTAssertEqual(mockObserver.willSendCount, 1, "willSendRequest should be called once")
@@ -72,18 +66,13 @@ final class NetworkObserverTests: XCTestCase {
         XCTAssertEqual(mockObserver.didFailCount, 1, "didFail should be called on failure")
     }
 
-    func testMultipleObserversAllReceiveCallbacks() {
+    func testMultipleObserversAllReceiveCallbacks() async throws {
         let observer1 = MockNetworkObserver()
         let observer2 = MockNetworkObserver()
         let server = HTTPBinServerWithObservers(observers: [observer1, observer2])
         let endpoint = GetEndpoint()
-        let expectation = self.expectation(description: "Request completed")
 
-        server.call(endpoint: endpoint) { _ in
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: timeout)
+        _ = try await server.call(data: endpoint)
 
         // Both observers should receive callbacks
         XCTAssertEqual(observer1.willSendCount, 1, "Observer 1 willSendRequest should be called")
@@ -91,4 +80,13 @@ final class NetworkObserverTests: XCTestCase {
         XCTAssertEqual(observer1.didReceiveCount, 1, "Observer 1 didReceiveResponse should be called")
         XCTAssertEqual(observer2.didReceiveCount, 1, "Observer 2 didReceiveResponse should be called")
     }
+
+    static let allTests = [
+        ("testObserverIsCalledForRequest", testObserverIsCalledForRequest),
+        ("testEmptyObserversDoesNotCauseIssues", testEmptyObserversDoesNotCauseIssues),
+        ("testMultipleObserversSupported", testMultipleObserversSupported),
+        ("testObserverReceivesLifecycleCallbacks", testObserverReceivesLifecycleCallbacks),
+        ("testObserverLogsFailedRequest", testObserverLogsFailedRequest),
+        ("testMultipleObserversAllReceiveCallbacks", testMultipleObserversAllReceiveCallbacks)
+    ]
 }

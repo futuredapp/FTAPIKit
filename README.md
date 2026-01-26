@@ -175,6 +175,39 @@ struct MyServer: URLServer {
 }
 ```
 
+### Request Configuration at Call Site
+
+For scenarios where you need to configure requests at the call site (rather than in the server),
+use the `RequestConfiguring` protocol. This is useful for:
+
+- Adding authorization headers in an API service layer
+- Per-request configuration that varies by context
+- Keeping server implementations simple and reusable
+
+```swift
+struct AuthorizedConfiguration: RequestConfiguring {
+    let authService: AuthService
+
+    func configure(_ request: inout URLRequest) async throws {
+        let token = try await authService.getValidAccessToken()
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    }
+}
+
+// Usage - configuration is optional with nil default
+let server = HTTPBinServer()
+let authConfig = AuthorizedConfiguration(authService: authService)
+
+// Public endpoint - no configuration needed
+let publicData = try await server.call(response: publicEndpoint)
+
+// Protected endpoint - with configuration
+let protectedData = try await server.call(response: protectedEndpoint, configuring: authConfig)
+```
+
+This pattern keeps the server layer focused on request building while allowing
+the API service layer to handle authentication concerns.
+
 ## Migrating from 1.x to 2.0
 
 FTAPIKit 2.0 is a major rewrite focused on Swift Concurrency. Here are the breaking changes:
