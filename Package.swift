@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 
 import PackageDescription
 
@@ -15,15 +15,11 @@ let package = Package(
             name: "FTAPIKit",
             targets: ["FTAPIKit"])
     ],
-    dependencies: [
-        .package(url: "https://github.com/futuredapp/FTNetworkTracer", from: "0.2.1")
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "FTAPIKit",
-            dependencies: [
-                .product(name: "FTNetworkTracer", package: "FTNetworkTracer")
-            ]
+            dependencies: []
         ),
         .testTarget(
             name: "FTAPIKitTests",
