@@ -6,8 +6,8 @@
 ![Cocoapods platforms](https://img.shields.io/cocoapods/p/FTAPIKit)
 ![License](https://img.shields.io/cocoapods/l/FTAPIKit)
 
-![macOS 11](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-11.yml/badge.svg?branch=main)
-![macOS 10.15](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-10.15.yml/badge.svg?branch=main)
+![macOS 15](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-15.yml/badge.svg?branch=main)
+![macOS 14](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-14.yml/badge.svg?branch=main)
 ![Ubuntu](https://github.com/futuredapp/FTAPIKit/actions/workflows/ubuntu-latest.yml/badge.svg?branch=main)
 
 Declarative and generic REST API framework using Codable.
