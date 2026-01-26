@@ -1,10 +1,10 @@
-// swiftlint:disable nesting
 import Foundation
 #if canImport(Combine)
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 extension Publishers {
+    // swiftlint:disable nesting
     struct Endpoint<R, E: Error>: Publisher {
         typealias Output = R
         typealias Failure = E
@@ -18,6 +18,7 @@ extension Publishers {
             subscriber.receive(subscription: subscription)
         }
     }
+    // swiftlint:enable nesting
 }
 
 #endif
