@@ -16,11 +16,6 @@ struct URLRequestBuilder<S: URLServer> {
     let server: S
     let endpoint: Endpoint
 
-    init(server: S, endpoint: Endpoint) {
-        self.server = server
-        self.endpoint = endpoint
-    }
-
     /// Creates an instance of `URLRequest` corresponding to provided endpoint executed on provided server.
     /// It is safe to execute this method multiple times per instance lifetime.
     /// - Returns: A valid `URLRequest`.

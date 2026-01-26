@@ -1,15 +1,21 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 
 import PackageDescription
 
 let package = Package(
     name: "FTAPIKit",
-    platforms: [.iOS(.v12), .macOS(.v10_10), .tvOS(.v12), .watchOS(.v5)],
+    platforms: [
+        .iOS(.v14),
+        .macOS(.v11),
+        .tvOS(.v14),
+        .watchOS(.v7)
+    ],
     products: [
         .library(
             name: "FTAPIKit",
             targets: ["FTAPIKit"])
     ],
+    dependencies: [],
     targets: [
         .target(
             name: "FTAPIKit",
@@ -17,7 +23,6 @@ let package = Package(
         ),
         .testTarget(
             name: "FTAPIKitTests",
-            dependencies: ["FTAPIKit"]
-        )
+            dependencies: ["FTAPIKit"])
     ]
 )

@@ -43,12 +43,18 @@ public protocol URLServer: Server where Request == URLRequest {
     /// `URLSession` instance, which is used for task execution
     /// - Note: Provided default implementation.
     var urlSession: URLSession { get }
+
+    /// Array of network observers.
+    /// Each observer receives lifecycle callbacks for every request.
+    /// - Note: Provided default implementation returns empty array.
+    var networkObservers: [any NetworkObserver] { get }
 }
 
 public extension URLServer {
     var urlSession: URLSession { .shared }
     var decoding: Decoding { JSONDecoding() }
     var encoding: Encoding { JSONEncoding() }
+    var networkObservers: [any NetworkObserver] { [] }
 
     func buildRequest(endpoint: Endpoint) throws -> URLRequest {
         try buildStandardRequest(endpoint: endpoint)

@@ -29,3 +29,13 @@ struct ErrorThrowingServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
 }
+
+struct HTTPBinServerWithObservers: URLServer {
+    let urlSession = URLSession(configuration: .ephemeral)
+    let baseUri = URL(string: "http://httpbin.org/")!
+    let networkObservers: [any NetworkObserver]
+
+    init(observers: [any NetworkObserver] = []) {
+        self.networkObservers = observers
+    }
+}

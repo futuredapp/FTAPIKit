@@ -1,4 +1,4 @@
-name: macOS 10.15
+name: macOS 14
 
 on:
   push:
@@ -10,10 +10,12 @@ on:
 
 jobs:
   test:
-    runs-on: macos-10.15
+    runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - name: Install SwiftLint
+      run: brew install swiftlint
     - name: Lint
       run: |
         swiftlint --strict

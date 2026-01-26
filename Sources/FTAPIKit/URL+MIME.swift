@@ -30,10 +30,8 @@ extension URL {
 
     #if canImport(CoreServices)
     private func coreServicesMimeType(for fileExtension: String) -> String? {
-        if
-            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension as CFString, nil)?.takeRetainedValue(),
-            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue()
-        {
+        if let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension as CFString, nil)?.takeRetainedValue(),
+           let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() {
             return contentType as String
         }
         return nil
