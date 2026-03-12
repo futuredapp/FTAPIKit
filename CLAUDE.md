@@ -11,26 +11,29 @@ FTAPIKit is a declarative async/await REST API framework for Swift using Swift C
 - Protocol-oriented design with `Server` and `Endpoint` protocols
 - Multiple endpoint types for different use cases (GET, POST, multipart uploads, etc.)
 - Async buildRequest enabling token refresh, dynamic configuration, and rate limiting
+- `RequestConfiguring` protocol for per-request configuration at call site
+- `NetworkObserver` protocol for request lifecycle monitoring (logging, analytics)
 - Swift 6 concurrency safety with Sendable requirements
-- Built-in support for FTNetworkTracer for request logging and tracking
-- Cross-platform support: iOS 15+, macOS 12+, tvOS 15+, watchOS 8+, and Linux
+- Cross-platform support: iOS 17+, macOS 14+, tvOS 17+, watchOS 10+
 
 ## Build and Test Commands
 
 ### Building
 ```bash
+# Use xcodebuild (preferred, avoids toolchain mismatch issues)
+xcodebuild build -scheme FTAPIKit -destination 'platform=macOS'
+
+# Or with Swift CLI
 swift build
 ```
 
 ### Running Tests
 ```bash
-# Run all tests
-swift test
+# Use xcodebuild
+xcodebuild test -scheme FTAPIKit -destination 'platform=macOS'
 
-# For CocoaPods validation
-gem install bundler
-bundle install --jobs 4 --retry 3
-bundle exec pod lib lint --allow-warnings
+# Or with Swift CLI
+swift test
 ```
 
 ### Linting
@@ -45,12 +48,13 @@ The project uses an extensive SwiftLint configuration (`.swiftlint.yml`) with ma
 
 ### Core Protocol Design
 
-The framework is built around two core protocols that mirror physical infrastructure:
+The framework is built around two core protocols:
 
 1. **`Server` Protocol** - Represents a single web service
-   - Defines encoding/decoding strategies
-   - Builds requests from endpoints
-   - Standard implementation: `URLServer` (uses Foundation's URLSession)
+   - Defines `baseUri`, `urlSession`, `encoding`/`decoding`, `networkObservers`
+   - Builds requests from endpoints via `buildRequest(endpoint:) async throws`
+   - Provides default implementations for all properties except `baseUri`
+   - Has `ErrorType` associated type (defaults to `APIError.Standard`)
 
 2. **`Endpoint` Protocol** - Represents access points for resources
    - Defines path, headers, query parameters, and HTTP method
@@ -58,12 +62,10 @@ The framework is built around two core protocols that mirror physical infrastruc
 
 ### Endpoint Type Hierarchy
 
-The framework provides several endpoint protocol variants:
-
 - **`Endpoint`** - Base protocol with empty body (typically for GET requests)
 - **`DataEndpoint`** - Sends raw data in body
-- **`UploadEndpoint`** - Uploads files using InputStream (not available on Linux)
-- **`MultipartEndpoint`** - Combines body parts into multipart request (not available on Linux)
+- **`UploadEndpoint`** - Uploads files using URLSession upload
+- **`MultipartEndpoint`** - Combines body parts into multipart request
 - **`URLEncodedEndpoint`** - Body in URL query format
 - **`RequestEndpoint`** - Has encodable request model (defaults to POST)
 - **`ResponseEndpoint`** - Has decodable response model
@@ -71,40 +73,30 @@ The framework provides several endpoint protocol variants:
 
 ### Key Architectural Patterns
 
-**Protocol-Oriented Design**: Endpoints are designed to be implemented as structs (not enums or classes). This provides:
-- Generated initializers
-- Better long-term sustainability (endpoint info stays localized)
-- No memory overhead for instant usage after creation
+**Single Server Protocol**: The `Server` protocol combines what was previously split between `Server` and `URLServer`. All URLSession-based functionality is built into the single `Server` protocol with default implementations.
 
-**Swift 6 Concurrency Safety**: All `ResponseEndpoint` associated types must conform to `Sendable`:
-- Response models must be `Sendable` for thread-safe async/await usage
-- Compiler enforces this at endpoint definition, providing clear error messages
-- Breaking change from pre-6.0 versions but ensures concurrency correctness
+**Network Observers**: The `NetworkObserver` protocol provides lifecycle callbacks (`willSendRequest`, `didReceiveResponse`, `didFail`) with type-safe context passing. Observer integration uses `AnyObserverToken` for type erasure.
 
-**Encoding/Decoding Abstraction**: The `Encoding` and `Decoding` protocols provide type-erased wrappers around Swift's `Codable` system:
-- `JSONEncoding` / `JSONDecoding` for JSON with customizable encoders/decoders
-- `URLRequestEncoding` extends encoding to configure URLRequest headers
+**Request Configuration**: The `RequestConfiguring` protocol allows per-request async configuration at the call site, separate from server-level `buildRequest`.
 
-**Async Request Building**: The request building flow is fully asynchronous (addressing GitHub issue #105):
-1. `Server.buildRequest(endpoint:)` is declared as `async throws`
-2. Can be overridden to perform async operations (token refresh, config fetch, rate limiting)
-3. Default implementation calls synchronous `buildStandardRequest(endpoint:)` helper
-4. Enables powerful use cases like awaiting token managers or fetching dynamic headers
-5. Specialized handling for multipart, upload, and encoded endpoints
+**Encoding/Decoding**: The `Encoding` protocol includes `configure(request:)` for setting content-type headers (with empty default). Both `Encoding` and `Decoding` require `Sendable`.
+
+**Swift 6 Concurrency Safety**: All `ResponseEndpoint` associated types must conform to `Sendable`.
 
 ### Module Organization
 
 **Source Structure** (`Sources/FTAPIKit/`):
-- Core protocols: `Server.swift`, `Endpoint.swift`, `URLServer.swift`
-- Request building: `URLRequestBuilder.swift`
+- Core protocols: `Server.swift`, `Endpoint.swift`
+- Request building: `URLRequestBuilder.swift`, `RequestConfiguring.swift`
 - Async execution: `URLServer+Async.swift`, `URLServer+Download.swift`
-- Internal helpers: `URLServer+Task.swift` (provides async request building and error helpers)
+- Observers: `NetworkObserver.swift`
 - Utilities: `Coding.swift`, `URLQuery.swift`, `MultipartFormData.swift`, etc.
 - Error handling: `APIError.swift`, `APIError+Standard.swift`
 
 **Test Structure** (`Tests/FTAPIKitTests/`):
-- Test files: `AsyncTests.swift`, `AsyncBuildRequestTests.swift`, `URLQueryTests.swift`
-- Test utilities in `Mockups/`: `Servers.swift`, `Endpoints.swift`, `Models.swift`, `Errors.swift`
+- Uses Swift Testing framework (`@Suite`, `@Test`, `#expect`)
+- Test files: `AsyncTests.swift`, `AsyncBuildRequestTests.swift`, `URLQueryTests.swift`, `NetworkObserverTests.swift`, `RequestConfiguringTests.swift`
+- Test utilities in `Mockups/`: `Servers.swift`, `Endpoints.swift`, `Models.swift`, `Errors.swift`, `MockNetworkObserver.swift`
 
 ### Call Execution Pattern
 
@@ -124,65 +116,35 @@ try await server.call(endpoint: endpoint)
 let fileURL = try await server.download(endpoint: endpoint)
 ```
 
-**Cancellation**: Use Task cancellation for aborting requests:
-```swift
-let task = Task {
-    try await server.call(response: endpoint)
-}
-task.cancel() // Cancels the request
-```
-
-**Breaking Change from 1.x**: Completion handlers and Combine support were removed in 2.0. All API calls use async/await.
-
 ### Error Handling
 
 - `APIError` protocol defines error handling interface
-- Default implementation: `APIError.Standard`
-- Custom error types can be defined via `URLServer.ErrorType` associated type
-- Errors initialized from: `Data?`, `URLResponse?`, `Error?`, and `Decoding`
-
-### Network Tracing
-
-The framework integrates with `FTNetworkTracer` for request logging:
-- `URLServer.networkTracer` property (optional, defaults to nil)
-- Dependency: `https://github.com/futuredapp/FTNetworkTracer`
+- Default implementation: `APIError.Standard` (enum with connection, encoding, decoding, server, client, unhandled cases)
+- Custom error types can be defined via `Server.ErrorType` associated type
 
 ## Package Management
 
-The project supports both **Swift Package Manager** and **CocoaPods**:
-
-- **SPM**: See `Package.swift`
-- **CocoaPods**: See `FTAPIKit.podspec` and `Gemfile`
+The project uses **Swift Package Manager** exclusively. See `Package.swift`.
 
 ### Platform Support
 
 Minimum deployment targets:
-- iOS 15+
-- macOS 12+
-- tvOS 15+
-- watchOS 8+
-- Linux (with FoundationNetworking, limited endpoint types)
-
-Note: `UploadEndpoint` and `MultipartEndpoint` are not available on Linux.
+- iOS 17+
+- macOS 14+
+- tvOS 17+
+- watchOS 10+
 
 ## Testing Approach
 
-Tests use mock servers (HTTPBin-based) defined in `Tests/FTAPIKitTests/Mockups/Servers.swift`:
+Tests use Swift Testing framework and mock servers (HTTPBin-based) defined in `Tests/FTAPIKitTests/Mockups/Servers.swift`:
 - `HTTPBinServer` - Standard test server with async authorization support
 - `NonExistingServer` - For testing error conditions
 - `ErrorThrowingServer` - Custom error type testing
-
-**Test Files:**
-- `AsyncTests.swift` - Tests for basic async/await functionality
-- `AsyncBuildRequestTests.swift` - Demonstrates async buildRequest use cases (token refresh, dynamic headers)
-- `URLQueryTests.swift` - Tests for URL query parameter handling
-
-Mock endpoints demonstrate all endpoint types and are reusable across test suites. All tests use async/await patterns.
+- `HTTPBinServerWithObservers` - Observer integration testing
 
 ## CI/CD
 
-GitHub Actions workflows run on:
-- macOS 14 (Xcode 16.2)
-- Ubuntu Latest
-
-All workflows run: `swiftlint --strict`, `pod lib lint --allow-warnings`, `swift build`, `swift test`
+Single GitHub Actions workflow (`ci.yml`) runs on `macos-latest`:
+- `swiftlint --strict`
+- `swift build`
+- `swift test`
