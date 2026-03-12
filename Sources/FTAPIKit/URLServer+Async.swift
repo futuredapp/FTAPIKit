@@ -1,7 +1,4 @@
 import Foundation
-#if os(Linux)
-import FoundationNetworking
-#endif
 
 public extension URLServer {
 
@@ -73,11 +70,7 @@ public extension URLServer {
         var urlRequest = try await buildRequest(endpoint: endpoint)
         try await configuring?.configure(&urlRequest)
 
-        #if !os(Linux)
         let file = (endpoint as? UploadEndpoint)?.file
-        #else
-        let file: URL? = nil
-        #endif
 
         let (data, response): (Data, URLResponse)
         if let file = file {

@@ -1,9 +1,5 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 public extension URLServer {
 
     /// Downloads a file from the specified endpoint to a temporary location.

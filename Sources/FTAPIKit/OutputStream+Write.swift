@@ -1,25 +1,11 @@
 import Foundation
-#if canImport(os)
 import os
-#endif
-
-#if os(Linux)
-public enum LinuxStreamError: Error {
-    case streamIsInErrorState
-}
-#endif
 
 extension Stream {
     func throwErrorIfStreamHasError() throws {
-        #if os(Linux)
-            if streamStatus == .error {
-                throw LinuxStreamError.streamIsInErrorState
-            }
-        #else
-            if let error = streamError {
-                throw error
-            }
-        #endif
+        if let error = streamError {
+            throw error
+        }
     }
 }
 
@@ -29,14 +15,8 @@ extension OutputStream {
     /// We want our buffer to be as close to page size as possible. Therefore we use
     /// POSIX API to get pagesize. The alternative is using compiler private macro which
     /// is less explicit.
-    ///
-    /// In case os can't be imported from some reason, fallback to 4 KiB size.
     private static func memoryPageSize() -> Int {
-        #if canImport(os)
-        return Int(getpagesize())
-        #else
-        return 4_096
-        #endif
+        Int(getpagesize())
     }
 
     func write(inputStream: InputStream) throws {

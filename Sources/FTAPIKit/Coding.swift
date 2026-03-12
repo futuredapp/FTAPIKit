@@ -1,9 +1,5 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 /// `Encoding` represents Swift encoders and provides network-specific features, such as configuring
 /// the request with correct headers.
 public protocol Encoding {

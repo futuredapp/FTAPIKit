@@ -1,7 +1,4 @@
 import Foundation
-#if os(Linux)
-import FoundationNetworking
-#endif
 
 /// Protocol for configuring URLRequest before execution.
 /// Implementations can perform async operations like token refresh.

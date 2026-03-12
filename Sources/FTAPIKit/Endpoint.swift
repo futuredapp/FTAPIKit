@@ -39,7 +39,6 @@ public protocol DataEndpoint: Endpoint {
     var body: Data { get }
 }
 
-#if !os(Linux)
 /// ``UploadEndpoint`` will send the provided file to the API.
 ///
 /// - Note: If the standard implementation is used, `URLSession.uploadTask` methods will be used.
@@ -58,7 +57,6 @@ public protocol MultipartEndpoint: Endpoint {
     /// List of individual body parts.
     var parts: [MultipartBodyPart] { get }
 }
-#endif
 
 /// The body of the endpoint with the URL query format.
 public protocol URLEncodedEndpoint: Endpoint {

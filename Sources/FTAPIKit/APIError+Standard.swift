@@ -1,9 +1,5 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 /// Standard API error returned when no custom error
 /// was parsed and the response from server
 /// was invalid.

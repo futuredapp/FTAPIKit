@@ -1,9 +1,5 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 /// Protocol for observing network request lifecycle events.
 ///
 /// Implement this protocol to add logging, analytics, or request tracking.
