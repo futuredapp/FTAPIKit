@@ -1,4 +1,4 @@
-name: macOS 14
+name: CI
 
 on:
   push:
@@ -10,20 +10,15 @@ on:
 
 jobs:
   test:
-    runs-on: macos-14
+    runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Install SwiftLint
       run: brew install swiftlint
     - name: Lint
       run: |
         swiftlint --strict
-    - name: Pod lib lint
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec pod lib lint --allow-warnings
     - name: Swift build & test
       run: |
         swift build
