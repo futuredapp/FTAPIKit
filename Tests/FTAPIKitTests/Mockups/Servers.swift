@@ -1,11 +1,7 @@
 import Foundation
 import FTAPIKit
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
-struct HTTPBinServer: URLServer {
+struct HTTPBinServer: Server {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
 
@@ -18,19 +14,19 @@ struct HTTPBinServer: URLServer {
     }
 }
 
-struct NonExistingServer: URLServer {
+struct NonExistingServer: Server {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "https://www.tato-stranka-urcite-neexistuje.cz/")!
 }
 
-struct ErrorThrowingServer: URLServer {
+struct ErrorThrowingServer: Server {
     typealias ErrorType = ThrowawayAPIError
 
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
 }
 
-struct HTTPBinServerWithObservers: URLServer {
+struct HTTPBinServerWithObservers: Server {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
     let networkObservers: [any NetworkObserver]

@@ -1,10 +1,6 @@
 import Foundation
 import FTAPIKit
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 struct MockContext: Sendable {
     let requestId: String
     let startTime: Date
