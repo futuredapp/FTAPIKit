@@ -1,19 +1,10 @@
 disabled_rules:
   - line_length
-  # Combination of SwiftLint 0.43.1 and Xcode 12.5.1
-  # warns about false positives for this rule
-  - empty_xctest_method
-  # Type inference of `await try` methods
-  # does not work well in Xcode 13 Beta
-  - implicit_return
   # Does not work with URL query literals.
   - duplicated_key_in_dictionary_literal
 excluded:
-  - Pods
   - .build
-  - Templates
 opt_in_rules:
-  - anyobject_protocol
   - array_init
   - attributes
   - closure_body_length
@@ -31,7 +22,6 @@ opt_in_rules:
   - empty_collection_literal
   - empty_count
   - empty_string
-  - empty_xctest_method
   - enum_case_associated_values_count
   - explicit_init
   - fallthrough
@@ -80,11 +70,12 @@ opt_in_rules:
   - trailing_closure
   - unneeded_parentheses_in_closure_argument
   - untyped_error_in_catch
-  - unused_declaration
-  - unused_import
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - yoda_condition
+analyzer_rules:
+  - unused_declaration
+  - unused_import
 
 # Rule configurations
 identifier_name:
