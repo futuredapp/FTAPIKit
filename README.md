@@ -2,34 +2,25 @@
 
 # FTAPIKit
 
-![Cocoapods](https://img.shields.io/cocoapods/v/FTAPIKit)
-![Cocoapods platforms](https://img.shields.io/cocoapods/p/FTAPIKit)
-![License](https://img.shields.io/cocoapods/l/FTAPIKit)
+![License](https://img.shields.io/github/license/futuredapp/FTAPIKit)
 
-![macOS 14](https://github.com/futuredapp/FTAPIKit/actions/workflows/macos-14.yml/badge.svg?branch=main)
-![Ubuntu](https://github.com/futuredapp/FTAPIKit/actions/workflows/ubuntu-latest.yml/badge.svg?branch=main)
+![CI](https://github.com/futuredapp/FTAPIKit/actions/workflows/ci.yml/badge.svg?branch=main)
 
 Declarative async/await REST API framework using Swift Concurrency and Codable.
 With standard implementation using URLSession and JSON encoder/decoder.
-Built for Swift 6.1 with full concurrency safety.
+Built for Swift 6.1+ with full concurrency safety.
 
 ## Requirements
 
 - Swift 6.1+
-- iOS 15+, macOS 12+, tvOS 15+, watchOS 8+, or Linux
+- iOS 17+, macOS 14+, tvOS 17+, watchOS 10+
 
 ## Installation
 
-When using Swift Package Manager install using Xcode or add the following line to your dependencies:
+Add the following line to your Swift Package Manager dependencies:
 
 ```swift
 .package(url: "https://github.com/futuredapp/FTAPIKit.git", from: "2.0.0")
-```
-
-When using CocoaPods add following line to your `Podfile`:
-
-```ruby
-pod 'FTAPIKit', '~> 2.0'
 ```
 
 ## Features
@@ -40,14 +31,11 @@ and protocol-oriented programming in Swift.
 
 The framework provides two core protocols reflecting the physical infrastructure:
 
-- `Server` protocol defining single web service.
+- `URLServer` protocol defining single web service with built-in URLSession support.
 - `Endpoint` protocol defining access points for resources.
 
-Combining instances of type conforming to `Server` and `Endpoint` we can build request.
-`URLServer` has convenience method for calling endpoints using `URLSession`.
-If some advanced features are required then we recommend implementing API client.
-This client should encapsulate logic which is not provided by this framework
-(like signing authorized endpoints or conforming to `URLSessionDelegate`).
+Combining instances of type conforming to `URLServer` and `Endpoint` we can build request.
+`URLServer` has convenience methods for calling endpoints using `URLSession`.
 
 ![Architecture](Sources/FTAPIKit/Documentation.docc/Resources/Architecture.png)
 
@@ -62,7 +50,7 @@ are separated in various protocols for convenience.
   Body parts are represented by `MultipartBodyPart` struct and provided to the endpoint
   in an array.
 - `RequestEndpoint` has encodable request which is encoded using encoding
-  of the `Server` instance.
+  of the `URLServer` instance.
 
 ![Endpoint types](Sources/FTAPIKit/Documentation.docc/Resources/Endpoints.svg)
 
@@ -111,7 +99,7 @@ struct HTTPBinServer: URLServer {
 ### Defining endpoints
 
 Most basic `GET` endpoint can be implemented using `Endpoint` protocol,
-all default propertires are inferred.
+all default properties are inferred.
 
 ```swift
 struct GetEndpoint: Endpoint {
@@ -205,86 +193,59 @@ let publicData = try await server.call(response: publicEndpoint)
 let protectedData = try await server.call(response: protectedEndpoint, configuring: authConfig)
 ```
 
-This pattern keeps the server layer focused on request building while allowing
-the API service layer to handle authentication concerns.
+### Network Observers
+
+Monitor request lifecycle with the `NetworkObserver` protocol:
+
+```swift
+final class LoggingObserver: NetworkObserver {
+    func willSendRequest(_ request: URLRequest) -> String {
+        let id = UUID().uuidString
+        print("[\(id)] Sending: \(request.url!)")
+        return id
+    }
+
+    func didReceiveResponse(for request: URLRequest, response: URLResponse?, data: Data?, context: String) {
+        print("[\(context)] Received response")
+    }
+
+    func didFail(request: URLRequest, error: Error, context: String) {
+        print("[\(context)] Failed: \(error)")
+    }
+}
+
+struct MyServer: URLServer {
+    let baseUri = URL(string: "https://api.example.com")!
+    let networkObservers: [any NetworkObserver] = [LoggingObserver()]
+}
+```
 
 ## Migrating from 1.x to 2.0
 
 FTAPIKit 2.0 is a major rewrite focused on Swift Concurrency. Here are the breaking changes:
 
-### Completion Handlers Removed
+### Server Protocol Simplified
 
-**Old (1.x):**
+The separate `Server` and `URLServer` protocols have been merged into a single `URLServer` protocol.
+If you previously conformed to the abstract `Server` protocol directly, switch to `URLServer`.
+
+### Completion Handlers & Combine Removed
+
+All API calls now use async/await exclusively:
+
 ```swift
-server.call(response: endpoint) { result in
-    switch result {
-    case .success(let response):
-        print(response)
-    case .failure(let error):
-        print(error)
-    }
-}
-```
+// Old (1.x)
+server.call(response: endpoint) { result in ... }
+server.publisher(response: endpoint).sink { ... }
 
-**New (2.0):**
-```swift
-Task {
-    do {
-        let response = try await server.call(response: endpoint)
-        print(response)
-    } catch {
-        print(error)
-    }
-}
-```
-
-### Combine Removed
-
-Combine support has been removed in favor of async/await, which provides better performance and cleaner code.
-
-**Old (1.x) - Combine:**
-```swift
-server.publisher(response: endpoint)
-    .sink(
-        receiveCompletion: { completion in
-            // Handle completion
-        },
-        receiveValue: { response in
-            // Handle response
-        }
-    )
-    .store(in: &cancellables)
-```
-
-**New (2.0) - Async/Await:**
-```swift
-let task = Task {
-    do {
-        let response = try await server.call(response: endpoint)
-        // Handle response
-    } catch {
-        // Handle error
-    }
-}
-
-// Cancel if needed
-task.cancel()
+// New (2.0)
+let response = try await server.call(response: endpoint)
 ```
 
 ### buildRequest is Now Async
 
 If you override `buildRequest`, you must mark it as `async`:
 
-**Old (1.x):**
-```swift
-func buildRequest(endpoint: Endpoint) throws -> URLRequest {
-    var request = try buildStandardRequest(endpoint: endpoint)
-    request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-    return request
-}
-```
-
-**New (2.0):**
 ```swift
 func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
     var request = try buildStandardRequest(endpoint: endpoint)
@@ -295,14 +256,23 @@ func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
 
 ### Response Types Must Be Sendable
 
-All `ResponseEndpoint` response types must conform to `Sendable` for Swift 6 concurrency safety:
+All `ResponseEndpoint` response types must conform to `Sendable`:
 
 ```swift
-struct User: Codable, Sendable {  // Add Sendable conformance
+struct User: Codable, Sendable {
     let id: Int
     let name: String
 }
 ```
+
+### CocoaPods & Linux Removed
+
+FTAPIKit 2.0 is distributed exclusively via Swift Package Manager.
+Linux support has been dropped.
+
+### Minimum Platform Versions Raised
+
+- iOS 17+, macOS 14+, tvOS 17+, watchOS 10+
 
 ## Contributors
 

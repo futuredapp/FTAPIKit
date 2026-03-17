@@ -68,7 +68,7 @@ extension OutputStream {
     }
 
     func writeLine(string: String? = nil) throws {
-        if let string = string {
+        if let string {
             try write(string: string)
         }
         try write(string: "\r\n")
