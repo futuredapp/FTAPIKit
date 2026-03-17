@@ -27,17 +27,17 @@ public extension URLServer {
     /// - Parameters:
     ///   - endpoint: The endpoint
     ///   - configuring: Optional request configuration to apply before sending
-    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error.
-    ///   Throws a `DecodingError` directly if response decoding fails (decoding errors are not
-    ///   routed through ``URLServer/ErrorType``).
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   or an error from ``RequestConfiguring/configure(_:)`` if configuration fails.
     /// - Returns: Instance of the required type
     func call<EP: ResponseEndpoint>(response endpoint: EP, configuring: RequestConfiguring? = nil) async throws -> EP.Response {
         let result = try await execute(endpoint: endpoint, configuring: configuring)
         do {
             return try decoding.decode(data: result.data)
         } catch {
-            result.observers.forEach { $0.didFail(request: result.request, error: error) }
-            throw error
+            let thrownError = ErrorType(data: result.data, response: nil, error: error, decoding: decoding) ?? error
+            result.observers.forEach { $0.didFail(request: result.request, error: thrownError) }
+            throw thrownError
         }
     }
 
@@ -57,8 +57,9 @@ public extension URLServer {
         do {
             (localURL, response) = try await urlSession.download(for: urlRequest)
         } catch {
-            observers.forEach { $0.didFail(request: urlRequest, error: error) }
-            throw error
+            let thrownError = ErrorType(data: nil, response: nil, error: error, decoding: decoding) ?? error
+            observers.forEach { $0.didFail(request: urlRequest, error: thrownError) }
+            throw thrownError
         }
 
         observers.forEach { $0.didReceiveResponse(for: urlRequest, response: response, data: nil) }
@@ -93,8 +94,9 @@ private extension URLServer {
                 (data, response) = try await urlSession.data(for: urlRequest)
             }
         } catch {
-            observers.forEach { $0.didFail(request: urlRequest, error: error) }
-            throw error
+            let thrownError = ErrorType(data: nil, response: nil, error: error, decoding: decoding) ?? error
+            observers.forEach { $0.didFail(request: urlRequest, error: thrownError) }
+            throw thrownError
         }
 
         observers.forEach { $0.didReceiveResponse(for: urlRequest, response: response, data: data) }

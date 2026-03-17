@@ -67,8 +67,11 @@ struct ErrorHandlingTests {
         do {
             _ = try await server.call(response: endpoint)
             Issue.record("Expected decoding error")
-        } catch is DecodingError {
-            // Expected: response wrapper doesn't match User directly
+        } catch let error as APIError.Standard {
+            guard case .decoding = error else {
+                Issue.record("Expected .decoding error, got \(error)")
+                return
+            }
         } catch {
             Issue.record("Unexpected error type: \(type(of: error))")
         }
