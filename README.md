@@ -13,7 +13,7 @@ Built for Swift 6.1+ with full concurrency safety.
 ## Requirements
 
 - Swift 6.1+
-- iOS 17+, macOS 14+, tvOS 17+, watchOS 10+
+- iOS 15+, macOS 12+, tvOS 15+, watchOS 8+
 
 ## Installation
 
@@ -219,60 +219,6 @@ struct MyServer: URLServer {
     let networkObservers: [any NetworkObserver] = [LoggingObserver()]
 }
 ```
-
-## Migrating from 1.x to 2.0
-
-FTAPIKit 2.0 is a major rewrite focused on Swift Concurrency. Here are the breaking changes:
-
-### Server Protocol Simplified
-
-The separate `Server` and `URLServer` protocols have been merged into a single `URLServer` protocol.
-If you previously conformed to the abstract `Server` protocol directly, switch to `URLServer`.
-
-### Completion Handlers & Combine Removed
-
-All API calls now use async/await exclusively:
-
-```swift
-// Old (1.x)
-server.call(response: endpoint) { result in ... }
-server.publisher(response: endpoint).sink { ... }
-
-// New (2.0)
-let response = try await server.call(response: endpoint)
-```
-
-### buildRequest is Now Async
-
-If you override `buildRequest`, you must mark it as `async`:
-
-```swift
-func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
-    var request = try buildStandardRequest(endpoint: endpoint)
-    request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-    return request
-}
-```
-
-### Response Types Must Be Sendable
-
-All `ResponseEndpoint` response types must conform to `Sendable`:
-
-```swift
-struct User: Codable, Sendable {
-    let id: Int
-    let name: String
-}
-```
-
-### CocoaPods & Linux Removed
-
-FTAPIKit 2.0 is distributed exclusively via Swift Package Manager.
-Linux support has been dropped.
-
-### Minimum Platform Versions Raised
-
-- iOS 17+, macOS 14+, tvOS 17+, watchOS 10+
 
 ## Contributors
 

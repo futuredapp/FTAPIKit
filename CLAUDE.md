@@ -14,7 +14,7 @@ FTAPIKit is a declarative async/await REST API framework for Swift using Swift C
 - `RequestConfiguring` protocol for per-request configuration at call site
 - `NetworkObserver` protocol for request lifecycle monitoring (logging, analytics)
 - Swift 6 concurrency safety with Sendable requirements
-- Cross-platform support: iOS 17+, macOS 14+, tvOS 17+, watchOS 10+
+- Cross-platform support: iOS 15+, macOS 12+, tvOS 15+, watchOS 8+
 
 ## Build and Test Commands
 
@@ -129,10 +129,10 @@ The project uses **Swift Package Manager** exclusively. See `Package.swift`.
 ### Platform Support
 
 Minimum deployment targets:
-- iOS 17+
-- macOS 14+
-- tvOS 17+
-- watchOS 10+
+- iOS 15+
+- macOS 12+
+- tvOS 15+
+- watchOS 8+
 
 ## Testing Approach
 
