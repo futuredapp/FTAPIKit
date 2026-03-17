@@ -30,7 +30,7 @@ struct AsyncBuildRequestTests {
 
 // MARK: - Mock Servers
 
-private struct DynamicHeaderServer: Server {
+private struct DynamicHeaderServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
 
@@ -48,7 +48,7 @@ private struct DynamicHeaderServer: Server {
     }
 }
 
-private struct TokenRefreshServer: Server {
+private struct TokenRefreshServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
     let tokenManager: MockTokenManager

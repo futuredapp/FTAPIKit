@@ -8,7 +8,7 @@ FTAPIKit is a declarative async/await REST API framework for Swift using Swift C
 
 **Key Features:**
 - Declarative async/await API for defining web services
-- Protocol-oriented design with `Server` and `Endpoint` protocols
+- Protocol-oriented design with `URLServer` and `Endpoint` protocols
 - Multiple endpoint types for different use cases (GET, POST, multipart uploads, etc.)
 - Async buildRequest enabling token refresh, dynamic configuration, and rate limiting
 - `RequestConfiguring` protocol for per-request configuration at call site
@@ -42,7 +42,7 @@ swift test
 swiftlint --strict
 ```
 
-The project uses an extensive SwiftLint configuration (`.swiftlint.yml`) with many opt-in rules enabled. Linting must pass with `--strict` flag for CI to succeed.
+The project uses an extensive SwiftLint configuration (`.swiftlint.yml`) with many opt-in rules enabled. Linting must pass with `--strict` flag with zero violations before committing any code.
 
 ## Architecture
 
@@ -50,7 +50,7 @@ The project uses an extensive SwiftLint configuration (`.swiftlint.yml`) with ma
 
 The framework is built around two core protocols:
 
-1. **`Server` Protocol** - Represents a single web service
+1. **`URLServer` Protocol** - Represents a single web service
    - Defines `baseUri`, `urlSession`, `encoding`/`decoding`, `networkObservers`
    - Builds requests from endpoints via `buildRequest(endpoint:) async throws`
    - Provides default implementations for all properties except `baseUri`
@@ -73,7 +73,7 @@ The framework is built around two core protocols:
 
 ### Key Architectural Patterns
 
-**Single Server Protocol**: The `Server` protocol combines what was previously split between `Server` and `URLServer`. All URLSession-based functionality is built into the single `Server` protocol with default implementations.
+**URLServer Protocol**: The `URLServer` protocol provides all URLSession-based functionality with default implementations. Only `baseUri` must be provided by conforming types.
 
 **Network Observers**: The `NetworkObserver` protocol provides lifecycle callbacks (`willSendRequest`, `didReceiveResponse`, `didFail`) with type-safe context passing. Observer integration uses `AnyObserverToken` for type erasure.
 
@@ -120,7 +120,7 @@ let fileURL = try await server.download(endpoint: endpoint)
 
 - `APIError` protocol defines error handling interface
 - Default implementation: `APIError.Standard` (enum with connection, encoding, decoding, server, client, unhandled cases)
-- Custom error types can be defined via `Server.ErrorType` associated type
+- Custom error types can be defined via `URLServer.ErrorType` associated type
 
 ## Package Management
 
