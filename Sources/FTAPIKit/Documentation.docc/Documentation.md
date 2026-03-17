@@ -31,6 +31,7 @@ Built for Swift 6.1+ with full concurrency safety.
 ### Request Configuration
 
 - ``RequestConfiguring``
+- ``CompositeRequestConfiguring``
 
 ### Endpoint configuration
 

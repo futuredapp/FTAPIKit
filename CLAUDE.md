@@ -75,7 +75,7 @@ The framework is built around two core protocols:
 
 **URLServer Protocol**: The `URLServer` protocol provides all URLSession-based functionality with default implementations. Only `baseUri` must be provided by conforming types.
 
-**Network Observers**: The `NetworkObserver` protocol provides lifecycle callbacks (`willSendRequest`, `didReceiveResponse`, `didFail`) with type-safe context passing. Observer integration uses `AnyObserverToken` for type erasure.
+**Network Observers**: The `NetworkObserver` protocol provides lifecycle callbacks (`willSendRequest`, `didReceiveResponse`, `didFail`) with type-safe context passing. Observer integration uses `BoundObserverContext` (private) for type erasure.
 
 **Request Configuration**: The `RequestConfiguring` protocol allows per-request async configuration at the call site, separate from server-level `buildRequest`.
 
@@ -95,8 +95,8 @@ The framework is built around two core protocols:
 
 **Test Structure** (`Tests/FTAPIKitTests/`):
 - Uses Swift Testing framework (`@Suite`, `@Test`, `#expect`)
-- Test files: `AsyncTests.swift`, `AsyncBuildRequestTests.swift`, `URLQueryTests.swift`, `NetworkObserverTests.swift`, `RequestConfiguringTests.swift`
-- Test utilities in `Mockups/`: `Servers.swift`, `Endpoints.swift`, `Models.swift`, `Errors.swift`, `MockNetworkObserver.swift`
+- Test files: `AsyncTests.swift`, `AsyncBuildRequestTests.swift`, `URLQueryTests.swift`, `NetworkObserverTests.swift`, `RequestConfiguringTests.swift`, `EndpointTypeTests.swift`, `ErrorHandlingTests.swift`
+- Test utilities in `Mockups/`: `Servers.swift`, `Endpoints.swift`, `Models.swift`, `Errors.swift`, `MockNetworkObserver.swift`, `MockTokenManager.swift`, `HTTPBinResponse.swift`
 
 ### Call Execution Pattern
 
@@ -120,6 +120,8 @@ let fileURL = try await server.download(endpoint: endpoint)
 
 - `APIError` protocol defines error handling interface
 - Default implementation: `APIError.Standard` (enum with connection, encoding, decoding, server, client, unhandled cases)
+- Network errors (`URLError`) and decoding errors are routed through `ErrorType` for consistent error handling
+- Encoding errors (from `buildStandardRequest`) propagate directly as `EncodingError` since they occur before the network request
 - Custom error types can be defined via `URLServer.ErrorType` associated type
 
 ## Package Management
