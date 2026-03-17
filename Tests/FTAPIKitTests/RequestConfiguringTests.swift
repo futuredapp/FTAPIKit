@@ -62,6 +62,23 @@ struct RequestConfiguringTests {
         let server = HTTPBinServer()
         try await server.call(endpoint: NoContentEndpoint(), configuring: config)
     }
+
+    @Test
+    func configuringOverridesBuildRequest() async throws {
+        let server = UserAgentServer()
+        let config = HeaderAddingConfiguration(headerName: "User-Agent", headerValue: "ConfigOverride/1.0")
+        let data = try await server.call(data: GetEndpoint(), configuring: config)
+        let response = try JSONDecoder().decode(HTTPBinHeadersResponse.self, from: data)
+        #expect(response.headers["User-Agent"] == "ConfigOverride/1.0")
+    }
+
+    @Test
+    func downloadWithConfiguration() async throws {
+        let config = HeaderAddingConfiguration(headerName: "X-Download-Id", headerValue: "dl-456")
+        let server = HTTPBinServer()
+        let url = try await server.download(endpoint: ImageEndpoint(), configuring: config)
+        #expect(FileManager.default.fileExists(atPath: url.path))
+    }
 }
 
 // MARK: - Test Configurations
@@ -90,18 +107,37 @@ private struct AsyncTokenConfiguration: RequestConfiguring {
     }
 }
 
+// MARK: - Test Server
+
+/// Server that sets User-Agent in buildRequest, to verify configuring can override it.
+private struct UserAgentServer: URLServer {
+    let urlSession = URLSession(configuration: .ephemeral)
+    let baseUri = URL(string: "http://httpbin.org/")!
+
+    func buildRequest(endpoint: Endpoint) async throws -> URLRequest {
+        var request = try buildStandardRequest(endpoint: endpoint)
+        request.setValue("BuildRequest/1.0", forHTTPHeaderField: "User-Agent")
+        return request
+    }
+}
+
 // MARK: - Test Helpers
 
 private enum ConfigurationError: Error, Equatable {
     case tokenRefreshFailed
 }
 
-private final class MockAsyncTokenManager: Sendable {
-    nonisolated(unsafe) var refreshCalled = false
+private final class MockAsyncTokenManager: @unchecked Sendable {
+    private let lock = NSLock()
+    private var _refreshCalled = false
+
+    var refreshCalled: Bool {
+        lock.withLock { _refreshCalled }
+    }
 
     func getValidToken() async -> String {
         try? await Task.sleep(nanoseconds: 10_000_000)
-        refreshCalled = true
+        lock.withLock { _refreshCalled = true }
         return "refreshed-token"
     }
 }

@@ -7,23 +7,31 @@ struct MockContext: Sendable {
 }
 
 final class MockNetworkObserver: NetworkObserver, @unchecked Sendable {
-    var willSendCount = 0
-    var didReceiveCount = 0
-    var didFailCount = 0
-    var lastRequestId: String?
+    private let lock = NSLock()
+    private var _willSendCount = 0
+    private var _didReceiveCount = 0
+    private var _didFailCount = 0
+    private var _lastRequestId: String?
+
+    var willSendCount: Int { lock.withLock { _willSendCount } }
+    var didReceiveCount: Int { lock.withLock { _didReceiveCount } }
+    var didFailCount: Int { lock.withLock { _didFailCount } }
+    var lastRequestId: String? { lock.withLock { _lastRequestId } }
 
     func willSendRequest(_ request: URLRequest) -> MockContext {
-        willSendCount += 1
         let context = MockContext(requestId: UUID().uuidString, startTime: Date())
-        lastRequestId = context.requestId
+        lock.withLock {
+            _willSendCount += 1
+            _lastRequestId = context.requestId
+        }
         return context
     }
 
     func didReceiveResponse(for request: URLRequest, response: URLResponse?, data: Data?, context: MockContext) {
-        didReceiveCount += 1
+        lock.withLock { _didReceiveCount += 1 }
     }
 
     func didFail(request: URLRequest, error: Error, context: MockContext) {
-        didFailCount += 1
+        lock.withLock { _didFailCount += 1 }
     }
 }

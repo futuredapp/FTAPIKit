@@ -1,4 +1,4 @@
-<img align="right" alt="FTAPIKit logo" src="Sources/FTAPIKit/Documentation.docc/Resources/FTAPIKit.svg">
+<img align="right" alt="FTAPIKit logo" src="Sources/FTAPIKit/Documentation.docc/Resources/FTAPIKit.svg" height="65">
 
 # FTAPIKit
 
@@ -45,10 +45,11 @@ are separated in various protocols for convenience.
 
 - `Endpoint` protocol has empty body. Typically used in `GET` endpoints.
 - `DataEndpoint` sends provided data in body.
-- `UploadEndpoint` uploads file using `InputStream`.
+- `UploadEndpoint` uploads file from a URL using `URLSession` upload task.
 - `MultipartEndpoint` combines body parts into `InputStream` and sends them to server.
   Body parts are represented by `MultipartBodyPart` struct and provided to the endpoint
   in an array.
+- `URLEncodedEndpoint` sends body in URL query format.
 - `RequestEndpoint` has encodable request which is encoded using encoding
   of the `URLServer` instance.
 
@@ -127,14 +128,7 @@ When we have server and endpoint defined we can call the web service using async
 let server = HTTPBinServer()
 let endpoint = UpdateUserEndpoint(request: user)
 
-Task {
-    do {
-        let updatedUser = try await server.call(response: endpoint)
-        // Handle success
-    } catch {
-        // Handle error
-    }
-}
+let updatedUser = try await server.call(response: endpoint)
 ```
 
 ### Async buildRequest
@@ -217,6 +211,38 @@ final class LoggingObserver: NetworkObserver {
 struct MyServer: URLServer {
     let baseUri = URL(string: "https://api.example.com")!
     let networkObservers: [any NetworkObserver] = [LoggingObserver()]
+}
+```
+
+### Error Handling
+
+The framework uses the `APIError` protocol for error handling. The default implementation `APIError.Standard` covers common cases:
+
+```swift
+do {
+    let response = try await server.call(response: endpoint)
+} catch let error as APIError.Standard {
+    switch error {
+    case .connection(let urlError):
+        // Network connectivity issue
+    case .client(let statusCode, _, _):
+        // 4xx client error
+    case .server(let statusCode, _, _):
+        // 5xx server error
+    case .decoding(let decodingError):
+        // Response parsing failed
+    default:
+        break
+    }
+}
+```
+
+For custom error parsing, define a type conforming to `APIError` and set it as the `ErrorType` on your server:
+
+```swift
+struct MyServer: URLServer {
+    typealias ErrorType = MyCustomError
+    let baseUri = URL(string: "https://api.example.com")!
 }
 ```
 

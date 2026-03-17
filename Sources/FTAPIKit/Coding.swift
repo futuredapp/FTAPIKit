@@ -8,6 +8,9 @@ public protocol Encoding: Sendable {
     func encode<T: Encodable>(_ object: T) throws -> Data
 
     /// Allows modification of `URLRequest`. Enables things like adding `Content-Type` header etc.
+    ///
+    /// Default implementation is a no-op. Custom `Encoding` types should override this to set
+    /// the appropriate `Content-Type` header. See ``JSONEncoding`` for an example.
     /// - Parameter request: Request which can be modified.
     func configure(request: inout URLRequest) throws
 }
@@ -21,7 +24,7 @@ public protocol Decoding: Sendable {
     func decode<T: Decodable>(data: Data) throws -> T
 }
 
-/// Type-erased JSON encoder for use with types conforming to ``Server`` protocol.
+/// Type-erased JSON encoder for use with types conforming to ``URLServer`` protocol.
 public struct JSONEncoding: Encoding {
     private let encoder: JSONEncoder
 
@@ -48,7 +51,7 @@ public struct JSONEncoding: Encoding {
     }
 }
 
-/// Type-erased JSON decoder for use with types conforming to ``Server`` protocol.
+/// Type-erased JSON decoder for use with types conforming to ``URLServer`` protocol.
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 

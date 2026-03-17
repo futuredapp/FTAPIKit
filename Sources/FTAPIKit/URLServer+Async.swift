@@ -51,10 +51,7 @@ private extension URLServer {
     /// Core execution method that builds the request, notifies observers, performs the network call,
     /// and handles errors.
     func execute(endpoint: Endpoint, configuring: RequestConfiguring?) async throws -> ExecuteResult {
-        var urlRequest = try await buildRequest(endpoint: endpoint)
-        try await configuring?.configure(&urlRequest)
-
-        let observers = networkObservers.map { AnyObserverToken(observer: $0, request: urlRequest) }
+        let (urlRequest, observers) = try await prepareRequest(endpoint: endpoint, configuring: configuring)
 
         let file = (endpoint as? UploadEndpoint)?.file
 
@@ -66,19 +63,43 @@ private extension URLServer {
                 (data, response) = try await urlSession.data(for: urlRequest)
             }
         } catch {
-            observers.forEach { $0.didReceiveResponse(for: urlRequest, response: nil, data: nil) }
             observers.forEach { $0.didFail(request: urlRequest, error: error) }
             throw error
         }
 
         observers.forEach { $0.didReceiveResponse(for: urlRequest, response: response, data: data) }
-
-        if let error = ErrorType(data: data, response: response, error: nil, decoding: decoding) {
-            observers.forEach { $0.didFail(request: urlRequest, error: error) }
-            throw error
-        }
+        try checkForError(data: data, response: response, request: urlRequest, observers: observers)
 
         return ExecuteResult(data: data, request: urlRequest, observers: observers)
+    }
+}
+
+// MARK: - Shared helpers
+
+extension URLServer {
+
+    /// Builds the URLRequest for the endpoint, applies optional configuration, and creates observer tokens.
+    func prepareRequest(
+        endpoint: Endpoint,
+        configuring: RequestConfiguring?
+    ) async throws -> (URLRequest, [AnyObserverToken]) {
+        var urlRequest = try await buildRequest(endpoint: endpoint)
+        try await configuring?.configure(&urlRequest)
+        let observers = networkObservers.map { AnyObserverToken(observer: $0, request: urlRequest) }
+        return (urlRequest, observers)
+    }
+
+    /// Checks the response for API errors and notifies observers on failure.
+    func checkForError(
+        data: Data?,
+        response: URLResponse,
+        request: URLRequest,
+        observers: [AnyObserverToken]
+    ) throws {
+        if let error = ErrorType(data: data, response: response, error: nil, decoding: decoding) {
+            observers.forEach { $0.didFail(request: request, error: error) }
+            throw error
+        }
     }
 }
 

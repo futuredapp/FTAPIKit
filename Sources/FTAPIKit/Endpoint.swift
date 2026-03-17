@@ -4,7 +4,7 @@ import Foundation
 /// data and parameters which are sent to it.
 ///
 /// Recommended conformance of this protocol is implemented using `struct`. It is
-/// of course possible using `enum` or `class`. Endpoints are are not designed
+/// of course possible using `enum` or `class`. Endpoints are not designed
 /// to be referenced and used instantly after creation, so no memory usage is required.
 /// The case for not using enums is long-term sustainability. Enums tend to have many
 /// cases and information about one endpoint is spreaded all over the files. Also,
@@ -64,7 +64,7 @@ public protocol URLEncodedEndpoint: Endpoint {
 }
 
 /// An abstract representation of endpoint, body of which is represented by Swift encodable type. It serves as an
-/// abstraction between the ``Server`` protocol and more specific ``Endpoint`` conforming protocols.
+/// abstraction between the ``URLServer`` protocol and more specific ``Endpoint`` conforming protocols.
 /// Do not use this protocol to represent an encodable endpoint, use ``RequestEndpoint`` instead.
 public protocol EncodableEndpoint: Endpoint {
 
@@ -78,7 +78,7 @@ public protocol EncodableEndpoint: Endpoint {
 /// for automatic deserialization.
 public protocol ResponseEndpoint: Endpoint {
     /// Associated type describing the return type conforming to `Decodable`
-    /// protocol. This is only a phantom-type used by `APIAdapter`
+    /// protocol. This is only a phantom-type used by ``URLServer``
     /// for automatic decoding/deserialization of API results.
     associatedtype Response: Decodable & Sendable
 }

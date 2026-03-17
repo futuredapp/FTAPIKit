@@ -11,7 +11,7 @@ import Foundation
 /// In case that the requests need to cooperate with other services, like OAuth, override the
 /// default implementation of `buildRequest`, use `buildStandardRequest(endpoint:)` within
 /// your new implementation, and use the `URLRequest` as a baseline.
-public protocol URLServer {
+public protocol URLServer: Sendable {
     /// Error type which is initialized during the request execution.
     associatedtype ErrorType: APIError = APIError.Standard
 
