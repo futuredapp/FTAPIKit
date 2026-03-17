@@ -4,6 +4,7 @@ disabled_rules:
   - duplicated_key_in_dictionary_literal
 excluded:
   - .build
+  - Templates
 opt_in_rules:
   - array_init
   - attributes
