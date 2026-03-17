@@ -17,4 +17,8 @@ struct File {
     func write() throws {
         try data.write(to: url)
     }
+
+    func cleanup() {
+        try? FileManager.default.removeItem(at: url)
+    }
 }

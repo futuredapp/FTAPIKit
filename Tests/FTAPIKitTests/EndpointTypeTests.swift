@@ -1,7 +1,6 @@
 import Foundation
+import FTAPIKit
 import Testing
-
-@testable import FTAPIKit
 
 /// Tests for various endpoint types, ported from the deleted ResponseTests.swift
 @Suite
@@ -36,6 +35,7 @@ struct EndpointTypeTests {
         let server = HTTPBinServer()
         let file = File()
         try file.write()
+        defer { file.cleanup() }
         let endpoint = try TestMultipartEndpoint(file: file)
         let data = try await server.call(data: endpoint)
         #expect(!data.isEmpty)
@@ -46,6 +46,7 @@ struct EndpointTypeTests {
         let server = HTTPBinServer()
         let file = File()
         try file.write()
+        defer { file.cleanup() }
         let endpoint = TestUploadEndpoint(file: file)
         let data = try await server.call(data: endpoint)
         #expect(!data.isEmpty)

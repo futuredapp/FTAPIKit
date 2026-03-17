@@ -1,7 +1,6 @@
 import Foundation
+import FTAPIKit
 import Testing
-
-@testable import FTAPIKit
 
 /// Tests demonstrating async buildRequest functionality addressing GitHub issue #105
 @Suite
@@ -11,7 +10,7 @@ struct AsyncBuildRequestTests {
     func asyncBuildRequestWithDynamicHeaders() async throws {
         let server = DynamicHeaderServer()
         let data = try await server.call(data: GetEndpoint())
-        let response = try JSONDecoder().decode(HTTPBinResponse.self, from: data)
+        let response = try JSONDecoder().decode(HTTPBinHeadersResponse.self, from: data)
         #expect(response.headers["X-App-Version"] == "2.0.0")
         #expect(response.headers["X-Device-Id"] == "test-device-123")
     }
@@ -22,7 +21,7 @@ struct AsyncBuildRequestTests {
         let server = TokenRefreshServer(tokenManager: tokenManager)
         tokenManager.currentToken = "expired-token"
         let data = try await server.call(data: GetEndpoint())
-        let response = try JSONDecoder().decode(HTTPBinResponse.self, from: data)
+        let response = try JSONDecoder().decode(HTTPBinHeadersResponse.self, from: data)
         #expect(response.headers["Authorization"] == "Bearer refreshed-token-456")
         #expect(tokenManager.refreshCalled)
     }
@@ -66,41 +65,4 @@ private struct TokenRefreshServer: URLServer {
 private struct AppConfiguration {
     let appVersion: String
     let deviceId: String
-}
-
-private final class MockTokenManager: @unchecked Sendable {
-    private let lock = NSLock()
-    private var _currentToken: String = "initial-token"
-    private var _refreshCalled = false
-
-    var currentToken: String {
-        get { lock.withLock { _currentToken } }
-        set { lock.withLock { _currentToken = newValue } }
-    }
-
-    var refreshCalled: Bool {
-        lock.withLock { _refreshCalled }
-    }
-
-    func refreshIfNeeded() async {
-        try? await Task.sleep(nanoseconds: 10_000_000)
-        lock.withLock {
-            _refreshCalled = true
-            _currentToken = "refreshed-token-456"
-        }
-    }
-}
-
-private struct HTTPBinResponse: Decodable, Sendable {
-    let headers: [String: String]
-
-    private enum CodingKeys: String, CodingKey {
-        case headers
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let rawHeaders = try container.decode([String: String].self, forKey: .headers)
-        self.headers = rawHeaders
-    }
 }

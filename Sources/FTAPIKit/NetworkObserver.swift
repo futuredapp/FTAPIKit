@@ -12,7 +12,8 @@ import Foundation
 /// 3. `didFail` is called additionally if the request processing fails (network, HTTP status, or decoding error)
 ///
 /// - Note: Observers are strongly retained for the duration of a request to ensure lifecycle callbacks
-///   are always delivered.
+///   are always delivered. Observers must not hold strong references back to the server to avoid
+///   retain cycles.
 public protocol NetworkObserver: AnyObject, Sendable {
     associatedtype Context: Sendable
 

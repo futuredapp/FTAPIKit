@@ -11,6 +11,10 @@ struct MultipartFormData {
         self.boundary = boundary
     }
 
+    /// Returns the size of the temporary file containing the multipart body.
+    ///
+    /// - Important: Must be called after ``inputStream()`` which writes the file.
+    ///   Returns `nil` if the file does not exist yet.
     var contentLength: Int64? {
         (try? FileManager.default.attributesOfItem(atPath: temporaryUrl.path)[.size] as? Int64)?.flatMap { $0 }
     }

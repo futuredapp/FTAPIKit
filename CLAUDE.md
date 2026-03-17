@@ -88,7 +88,7 @@ The framework is built around two core protocols:
 **Source Structure** (`Sources/FTAPIKit/`):
 - Core protocols: `URLServer.swift`, `Endpoint.swift`
 - Request building: `URLRequestBuilder.swift`, `RequestConfiguring.swift`
-- Async execution: `URLServer+Async.swift`, `URLServer+Download.swift`
+- Async execution: `URLServer+Async.swift` (includes download)
 - Observers: `NetworkObserver.swift`
 - Utilities: `Coding.swift`, `URLQuery.swift`, `MultipartFormData.swift`, etc.
 - Error handling: `APIError.swift`, `APIError+Standard.swift`

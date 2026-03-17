@@ -1,7 +1,6 @@
 import Foundation
+import FTAPIKit
 import Testing
-
-@testable import FTAPIKit
 
 @Suite
 struct AsyncTests {

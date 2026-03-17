@@ -1,7 +1,6 @@
 import Foundation
+import FTAPIKit
 import Testing
-
-@testable import FTAPIKit
 
 /// Tests for RequestConfiguring protocol functionality
 @Suite
@@ -39,7 +38,7 @@ struct RequestConfiguringTests {
 
     @Test
     func asyncOperationsInConfigure() async throws {
-        let tokenManager = MockAsyncTokenManager()
+        let tokenManager = MockTokenManager()
         let config = AsyncTokenConfiguration(tokenManager: tokenManager)
         let server = HTTPBinServer()
         let data = try await server.call(data: GetEndpoint(), configuring: config)
@@ -73,6 +72,29 @@ struct RequestConfiguringTests {
     }
 
     @Test
+    func compositeConfiguration() async throws {
+        let config1 = HeaderAddingConfiguration(headerName: "X-First", headerValue: "one")
+        let config2 = HeaderAddingConfiguration(headerName: "X-Second", headerValue: "two")
+        let composite = CompositeRequestConfiguring([config1, config2])
+        let server = HTTPBinServer()
+        let data = try await server.call(data: GetEndpoint(), configuring: composite)
+        let response = try JSONDecoder().decode(HTTPBinHeadersResponse.self, from: data)
+        #expect(response.headers["X-First"] == "one")
+        #expect(response.headers["X-Second"] == "two")
+    }
+
+    @Test
+    func compositeConfigurationOrderMatters() async throws {
+        let first = HeaderAddingConfiguration(headerName: "X-Order", headerValue: "first")
+        let second = HeaderAddingConfiguration(headerName: "X-Order", headerValue: "second")
+        let composite = CompositeRequestConfiguring([first, second])
+        let server = HTTPBinServer()
+        let data = try await server.call(data: GetEndpoint(), configuring: composite)
+        let response = try JSONDecoder().decode(HTTPBinHeadersResponse.self, from: data)
+        #expect(response.headers["X-Order"] == "second")
+    }
+
+    @Test
     func downloadWithConfiguration() async throws {
         let config = HeaderAddingConfiguration(headerName: "X-Download-Id", headerValue: "dl-456")
         let server = HTTPBinServer()
@@ -99,7 +121,7 @@ private struct FailingConfiguration: RequestConfiguring {
 }
 
 private struct AsyncTokenConfiguration: RequestConfiguring {
-    let tokenManager: MockAsyncTokenManager
+    let tokenManager: MockTokenManager
 
     func configure(_ request: inout URLRequest) async throws {
         let token = await tokenManager.getValidToken()
@@ -125,23 +147,4 @@ private struct UserAgentServer: URLServer {
 
 private enum ConfigurationError: Error, Equatable {
     case tokenRefreshFailed
-}
-
-private final class MockAsyncTokenManager: @unchecked Sendable {
-    private let lock = NSLock()
-    private var _refreshCalled = false
-
-    var refreshCalled: Bool {
-        lock.withLock { _refreshCalled }
-    }
-
-    func getValidToken() async -> String {
-        try? await Task.sleep(nanoseconds: 10_000_000)
-        lock.withLock { _refreshCalled = true }
-        return "refreshed-token"
-    }
-}
-
-private struct HTTPBinHeadersResponse: Decodable, Sendable {
-    let headers: [String: String]
 }

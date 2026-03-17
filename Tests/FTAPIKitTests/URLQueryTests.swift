@@ -39,6 +39,12 @@ struct URLQueryTests {
     }
 
     @Test
+    func emptyQueryReturnsNil() {
+        let query = URLQuery()
+        #expect(query.percentEncoded == nil)
+    }
+
+    @Test
     func emptyQueryItemValues() {
         let query = URLQuery(items: [
             URLQueryItem(name: "a", value: nil),

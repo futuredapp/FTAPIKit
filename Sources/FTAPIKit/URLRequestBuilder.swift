@@ -27,6 +27,10 @@ struct URLRequestBuilder<S: URLServer> {
         return request
     }
 
+    /// Populates the request body based on the endpoint's protocol conformance.
+    ///
+    /// - Important: Case ordering matters. If an endpoint conforms to multiple body-providing
+    ///   protocols (e.g., both `DataEndpoint` and `EncodableEndpoint`), the first match wins.
     private func buildBody(to request: inout URLRequest) throws {
         switch endpoint {
         case let endpoint as DataEndpoint:

@@ -1,7 +1,6 @@
 import Foundation
+import FTAPIKit
 import Testing
-
-@testable import FTAPIKit
 
 /// Tests for error handling, ported from the deleted ResponseTests.swift
 @Suite
@@ -20,6 +19,8 @@ struct ErrorHandlingTests {
                 return
             }
             #expect(statusCode == 404)
+        } catch {
+            Issue.record("Unexpected error type: \(type(of: error))")
         }
     }
 
@@ -36,6 +37,8 @@ struct ErrorHandlingTests {
                 return
             }
             #expect(statusCode == 500)
+        } catch {
+            Issue.record("Unexpected error type: \(type(of: error))")
         }
     }
 
@@ -51,6 +54,8 @@ struct ErrorHandlingTests {
                 Issue.record("Expected .connection error, got \(error)")
                 return
             }
+        } catch {
+            Issue.record("Unexpected error type: \(type(of: error))")
         }
     }
 
@@ -64,6 +69,8 @@ struct ErrorHandlingTests {
             Issue.record("Expected decoding error")
         } catch is DecodingError {
             // Expected: response wrapper doesn't match User directly
+        } catch {
+            Issue.record("Unexpected error type: \(type(of: error))")
         }
     }
 
@@ -76,6 +83,8 @@ struct ErrorHandlingTests {
             Issue.record("Expected ThrowawayAPIError")
         } catch is ThrowawayAPIError {
             // Expected
+        } catch {
+            Issue.record("Unexpected error type: \(type(of: error))")
         }
     }
 
@@ -90,7 +99,7 @@ struct ErrorHandlingTests {
     func authorization() async throws {
         let server = HTTPBinServer()
         let endpoint = AuthorizedEndpoint()
-        let data = try await server.call(data: endpoint)
+        let data = try await server.call(data: endpoint, configuring: BearerTokenConfiguration())
         #expect(!data.isEmpty)
     }
 }
