@@ -62,11 +62,11 @@ The framework is built around two core protocols:
 
 ### Endpoint Type Hierarchy
 
-- **`Endpoint`** - Base protocol with empty body (typically for GET requests)
-- **`DataEndpoint`** - Sends raw data in body
-- **`UploadEndpoint`** - Uploads files using URLSession upload
-- **`MultipartEndpoint`** - Combines body parts into multipart request
-- **`URLEncodedEndpoint`** - Body in URL query format
+- **`Endpoint`** - Base protocol with empty body (defaults to GET)
+- **`DataEndpoint`** - Sends raw data in body (defaults to POST)
+- **`UploadEndpoint`** - Uploads files using URLSession upload (defaults to POST)
+- **`MultipartEndpoint`** - Combines body parts into multipart request (defaults to POST)
+- **`URLEncodedEndpoint`** - Body in URL query format (defaults to POST)
 - **`RequestEndpoint`** - Has encodable request model (defaults to POST)
 - **`ResponseEndpoint`** - Has decodable response model
 - **`RequestResponseEndpoint`** - Typealias combining request and response endpoints
@@ -81,7 +81,7 @@ The framework is built around two core protocols:
 
 **Encoding/Decoding**: The `Encoding` protocol includes `configure(request:)` for setting content-type headers (with empty default). Both `Encoding` and `Decoding` require `Sendable`.
 
-**Swift 6 Concurrency Safety**: All `ResponseEndpoint` associated types must conform to `Sendable`.
+**Swift 6 Concurrency Safety**: All `ResponseEndpoint.Response` and `RequestEndpoint.Request` associated types must conform to `Sendable`.
 
 ### Module Organization
 
@@ -112,8 +112,11 @@ let data = try await server.call(data: endpoint)
 // Void call (no response body)
 try await server.call(endpoint: endpoint)
 
-// Download call
+// Download call (temporary file — caller must move before returning)
 let fileURL = try await server.download(endpoint: endpoint)
+
+// Download call (moved to destination automatically)
+try await server.download(endpoint: endpoint, destination: destinationURL)
 ```
 
 ### Error Handling
