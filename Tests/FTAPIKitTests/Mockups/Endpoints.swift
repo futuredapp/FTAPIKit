@@ -102,5 +102,6 @@ struct ImageEndpoint: Endpoint {
 /// because the response from `/get` does not match `[Int]`.
 struct DecodingFailureEndpoint: ResponseEndpoint {
     typealias Response = [Int]
+
     let path = "get"
 }
