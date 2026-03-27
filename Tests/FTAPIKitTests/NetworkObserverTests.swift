@@ -61,6 +61,24 @@ struct NetworkObserverTests {
     }
 
     @Test
+    func observerReceivesResponseBeforeDecodingFailure() async {
+        let mockObserver = MockNetworkObserver()
+        let server = HTTPBinServerWithObservers(observers: [mockObserver])
+        let endpoint = DecodingFailureEndpoint()
+
+        do {
+            _ = try await server.call(response: endpoint)
+            Issue.record("Expected decoding error")
+        } catch {
+            // Expected decoding error
+        }
+
+        #expect(mockObserver.willSendCount == 1, "willSendRequest should be called once")
+        #expect(mockObserver.didReceiveCount == 1, "didReceiveResponse should be called even when decoding fails")
+        #expect(mockObserver.didFailCount == 1, "didFail should be called for decoding error")
+    }
+
+    @Test
     func multipleObserversAllReceiveCallbacks() async throws {
         let observer1 = MockNetworkObserver()
         let observer2 = MockNetworkObserver()

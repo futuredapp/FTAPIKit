@@ -10,6 +10,10 @@ import Foundation
 /// cases and information about one endpoint is spreaded all over the files. Also,
 /// structs offer us generated initializers, which is very helpful.
 ///
+/// - Important: Each endpoint should conform to at most one body-providing protocol
+///   (``DataEndpoint``, ``URLEncodedEndpoint``, ``MultipartEndpoint``, ``RequestEndpoint``,
+///   ``UploadEndpoint``). Conforming to multiple body protocols results in undefined body selection.
+///
 public protocol Endpoint {
 
     /// URL path component without base URI.
@@ -35,32 +39,52 @@ public extension Endpoint {
 }
 
 /// ``DataEndpoint`` transmits data provided in the ``FTAPIKit/DataEndpoint/body`` property without any further encoding.
+/// - Note: Default HTTP method is ``FTAPIKit/HTTPMethod/post``.
 public protocol DataEndpoint: Endpoint {
     var body: Data { get }
+}
+
+public extension DataEndpoint {
+    var method: HTTPMethod { .post }
 }
 
 /// ``UploadEndpoint`` will send the provided file to the API.
 ///
 /// - Note: If the standard implementation is used, `URLSession.uploadTask` methods will be used.
+/// Default HTTP method is ``FTAPIKit/HTTPMethod/post``.
 public protocol UploadEndpoint: Endpoint {
 
     /// File which will be sent.
     var file: URL { get }
 }
 
+public extension UploadEndpoint {
+    var method: HTTPMethod { .post }
+}
+
 /// Endpoint which will be sent as a multipart HTTP request.
 ///
 /// - Note: If the standard implementation is used, the body parts will be merged into a temporary file, which will
 /// then be transformed to an input stream and passed to the request as a `httpBodyStream`.
+/// Default HTTP method is ``FTAPIKit/HTTPMethod/post``.
 public protocol MultipartEndpoint: Endpoint {
 
     /// List of individual body parts.
     var parts: [MultipartBodyPart] { get }
 }
 
+public extension MultipartEndpoint {
+    var method: HTTPMethod { .post }
+}
+
 /// The body of the endpoint with the URL query format.
+/// - Note: Default HTTP method is ``FTAPIKit/HTTPMethod/post``.
 public protocol URLEncodedEndpoint: Endpoint {
     var body: URLQuery { get }
+}
+
+public extension URLEncodedEndpoint {
+    var method: HTTPMethod { .post }
 }
 
 /// An abstract representation of endpoint, body of which is represented by Swift encodable type. It serves as an
@@ -90,7 +114,7 @@ public protocol ResponseEndpoint: Endpoint {
 public protocol RequestEndpoint: EncodableEndpoint {
     /// Associated type describing the encodable request model for serialization. The associated type is derived
     /// from the body property.
-    associatedtype Request: Encodable
+    associatedtype Request: Encodable & Sendable
     /// Generic encodable model, which will be sent in the body of the request.
     var request: Request { get }
 }

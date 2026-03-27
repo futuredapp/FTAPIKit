@@ -7,7 +7,8 @@ public extension URLServer {
     ///   - endpoint: The endpoint
     ///   - configuring: Optional request configuration to apply before sending
     /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
-    ///   or an error from ``RequestConfiguring/configure(_:)`` if configuration fails.
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
     func call(endpoint: Endpoint, configuring: RequestConfiguring? = nil) async throws {
         _ = try await execute(endpoint: endpoint, configuring: configuring)
     }
@@ -17,7 +18,8 @@ public extension URLServer {
     ///   - endpoint: The endpoint
     ///   - configuring: Optional request configuration to apply before sending
     /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
-    ///   or an error from ``RequestConfiguring/configure(_:)`` if configuration fails.
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
     /// - Returns: Plain data returned with the HTTP Response
     func call(data endpoint: Endpoint, configuring: RequestConfiguring? = nil) async throws -> Data {
         try await execute(endpoint: endpoint, configuring: configuring).data
@@ -28,7 +30,8 @@ public extension URLServer {
     ///   - endpoint: The endpoint
     ///   - configuring: Optional request configuration to apply before sending
     /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
-    ///   or an error from ``RequestConfiguring/configure(_:)`` if configuration fails.
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
     /// - Returns: Instance of the required type
     func call<EP: ResponseEndpoint>(response endpoint: EP, configuring: RequestConfiguring? = nil) async throws -> EP.Response {
         let result = try await execute(endpoint: endpoint, configuring: configuring)
@@ -46,10 +49,11 @@ public extension URLServer {
     ///   - endpoint: The endpoint
     ///   - configuring: Optional request configuration to apply before sending
     /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
-    ///   or an error from ``RequestConfiguring/configure(_:)`` if configuration fails.
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
     /// - Returns: The location of a temporary file where the server's response is stored.
     ///   You must move this file or open it for reading before the async function returns. Otherwise, the file
-    ///   is deleted, and the data is lost.
+    ///   is deleted, and the data is lost. For automatic file management, use ``download(endpoint:destination:configuring:)`` instead.
     func download(endpoint: Endpoint, configuring: RequestConfiguring? = nil) async throws -> URL {
         let (urlRequest, observers) = try await prepareObservers(endpoint: endpoint, configuring: configuring)
 
@@ -66,6 +70,19 @@ public extension URLServer {
         try checkForError(data: nil, response: response, request: urlRequest, observers: observers)
 
         return localURL
+    }
+
+    /// Downloads a file from the specified endpoint and moves it to the given destination.
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    ///   - destination: The file URL where the downloaded file should be stored
+    ///   - configuring: Optional request configuration to apply before sending
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
+    func download(endpoint: Endpoint, destination: URL, configuring: RequestConfiguring? = nil) async throws {
+        let tempURL = try await download(endpoint: endpoint, configuring: configuring)
+        try FileManager.default.moveItem(at: tempURL, to: destination)
     }
 }
 

@@ -97,3 +97,10 @@ struct TestUploadEndpoint: UploadEndpoint {
 struct ImageEndpoint: Endpoint {
     let path = "image/jpeg"
 }
+
+/// Endpoint that will succeed at the network level but fail during decoding,
+/// because the response from `/get` does not match `[Int]`.
+struct DecodingFailureEndpoint: ResponseEndpoint {
+    typealias Response = [Int]
+    let path = "get"
+}

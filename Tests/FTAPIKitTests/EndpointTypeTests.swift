@@ -59,4 +59,14 @@ struct EndpointTypeTests {
         let url = try await server.download(endpoint: endpoint)
         #expect(FileManager.default.fileExists(atPath: url.path))
     }
+
+    @Test
+    func downloadEndpointToDestination() async throws {
+        let server = HTTPBinServer()
+        let endpoint = ImageEndpoint()
+        let destination = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try await server.download(endpoint: endpoint, destination: destination)
+        #expect(FileManager.default.fileExists(atPath: destination.path))
+        try FileManager.default.removeItem(at: destination)
+    }
 }
