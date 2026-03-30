@@ -1,12 +1,12 @@
 # ``FTAPIKit``
 
-Declarative, generic and protocol-oriented REST API framework using `URLSession` and `Codable`
+Declarative async/await REST API framework using Swift Concurrency and Codable.
 
 ## Overview
 
-Declarative and generic REST API framework using `Codable`.
-With standard implementation using `URLSesssion` and JSON encoder/decoder.
-Easily extensible for your asynchronous framework or networking stack.
+Declarative async/await REST API framework using `Codable`.
+With standard implementation using `URLSession` and JSON encoder/decoder.
+Built for Swift 6.1+ with full concurrency safety.
 
 ![Tree with a API Client root element. Its branches are servers. Each server branch has some endpoint branches.](Architecture)
 
@@ -14,7 +14,6 @@ Easily extensible for your asynchronous framework or networking stack.
 
 ### Server
 
-- ``Server``
 - ``URLServer``
 
 ### Endpoint
@@ -29,6 +28,11 @@ Easily extensible for your asynchronous framework or networking stack.
 - ``RequestEndpoint``
 - ``RequestResponseEndpoint``
 
+### Request Configuration
+
+- ``RequestConfiguring``
+- ``CompositeRequestConfiguring``
+
 ### Endpoint configuration
 
 - ``HTTPMethod``
@@ -41,7 +45,10 @@ Easily extensible for your asynchronous framework or networking stack.
 - ``JSONEncoding``
 - ``Decoding``
 - ``JSONDecoding``
-- ``URLRequestEncoding``
+
+### Observers
+
+- ``NetworkObserver``
 
 ### Error handling
 

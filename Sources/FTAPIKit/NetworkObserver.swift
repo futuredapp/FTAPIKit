@@ -1,9 +1,5 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 /// Protocol for observing network request lifecycle events.
 ///
 /// Implement this protocol to add logging, analytics, or request tracking.
@@ -12,10 +8,12 @@ import FoundationNetworking
 /// The `Context` associated type allows passing correlation data (request ID, start time, etc.)
 /// through the request lifecycle:
 /// 1. `willSendRequest` is called before the request starts and returns a `Context` value
-/// 2. `didReceiveResponse` is always called with the raw response data (useful for debugging)
+/// 2. `didReceiveResponse` is called when a response is received from the server
 /// 3. `didFail` is called additionally if the request processing fails (network, HTTP status, or decoding error)
-/// 4. If the observer is deallocated before the request completes, the context is discarded
-///    and no completion callback is invoked
+///
+/// - Note: Observers are strongly retained for the duration of a request to ensure lifecycle callbacks
+///   are always delivered. Observers must not hold strong references back to the server to avoid
+///   retain cycles.
 public protocol NetworkObserver: AnyObject, Sendable {
     associatedtype Context: Sendable
 
@@ -26,8 +24,8 @@ public protocol NetworkObserver: AnyObject, Sendable {
 
     /// Called when a response is received from the server.
     ///
-    /// This is always called with the raw response data, even if processing subsequently fails.
-    /// This allows observers to inspect the actual response for debugging purposes.
+    /// Only called when the server responds. Not called on network errors (e.g. no connectivity).
+    /// Called even if the response indicates an error (4xx, 5xx), before `didFail`.
     /// - Parameters:
     ///   - request: The original request
     ///   - response: The URL response (may be HTTPURLResponse)

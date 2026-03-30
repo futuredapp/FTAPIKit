@@ -2,7 +2,7 @@
 
 import FTAPIKit
 
-struct ___VARIABLE_templateName___Endpoint: APIEndpoint {
+struct ___VARIABLE_templateName___Endpoint: Endpoint {
 
     let path: String = ""
 }

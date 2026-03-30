@@ -1,6 +1,6 @@
 import Foundation
 
-struct User: Codable, Equatable {
+struct User: Codable, Equatable, Sendable {
     let uuid: UUID
     let name: String
     let age: UInt
@@ -16,5 +16,9 @@ struct File {
 
     func write() throws {
         try data.write(to: url)
+    }
+
+    func cleanup() {
+        try? FileManager.default.removeItem(at: url)
     }
 }

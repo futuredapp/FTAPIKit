@@ -1,31 +1,31 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 /// `Encoding` represents Swift encoders and provides network-specific features, such as configuring
 /// the request with correct headers.
-public protocol Encoding {
+public protocol Encoding: Sendable {
 
-    /// Encodes the argument
+    /// Encodes the argument.
     func encode<T: Encodable>(_ object: T) throws -> Data
-}
 
-/// Protocol which enables use of any decoder using type-erasure.
-public protocol Decoding {
-    func decode<T: Decodable>(data: Data) throws -> T
-}
-
-/// Protocol extending encoding with ability to configure `URLRequest`. Used when encoding endpoints in ``URLServer`` calls.
-public protocol URLRequestEncoding: Encoding {
     /// Allows modification of `URLRequest`. Enables things like adding `Content-Type` header etc.
+    ///
+    /// Default implementation is a no-op. Custom `Encoding` types should override this to set
+    /// the appropriate `Content-Type` header. See ``JSONEncoding`` for an example.
     /// - Parameter request: Request which can be modified.
     func configure(request: inout URLRequest) throws
 }
 
-/// Type-erased JSON encoder for use with types conforming to ``Server`` protocol.
-public struct JSONEncoding: URLRequestEncoding {
+public extension Encoding {
+    func configure(request: inout URLRequest) throws {}
+}
+
+/// Protocol which enables use of any decoder using type-erasure.
+public protocol Decoding: Sendable {
+    func decode<T: Decodable>(data: Data) throws -> T
+}
+
+/// Type-erased JSON encoder for use with types conforming to ``URLServer`` protocol.
+public struct JSONEncoding: Encoding {
     private let encoder: JSONEncoder
 
     public init(encoder: JSONEncoder = .init()) {
@@ -51,7 +51,7 @@ public struct JSONEncoding: URLRequestEncoding {
     }
 }
 
-/// Type-erased JSON decoder for use with types conforming to ``Server`` protocol.
+/// Type-erased JSON decoder for use with types conforming to ``URLServer`` protocol.
 public struct JSONDecoding: Decoding {
     private let decoder: JSONDecoder
 

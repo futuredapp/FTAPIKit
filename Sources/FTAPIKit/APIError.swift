@@ -1,9 +1,5 @@
 import Foundation
 
-#if os(Linux)
-import FoundationNetworking
-#endif
-
 /// Error protocol used in types conforming to ``URLServer`` protocol. Default implementation called ``APIErrorStandard``
 /// is provided. A type conforming to ``APIError`` protocol can be provided to ``URLServer``
 /// to use custom error handling.

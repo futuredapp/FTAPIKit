@@ -1,85 +1,177 @@
 import Foundation
-#if os(Linux)
-import FoundationNetworking
-#endif
 
-// Support of async-await for Xcode 13.2+.
-#if swift(>=5.5.2)
-@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
 public extension URLServer {
 
     /// Performs call to endpoint which does not return any data in the HTTP response.
-    /// - Note: This call maps ``call(endpoint:completion:)`` to the async/await API
     /// - Parameters:
     ///   - endpoint: The endpoint
-    /// - Throws: Throws in case that result is .failure
-    /// - Returns: Void on success
-    func call(endpoint: Endpoint) async throws {
-        var task: URLSessionTask?
-        return try await withTaskCancellationHandler {
-            try await withCheckedThrowingContinuation { continuation in
-                task = call(endpoint: endpoint) { result in
-                    switch result {
-                    case .success:
-                        continuation.resume()
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-        } onCancel: { [task] in
-            task?.cancel()
-        }
+    ///   - configuring: Optional request configuration to apply before sending
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
+    func call(endpoint: Endpoint, configuring: RequestConfiguring? = nil) async throws {
+        _ = try await execute(endpoint: endpoint, configuring: configuring)
     }
 
-    /// Performs call to endpoint which returns an arbitrary data in the HTTP response, that should not be parsed by the decoder of the
-    /// server.
-    /// - Note: This call maps ``call(data:completion:)`` to the async/await API
+    /// Performs call to endpoint which returns arbitrary data in the HTTP response, that should not be parsed by the decoder.
     /// - Parameters:
     ///   - endpoint: The endpoint
-    /// - Throws: Throws in case that result is .failure
+    ///   - configuring: Optional request configuration to apply before sending
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
     /// - Returns: Plain data returned with the HTTP Response
-    func call(data endpoint: Endpoint) async throws -> Data {
-        var task: URLSessionTask?
-        return try await withTaskCancellationHandler {
-            try await withCheckedThrowingContinuation { continuation in
-                task = call(data: endpoint) { result in
-                    switch result {
-                    case .success(let data):
-                        continuation.resume(returning: data)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-        } onCancel: { [task] in
-            task?.cancel()
+    func call(data endpoint: Endpoint, configuring: RequestConfiguring? = nil) async throws -> Data {
+        try await execute(endpoint: endpoint, configuring: configuring).data
+    }
+
+    /// Performs call to endpoint which returns data that are supposed to be parsed by the decoder.
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    ///   - configuring: Optional request configuration to apply before sending
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
+    /// - Returns: Instance of the required type
+    func call<EP: ResponseEndpoint>(response endpoint: EP, configuring: RequestConfiguring? = nil) async throws -> EP.Response {
+        let result = try await execute(endpoint: endpoint, configuring: configuring)
+        do {
+            return try decoding.decode(data: result.data)
+        } catch {
+            let thrownError = ErrorType(data: result.data, response: nil, error: error, decoding: decoding) ?? error
+            result.observers.forEach { $0.didFail(request: result.request, error: thrownError) }
+            throw thrownError
         }
     }
 
-    /// Performs call to endpoint which returns data that are supposed to be parsed by the decoder of the instance
-    /// conforming to ``Server`` in the HTTP response.
-    /// - Note: This call maps  ``call(response:completion:)`` to the async/await API
+    /// Downloads a file from the specified endpoint to a temporary location.
     /// - Parameters:
     ///   - endpoint: The endpoint
-    /// - Throws: Throws in case that result is .failure
-    /// - Returns: Instance of the required type
-    func call<EP: ResponseEndpoint>(response endpoint: EP) async throws -> EP.Response {
-        var task: URLSessionTask?
-        return try await withTaskCancellationHandler {
-            try await withCheckedThrowingContinuation { continuation in
-                task = call(response: endpoint) { result in
-                    switch result {
-                    case .success(let response):
-                        continuation.resume(returning: response)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
+    ///   - configuring: Optional request configuration to apply before sending
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
+    /// - Returns: The location of a temporary file where the server's response is stored.
+    ///   You must move this file or open it for reading before the async function returns. Otherwise, the file
+    ///   is deleted, and the data is lost. For automatic file management, use ``download(endpoint:destination:configuring:)`` instead.
+    func download(endpoint: Endpoint, configuring: RequestConfiguring? = nil) async throws -> URL {
+        let (urlRequest, observers) = try await prepareObservers(endpoint: endpoint, configuring: configuring)
+
+        let (localURL, response): (URL, URLResponse)
+        do {
+            (localURL, response) = try await urlSession.download(for: urlRequest)
+        } catch {
+            let thrownError = ErrorType(data: nil, response: nil, error: error, decoding: decoding) ?? error
+            observers.forEach { $0.didFail(request: urlRequest, error: thrownError) }
+            throw thrownError
+        }
+
+        observers.forEach { $0.didReceiveResponse(for: urlRequest, response: response, data: nil) }
+        try checkForError(data: nil, response: response, request: urlRequest, observers: observers)
+
+        return localURL
+    }
+
+    /// Downloads a file from the specified endpoint and moves it to the given destination.
+    /// - Parameters:
+    ///   - endpoint: The endpoint
+    ///   - destination: The file URL where the downloaded file should be stored
+    ///   - configuring: Optional request configuration to apply before sending
+    /// - Throws: Throws an ``APIError`` if the request fails or server returns an error,
+    ///   `EncodingError` if request building fails, or an error from ``RequestConfiguring/configure(_:)``
+    ///   if configuration fails.
+    func download(endpoint: Endpoint, destination: URL, configuring: RequestConfiguring? = nil) async throws {
+        let tempURL = try await download(endpoint: endpoint, configuring: configuring)
+        try FileManager.default.moveItem(at: tempURL, to: destination)
+    }
+}
+
+// MARK: - Private helpers
+
+private struct ExecuteResult {
+    let data: Data
+    let request: URLRequest
+    let observers: [BoundObserverContext]
+}
+
+private extension URLServer {
+
+    /// Core execution method that builds the request, notifies observers, performs the network call,
+    /// and handles errors.
+    func execute(endpoint: Endpoint, configuring: RequestConfiguring?) async throws -> ExecuteResult {
+        let (urlRequest, observers) = try await prepareObservers(endpoint: endpoint, configuring: configuring)
+
+        let file = (endpoint as? UploadEndpoint)?.file
+
+        let (data, response): (Data, URLResponse)
+        do {
+            if let file {
+                (data, response) = try await urlSession.upload(for: urlRequest, fromFile: file)
+            } else {
+                (data, response) = try await urlSession.data(for: urlRequest)
             }
-        } onCancel: { [task] in
-            task?.cancel()
+        } catch {
+            let thrownError = ErrorType(data: nil, response: nil, error: error, decoding: decoding) ?? error
+            observers.forEach { $0.didFail(request: urlRequest, error: thrownError) }
+            throw thrownError
+        }
+
+        observers.forEach { $0.didReceiveResponse(for: urlRequest, response: response, data: data) }
+        try checkForError(data: data, response: response, request: urlRequest, observers: observers)
+
+        return ExecuteResult(data: data, request: urlRequest, observers: observers)
+    }
+
+    /// Builds the URLRequest for the endpoint, applies optional configuration, and creates observer contexts.
+    func prepareObservers(
+        endpoint: Endpoint,
+        configuring: RequestConfiguring?
+    ) async throws -> (URLRequest, [BoundObserverContext]) {
+        var urlRequest = try await buildRequest(endpoint: endpoint)
+        try await configuring?.configure(&urlRequest)
+        let observers = networkObservers.map { BoundObserverContext(observer: $0, request: urlRequest) }
+        return (urlRequest, observers)
+    }
+
+    /// Checks the response for API errors and notifies observers on failure.
+    func checkForError(
+        data: Data?,
+        response: URLResponse,
+        request: URLRequest,
+        observers: [BoundObserverContext]
+    ) throws {
+        if let error = ErrorType(data: data, response: response, error: nil, decoding: decoding) {
+            observers.forEach { $0.didFail(request: request, error: error) }
+            throw error
         }
     }
 }
-#endif
+
+/// Captures an observer and its context from `willSendRequest`, binding the lifecycle callbacks
+/// for a single request. Created at request start and consumed before the call returns.
+///
+/// Marked `@unchecked Sendable` because the stored closures capture a `Sendable` observer
+/// and its `Sendable` context. Instances are created and consumed within a single async call
+/// and never shared across task boundaries.
+private final class BoundObserverContext: @unchecked Sendable {
+    private let _didReceiveResponse: (URLRequest, URLResponse?, Data?) -> Void
+    private let _didFail: (URLRequest, Error) -> Void
+
+    init<O: NetworkObserver>(observer: O, request: URLRequest) {
+        let context = observer.willSendRequest(request)
+        _didReceiveResponse = { req, resp, data in
+            observer.didReceiveResponse(for: req, response: resp, data: data, context: context)
+        }
+        _didFail = { req, error in
+            observer.didFail(request: req, error: error, context: context)
+        }
+    }
+
+    func didReceiveResponse(for request: URLRequest, response: URLResponse?, data: Data?) {
+        _didReceiveResponse(request, response, data)
+    }
+
+    func didFail(request: URLRequest, error: Error) {
+        _didFail(request, error)
+    }
+}

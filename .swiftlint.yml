@@ -1,19 +1,11 @@
 disabled_rules:
   - line_length
-  # Combination of SwiftLint 0.43.1 and Xcode 12.5.1
-  # warns about false positives for this rule
-  - empty_xctest_method
-  # Type inference of `await try` methods
-  # does not work well in Xcode 13 Beta
-  - implicit_return
   # Does not work with URL query literals.
   - duplicated_key_in_dictionary_literal
 excluded:
-  - Pods
   - .build
   - Templates
 opt_in_rules:
-  - anyobject_protocol
   - array_init
   - attributes
   - closure_body_length
@@ -26,12 +18,10 @@ opt_in_rules:
   - contains_over_first_not_nil
   - contains_over_range_nil_comparison
   - convenience_type
-  - discouraged_object_literal
   - discouraged_optional_boolean
   - empty_collection_literal
   - empty_count
   - empty_string
-  - empty_xctest_method
   - enum_case_associated_values_count
   - explicit_init
   - fallthrough
@@ -55,22 +45,17 @@ opt_in_rules:
   - multiline_literal_brackets
   - multiline_parameters
   - multiline_parameters_brackets
-  - nimble_operator
   - number_separator
-  - object_literal
   - operator_usage_whitespace
   - optional_enum_case_matching
   - overridden_super_call
   - override_in_extension
   - pattern_matching_keywords
   - prefer_self_type_over_type_of_self
-  - private_action
-  - private_outlet
   - prohibited_super_call
   - reduce_into
   - redundant_nil_coalescing
   - required_enum_case
-  - single_test_class
   - sorted_first_last
   - sorted_imports
   - static_operator
@@ -80,12 +65,9 @@ opt_in_rules:
   - trailing_closure
   - unneeded_parentheses_in_closure_argument
   - untyped_error_in_catch
-  - unused_declaration
-  - unused_import
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - yoda_condition
-
 # Rule configurations
 identifier_name:
   excluded:

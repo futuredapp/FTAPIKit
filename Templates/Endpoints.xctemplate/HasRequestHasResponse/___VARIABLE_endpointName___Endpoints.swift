@@ -2,7 +2,7 @@
 
 import FTAPIKit
 
-struct ___VARIABLE_templateName___Endpoint: APIRequestResponseEndpoint {
+struct ___VARIABLE_templateName___Endpoint: RequestResponseEndpoint {
     typealias Response = ___VARIABLE_templateName___Response
     typealias Request = ___VARIABLE_templateName___Request
 

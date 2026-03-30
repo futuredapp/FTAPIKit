@@ -1,9 +1,9 @@
-TEMPLATE_DIR = $(HOME)/Library/Developer/Xcode/Templates/FTAPIKit
+INSTALL_DIR = ~/Library/Developer/Xcode/Templates/File\ Templates/FTAPIKit
 
 install:
-	mkdir -p $(TEMPLATE_DIR)
-	cp -R *.xctemplate $(TEMPLATE_DIR)/
-	echo "\033[0;32mInstallation was successful!\033[0m"
+	mkdir -p $(INSTALL_DIR)
+	cp -R Endpoints.xctemplate $(INSTALL_DIR)/
+	@echo "Templates installed to $(INSTALL_DIR)"
 
-.PHONY: install
-.SILENT: install
+uninstall:
+	rm -rf $(INSTALL_DIR)

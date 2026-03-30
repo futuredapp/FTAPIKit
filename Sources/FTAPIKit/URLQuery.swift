@@ -14,11 +14,12 @@ import Foundation
 ///     "child[]": "Maggie"
 /// ]
 /// ```
-public struct URLQuery: ExpressibleByDictionaryLiteral {
+public struct URLQuery: ExpressibleByDictionaryLiteral, Sendable {
     /// Array of URL query items.
     public let items: [URLQueryItem]
 
-    init() {
+    /// Creates an empty URL query.
+    public init() {
         self.items = []
     }
 

@@ -1,20 +1,25 @@
 import Foundation
 import FTAPIKit
 
-#if os(Linux)
-import FoundationNetworking
-#endif
+// MARK: - Test servers
+// Integration tests use httpbin.org for real HTTP requests.
+// These tests require network access and may fail if httpbin.org is unreachable.
 
 struct HTTPBinServer: URLServer {
     let urlSession = URLSession(configuration: .ephemeral)
     let baseUri = URL(string: "http://httpbin.org/")!
+}
 
-    func buildRequest(endpoint: Endpoint) throws -> URLRequest {
-        var request = try buildStandardRequest(endpoint: endpoint)
-        if endpoint is AuthorizedEndpoint {
-            request.addValue("Bearer \(UUID().uuidString)", forHTTPHeaderField: "Authorization")
-        }
-        return request
+/// Configuration that adds a Bearer token to the request.
+struct BearerTokenConfiguration: RequestConfiguring {
+    let token: String
+
+    init(token: String = UUID().uuidString) {
+        self.token = token
+    }
+
+    func configure(_ request: inout URLRequest) async throws {
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     }
 }
 

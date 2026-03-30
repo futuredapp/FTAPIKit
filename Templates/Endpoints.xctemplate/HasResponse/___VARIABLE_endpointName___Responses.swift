@@ -2,5 +2,5 @@
 
 import Foundation
 
-struct ___VARIABLE_templateName___Response: Decodable {
+struct ___VARIABLE_templateName___Response: Decodable, Sendable {
 }
