@@ -1,5 +1,5 @@
 /// HTTP method enum with all commonly used verbs.
-public enum HTTPMethod: String, CustomStringConvertible {
+public enum HTTPMethod: String, CustomStringConvertible, Sendable {
     /// `OPTIONS` HTTP method
     case options
     /// `GET` HTTP method
