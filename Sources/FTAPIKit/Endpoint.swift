@@ -14,7 +14,10 @@ import Foundation
 ///   (``DataEndpoint``, ``URLEncodedEndpoint``, ``MultipartEndpoint``, ``RequestEndpoint``,
 ///   ``UploadEndpoint``). Conforming to multiple body protocols results in undefined body selection.
 ///
-public protocol Endpoint {
+/// - Note: `Sendable` because ``URLServer`` executes requests off the caller's actor.
+///   Structs of value types conform without any annotation.
+///
+public protocol Endpoint: Sendable {
 
     /// URL path component without base URI.
     var path: String { get }

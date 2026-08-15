@@ -81,7 +81,7 @@ The framework is built around two core protocols:
 
 **Encoding/Decoding**: The `Encoding` protocol includes `configure(request:)` for setting content-type headers (with empty default). Both `Encoding` and `Decoding` require `Sendable`.
 
-**Swift 6 Concurrency Safety**: All `ResponseEndpoint.Response` and `RequestEndpoint.Request` associated types must conform to `Sendable`.
+**Swift 6 Concurrency Safety**: `Endpoint` requires `Sendable`, because `URLServer` executes requests off the caller's actor. `ResponseEndpoint.Response` and `RequestEndpoint.Request` must be `Sendable` too. `MultipartBodyPart` holds data, a file URL or a `@Sendable` stream factory, opening the `InputStream` only at serialization time.
 
 ### Module Organization
 

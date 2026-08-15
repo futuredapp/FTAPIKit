@@ -54,7 +54,7 @@ struct MultipartFormData {
             try outputStream.writeLine()
             try write(headers: part.headers, to: outputStream)
             try outputStream.writeLine()
-            try outputStream.write(inputStream: part.inputStream)
+            try outputStream.write(inputStream: part.openInputStream())
             try outputStream.writeLine()
         }
         try outputStream.write(data: boundaryData)
