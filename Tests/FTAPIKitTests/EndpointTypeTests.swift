@@ -36,9 +36,22 @@ struct EndpointTypeTests {
         let file = File()
         try file.write()
         defer { file.cleanup() }
-        let endpoint = try TestMultipartEndpoint(file: file)
+        let endpoint = TestMultipartEndpoint(file: file)
         let data = try await server.call(data: endpoint)
         #expect(!data.isEmpty)
+    }
+
+    @Test
+    func multipartEndpointWithMissingFileThrows() {
+        let server = HTTPBinServer()
+        let missingURL = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)
+        let endpoint = TestMultipartEndpoint(parts: [
+            MultipartBodyPart(name: "file", url: missingURL)
+        ])
+        #expect(throws: (any Error).self) {
+            _ = try server.buildStandardRequest(endpoint: endpoint)
+        }
     }
 
     @Test

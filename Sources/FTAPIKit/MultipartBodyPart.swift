@@ -3,8 +3,7 @@ import Foundation
 /// Structure representing HTTP body part in `multipart/form-data` request.
 /// These parts must have valid headers according
 /// to [RFC-7578](https://tools.ietf.org/html/rfc7578).
-/// The part stores a description of its content and is converted to `InputStream` at
-/// serialization time, in order to limit memory usage when sending files to a server.
+/// Content is converted to `InputStream` at serialization time to limit memory usage.
 public struct MultipartBodyPart: Sendable {
 
     /// Part content, resolved to an `InputStream` at serialization time.
@@ -17,7 +16,7 @@ public struct MultipartBodyPart: Sendable {
     let headers: [String: String]
     let source: Source
 
-    /// Creates a new instance with custom headers and a factory producing the byte stream.
+    /// Creates a new instance with custom headers and a stream factory as body.
     ///
     /// - Parameters:
     ///   - headers: HTTP headers specific for the part, these are not validated locally and must be correct according to [RFC-7578](https://tools.ietf.org/html/rfc7578).
@@ -53,7 +52,7 @@ public struct MultipartBodyPart: Sendable {
     ///
     /// - Parameters:
     ///   - headers: HTTP headers specific for the part, these are not validated locally and must be correct according to [RFC-7578](https://tools.ietf.org/html/rfc7578).
-    ///   - fileURL: URL to a local file.
+    ///   - fileURL: URL to a local file, validated when the multipart body is serialized.
     public init(headers: [String: String], fileURL: URL) {
         self.headers = headers
         self.source = .file(fileURL)
@@ -63,12 +62,8 @@ public struct MultipartBodyPart: Sendable {
     ///
     /// - Parameters:
     ///   - name: Name of the parameter used in `Content-Disposition` header.
-    ///   - url: URL to a local file.
-    /// - Throws: `URLError` with `cannotOpenFile` code if the file at the provided URL is not readable.
-    public init(name: String, url: URL) throws {
-        guard FileManager.default.isReadableFile(atPath: url.path) else {
-            throw URLError(.cannotOpenFile, userInfo: ["url": url])
-        }
+    ///   - url: URL to a local file, validated when the multipart body is serialized.
+    public init(name: String, url: URL) {
         self.headers = [
             "Content-Type": url.mimeType,
             "Content-Disposition": "form-data; name=\(name); filename=\"\(url.lastPathComponent)\""
@@ -77,7 +72,7 @@ public struct MultipartBodyPart: Sendable {
     }
 
     /// Opens a stream over the part's content, called when the multipart body is serialized.
-    /// - Throws: `URLError` with `cannotOpenFile` code if it was not possible to open the file.
+    /// - Throws: An error from the stream factory; file errors surface after the stream is opened.
     func openInputStream() throws -> InputStream {
         switch source {
         case let .data(data):
