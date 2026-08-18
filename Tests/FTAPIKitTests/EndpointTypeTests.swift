@@ -49,9 +49,12 @@ struct EndpointTypeTests {
         let endpoint = TestMultipartEndpoint(parts: [
             MultipartBodyPart(name: "file", url: missingURL)
         ])
-        #expect(throws: (any Error).self) {
+        let error = #expect(throws: URLError.self) {
             _ = try server.buildStandardRequest(endpoint: endpoint)
         }
+        #expect(error?.code == .cannotOpenFile)
+        #expect(error?.failingURL == missingURL)
+        #expect(error?.errorUserInfo[NSUnderlyingErrorKey] != nil)
     }
 
     @Test

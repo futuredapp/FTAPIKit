@@ -126,6 +126,7 @@ try await server.download(endpoint: endpoint, destination: destinationURL)
 - Default implementation: `APIError.Standard` (enum with connection, encoding, decoding, server, client, unhandled cases)
 - Network errors (`URLError`) and decoding errors are routed through `ErrorType` for consistent error handling
 - Encoding errors (from `buildStandardRequest`) propagate directly as `EncodingError` since they occur before the network request
+- Multipart file errors propagate directly as `URLError(.cannotOpenFile)` with `failingURL` set and the POSIX cause under `NSUnderlyingErrorKey`, thrown when the body is serialized in `buildStandardRequest`
 - Custom error types can be defined via `URLServer.ErrorType` associated type
 
 ## Package Management
