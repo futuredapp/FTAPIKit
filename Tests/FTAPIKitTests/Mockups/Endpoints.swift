@@ -65,12 +65,17 @@ struct TestMultipartEndpoint: MultipartEndpoint {
     let path = "post"
     let method: HTTPMethod = .post
 
-    init(file: File) throws {
+    init(parts: [MultipartBodyPart]) {
+        self.parts = parts
+    }
+
+    init(file: File) {
         self.parts = [
             MultipartBodyPart(name: "anotherParameter", value: "valueForParameter"),
-            try MultipartBodyPart(name: "urlImage", url: file.url),
+            MultipartBodyPart(name: "urlImage", url: file.url),
             MultipartBodyPart(headers: file.headers, data: file.data),
-            MultipartBodyPart(headers: file.headers, inputStream: InputStream(url: file.url)!)
+            MultipartBodyPart(headers: file.headers, fileURL: file.url),
+            MultipartBodyPart(headers: file.headers) { InputStream(url: file.url)! }
         ]
     }
 }

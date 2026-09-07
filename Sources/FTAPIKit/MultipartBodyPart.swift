@@ -3,20 +3,27 @@ import Foundation
 /// Structure representing HTTP body part in `multipart/form-data` request.
 /// These parts must have valid headers according
 /// to [RFC-7578](https://tools.ietf.org/html/rfc7578).
-/// Everything passed to it is converted to `InputStream`
-/// in order to limit memory usage when sending files to a server.
-public struct MultipartBodyPart {
-    let headers: [String: String]
-    let inputStream: InputStream
+/// Content is converted to `InputStream` at serialization time to limit memory usage.
+public struct MultipartBodyPart: Sendable {
 
-    /// Creates a new instance with custom headers and any input stream.
+    /// Part content, resolved to an `InputStream` at serialization time.
+    enum Source: Sendable {
+        case data(Data)
+        case file(URL)
+        case stream(@Sendable () throws -> InputStream)
+    }
+
+    let headers: [String: String]
+    let source: Source
+
+    /// Creates a new instance with custom headers and a stream factory as body.
     ///
     /// - Parameters:
     ///   - headers: HTTP headers specific for the part, these are not validated locally and must be correct according to [RFC-7578](https://tools.ietf.org/html/rfc7578).
-    ///   - inputStream: Any byte stream.
-    public init(headers: [String: String], inputStream: InputStream) {
+    ///   - makeInputStream: Closure returning a fresh byte stream, called on every serialization.
+    public init(headers: [String: String], makeInputStream: @escaping @Sendable () throws -> InputStream) {
         self.headers = headers
-        self.inputStream = inputStream
+        self.source = .stream(makeInputStream)
     }
 
     /// Creates a new instance from key-value or HTTP parameter.
@@ -38,23 +45,45 @@ public struct MultipartBodyPart {
     ///   - data: Bytes sent as a part body.
     public init(headers: [String: String], data: Data) {
         self.headers = headers
-        self.inputStream = InputStream(data: data)
+        self.source = .data(data)
+    }
+
+    /// Creates a new instance with custom headers and a local file as body.
+    ///
+    /// - Parameters:
+    ///   - headers: HTTP headers specific for the part, these are not validated locally and must be correct according to [RFC-7578](https://tools.ietf.org/html/rfc7578).
+    ///   - fileURL: URL to a local file, validated when the multipart body is serialized.
+    public init(headers: [String: String], fileURL: URL) {
+        self.headers = headers
+        self.source = .file(fileURL)
     }
 
     /// Creates a new instance with file URL used to be converted to body.
     ///
     /// - Parameters:
     ///   - name: Name of the parameter used in `Content-Disposition` header.
-    ///   - url: URL to a local file.
-    /// - Throws: `URLError` with `cannotOpenFile` code if it was not possible to open the file at the provided URL.
-    public init(name: String, url: URL) throws {
-        guard let inputStream = InputStream(url: url) else {
-            throw URLError(.cannotOpenFile, userInfo: ["url": url])
-        }
+    ///   - url: URL to a local file, validated when the multipart body is serialized.
+    public init(name: String, url: URL) {
         self.headers = [
             "Content-Type": url.mimeType,
             "Content-Disposition": "form-data; name=\(name); filename=\"\(url.lastPathComponent)\""
         ]
-        self.inputStream = inputStream
+        self.source = .file(url)
+    }
+
+    /// Opens a stream over the part's content, called when the multipart body is serialized.
+    /// - Throws: An error from the stream factory; file errors surface after the stream is opened.
+    func openInputStream() throws -> InputStream {
+        switch source {
+        case let .data(data):
+            return InputStream(data: data)
+        case let .file(url):
+            guard let inputStream = InputStream(url: url) else {
+                throw URLError(.cannotOpenFile, userInfo: ["url": url])
+            }
+            return inputStream
+        case let .stream(makeInputStream):
+            return try makeInputStream()
+        }
     }
 }

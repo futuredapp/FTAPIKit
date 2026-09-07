@@ -48,7 +48,7 @@ are separated in various protocols for convenience.
 - `UploadEndpoint` uploads file from a URL using `URLSession` upload task.
 - `MultipartEndpoint` combines body parts into `InputStream` and sends them to server.
   Body parts are represented by `MultipartBodyPart` struct and provided to the endpoint
-  in an array.
+  in an array as data, a file URL or a stream factory.
 - `URLEncodedEndpoint` sends body in URL query format.
 - `RequestEndpoint` has encodable request which is encoded using encoding
   of the `URLServer` instance.
@@ -119,6 +119,9 @@ struct UpdateUserEndpoint: RequestResponseEndpoint {
     let path = "user"
 }
 ```
+
+`Endpoint` requires `Sendable`, because requests are executed off the caller's actor.
+Structs of value types conform with no annotation; carry copies rather than references.
 
 ### Executing the request
 

@@ -54,11 +54,26 @@ struct MultipartFormData {
             try outputStream.writeLine()
             try write(headers: part.headers, to: outputStream)
             try outputStream.writeLine()
-            try outputStream.write(inputStream: part.inputStream)
+            try write(body: part, to: outputStream)
             try outputStream.writeLine()
         }
         try outputStream.write(data: boundaryData)
         try outputStream.writeLine(string: "--")
+    }
+
+    /// Writes the part body, attaching the failing URL to errors of file-backed parts.
+    private func write(body part: MultipartBodyPart, to outputStream: OutputStream) throws {
+        guard case let .file(url) = part.source else {
+            return try outputStream.write(inputStream: part.openInputStream())
+        }
+        do {
+            try outputStream.write(inputStream: part.openInputStream())
+        } catch {
+            throw URLError(.cannotOpenFile, userInfo: [
+                NSURLErrorFailingURLErrorKey: url,
+                NSUnderlyingErrorKey: error
+            ])
+        }
     }
 
     private func write(headers: [String: String], to outputStream: OutputStream) throws {

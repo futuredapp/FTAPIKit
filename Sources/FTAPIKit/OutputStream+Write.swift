@@ -23,6 +23,10 @@ extension OutputStream {
         inputStream.open()
         defer { inputStream.close() }
 
+        // A stream that failed to open reports no available bytes,
+        // which would otherwise silently write the input as empty.
+        try inputStream.throwErrorIfStreamHasError()
+
         while inputStream.hasBytesAvailable {
             var buffer = [UInt8](repeating: 0, count: OutputStream.streamBufferSize)
             let bytesRead = inputStream.read(&buffer, maxLength: OutputStream.streamBufferSize)
